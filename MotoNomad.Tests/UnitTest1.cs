@@ -1,4 +1,4 @@
-﻿namespace _10xMotoNomad.Tests
+﻿namespace MotoNomad.Tests
 {
     public class UnitTest1
     {

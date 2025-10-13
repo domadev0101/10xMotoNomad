@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotoNomad.Tests", "MotoNomad.Tests\MotoNomad.Tests.csproj", "{990166FA-68B3-CA7A-B699-13DF1B0F7F42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotoNomad.App", "MotoNomad.App\MotoNomad.App.csproj", "{AF1AB923-69D3-CD1E-DCA7-07467B210045}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{990166FA-68B3-CA7A-B699-13DF1B0F7F42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{990166FA-68B3-CA7A-B699-13DF1B0F7F42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{990166FA-68B3-CA7A-B699-13DF1B0F7F42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{990166FA-68B3-CA7A-B699-13DF1B0F7F42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF1AB923-69D3-CD1E-DCA7-07467B210045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF1AB923-69D3-CD1E-DCA7-07467B210045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF1AB923-69D3-CD1E-DCA7-07467B210045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF1AB923-69D3-CD1E-DCA7-07467B210045}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD9339A8-9642-4C58-9CC8-99C3445CE8F3}
+	EndGlobalSection
+EndGlobal

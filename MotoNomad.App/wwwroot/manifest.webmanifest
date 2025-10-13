@@ -1,6 +1,6 @@
 {
-  "name": "10xMotoNomad.App",
-  "short_name": "10xMotoNomad.App",
+  "name": "MotoNomad.App",
+  "short_name": "MotoNomad.App",
   "id": "./",
   "start_url": "./",
   "display": "standalone",

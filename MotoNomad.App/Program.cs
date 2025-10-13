@@ -1,4 +1,4 @@
-using _10xMotoNomad.App;
+using MotoNomad.App;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
