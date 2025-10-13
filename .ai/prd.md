@@ -294,47 +294,36 @@ These features are valuable but not essential to solving the main problem: "info
 
 ## 10. Timeline
 
-### Phase 1: Setup (Week 1)
-- Create GitHub repository
-- Create Supabase project (free tier)
-- Setup Blazor WASM + MudBlazor
-- Install Supabase C# Client
-- CI/CD pipeline (build + deploy to GitHub Pages)
-- **Milestone:** Empty application builds and deploys to GitHub Pages
+### Phase 1: Project Planning & Requirements
+- Define project context, goals, and main requirements for MotoNomad.
+- Prepare business rules and automation requirements for AI and bots.
+- **Milestone:** Clear project scope and requirements documented.
 
-### Phase 2: Authorization (Week 2)
-- Configure Supabase Auth
-- Integrate Supabase Auth SDK in Blazor
-- Pages: Registration, Login
-- Session management
-- **Milestone:** User can register and log in through Supabase
+### Phase 2: Database & API Design
+- Design the database schema in Supabase (tables, relationships, Row Level Security).
+- Generate API contracts and endpoints for communication with the database.
+- **Milestone:** Database and API structure ready for development.
 
-### Phase 3: Trip CRUD (Week 3)
-- Create tables in Supabase (trips)
-- Configure Row Level Security (RLS)
-- Create, edit, delete forms
-- Date validation, trip list
-- Supabase API integration
-- **Milestone:** Full CRUD for trips working
+### Phase 3: User Interface & Business Logic
+- Implement the user interface in Blazor using MudBlazor components.
+- Develop business logic: validation, calculations, error handling, and user feedback.
+- **Milestone:** Functional UI and core business logic implemented.
 
-### Phase 4: Companions (Week 4)
-- Create companions table in Supabase
-- Configure RLS for companions
-- Adding, displaying, removing
-- Foreign key: companion -> trip
-- **Milestone:** Companion management working
+### Phase 4: Authentication & Security
+- Integrate Supabase Auth for user registration and login.
+- Ensure secure session management and data access.
+- **Milestone:** Authentication and security features operational.
 
-### Phase 5: Testing and Polish (Week 5)
-- Implement e2e tests
-- User testing (5-10 people)
-- Fixes from feedback
-- **Milestone:** All tests passing
+### Phase 5: Testing & Refactoring
+- Prepare a test plan and implement unit tests.
+- Create end-to-end tests with Playwright for key user flows.
+- Refactor and optimize the project based on AI recommendations.
+- **Milestone:** All tests passing, codebase optimized.
 
-### Phase 6: Certification (Week 6)
-- Final check of 10xDevs requirements
-- Final documentation
-- Program submission
-- **Milestone:** Project ready for certification
+### Phase 6: CI/CD & Deployment
+- Set up CI/CD pipeline with GitHub Actions for automated builds, tests, and deployment to GitHub Pages.
+- Deploy the application to production and perform final checks.
+- **Milestone:** Application live and ready for certification.
 
 ---
 
