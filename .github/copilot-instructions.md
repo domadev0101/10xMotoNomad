@@ -15,20 +15,20 @@ Web application for planning individual and group trips (motorcycle, airplane, t
 ## Project Structure
 When introducing changes to the project, always follow the directory structure below:
 
-- `./10xMotoNomad` - main application project
-- `./10xMotoNomad/Layout` - Blazor layouts (MainLayout.razor, NavMenu.razor)
-- `./10xMotoNomad/Components` - Reusable Blazor components
-- `./10xMotoNomad/Pages` - Blazor pages (Home.razor, TripList.razor, Login.razor)
-- `./10xMotoNomad/Services/Interfaces` - Service interfaces (ITripService.cs, ICompanionService.cs)
-- `./10xMotoNomad/Services/Implementations` - Service implementations
-- `./10xMotoNomad/Models` - Data models and DTOs matching Supabase schema
-- `./10xMotoNomad/Auth` - Authentication (CustomAuthStateProvider.cs)
-- `./10xMotoNomad/wwwroot` - Static assets (css, js)
-- `./10xMotoNomad/appsettings.json` - Configuration (Supabase URL and keys)
-- `./10xMotoNomad/Program.cs` - Application startup and DI configuration
-- `./10xMotoNomad.Tests` - xUnit test project
-- `./10xMotoNomad.Tests/Services` - Service unit tests
-- `./10xMotoNomad.Tests/Components` - bUnit component tests
+- `./MotoNomad.App` - main application project
+- `./MotoNomad.App/Layout` - Blazor layouts (MainLayout.razor, NavMenu.razor)
+- `./MotoNomad.App/Components` - Reusable Blazor components
+- `./MotoNomad.App/Pages` - Blazor pages (Home.razor, TripList.razor, Login.razor)
+- `./MotoNomad.App/Services/Contracts` - Service interfaces (ITripService.cs, ICompanionService.cs)
+- `./MotoNomad.App/Services` - Service implementations
+- `./MotoNomad.App/Models` - Data models and DTOs matching Supabase schema
+- `./MotoNomad.App/Auth` - Authentication (CustomAuthStateProvider.cs)
+- `./MotoNomad.App/wwwroot` - Static assets (css, js)
+- `./MotoNomad.App/appsettings.json` - Configuration (Supabase URL and keys)
+- `./MotoNomad.App/Program.cs` - Application startup and DI configuration
+- `./MotoNomad.Tests` - xUnit test project
+- `./MotoNomad.Tests/Services` - Service unit tests
+- `./MotoNomad.Tests/Components` - bUnit component tests
 
 When modifying the directory structure, always update this section.
 
