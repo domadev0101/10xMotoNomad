@@ -1,6 +1,11 @@
--- Sample trips for test user: 00000000-0000-0000-0000-000000000001
-INSERT INTO trips (id, user_id, name, start_date, end_date, description, transport_type)
-VALUES 
+-- migration: development seed data
+-- description: adds sample data for development environment
+-- tables affected: trips, companions
+-- warning: this migration should only be run in development
+
+-- Sample trips for test user
+insert into trips (id, user_id, name, start_date, end_date, description, transport_type)
+values 
   (
     gen_random_uuid(), 
     '00000000-0000-0000-0000-000000000001', 
@@ -29,30 +34,30 @@ VALUES
     2
   );
 
--- Sample companions
-INSERT INTO companions (trip_id, first_name, last_name, contact)
-SELECT 
+-- Sample companions for trips
+insert into companions (trip_id, first_name, last_name, contact)
+select 
   t.id,
   'Jan',
   'Kowalski',
   'jan.kowalski@example.com'
-FROM trips t
-WHERE t.name = 'Bieszczady Motorcycle Adventure';
+from trips t
+where t.name = 'Bieszczady Motorcycle Adventure';
 
-INSERT INTO companions (trip_id, first_name, last_name, contact)
-SELECT 
+insert into companions (trip_id, first_name, last_name, contact)
+select 
   t.id,
   'Anna',
   'Nowak',
   '+48123456789'
-FROM trips t
-WHERE t.name = 'Bieszczady Motorcycle Adventure';
+from trips t
+where t.name = 'Bieszczady Motorcycle Adventure';
 
-INSERT INTO companions (trip_id, first_name, last_name, contact)
-SELECT 
+insert into companions (trip_id, first_name, last_name, contact)
+select 
   t.id,
   'Maria',
   'Wi?niewska',
   'maria.w@example.com'
-FROM trips t
-WHERE t.name = 'Berlin Tech Conference';
+from trips t
+where t.name = 'Berlin Tech Conference';
