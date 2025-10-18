@@ -225,7 +225,7 @@ WHERE t.name = 'Berlin Tech Conference';
 ### TransportType.cs
 
 ```csharp
-namespace MotoNomad.Models;
+namespace MotoNomad.App.Infrastructure.Database.Entities;
 
 public enum TransportType
 {
@@ -240,7 +240,7 @@ public enum TransportType
 ### Profile.cs
 
 ```csharp
-namespace MotoNomad.Models;
+namespace MotoNomad.App.Infrastructure.Database.Entities;
 
 public class Profile
 {
@@ -256,7 +256,7 @@ public class Profile
 ### Trip.cs
 
 ```csharp
-namespace MotoNomad.Models;
+namespace MotoNomad.App.Infrastructure.Database.Entities;
 
 public class Trip
 {
@@ -278,7 +278,7 @@ public class Trip
 ### Companion.cs
 
 ```csharp
-namespace MotoNomad.Models;
+namespace MotoNomad.App.Infrastructure.Database.Entities;
 
 public class Companion
 {
@@ -352,4 +352,3 @@ SELECT * FROM trips
 WHERE user_id = auth.uid() 
   AND start_date >= CURRENT_DATE
 ORDER BY start_date ASC;
-```
