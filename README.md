@@ -15,6 +15,7 @@ A modern web application for planning individual and group trips (motorcycle, ai
 - [Getting Started](#getting-started)
 - [Available Scripts](#available-scripts)
 - [Project Architecture](#project-architecture)
+- [Documentation](#documentation)
 - [Project Scope](#project-scope)
 - [Testing](#testing)
 - [Deployment](#deployment)
@@ -63,26 +64,35 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
   - Material Design components
   - Clear success and error messages
 
+- **🏥 Health Check**
+  - Real-time diagnostics for Supabase connection
+  - Database connectivity verification
+  - Authentication status monitoring
+  - Available at `/health` endpoint
+
 ## 🛠️ Tech Stack
 
 ### Frontend
 - **.NET 9.0** - Modern framework for building web applications
 - **Blazor WebAssembly** - SPA framework running entirely in browser
-- **C#** - Single language for entire application
+- **C# 13** - Single language for entire application
 - **MudBlazor** - Material Design component library
 
 ### Backend & Database
 - **Supabase** - PostgreSQL database with built-in features
-- **supabase-csharp** - Official C# client library
+- **supabase-csharp** (v0.16.2) - Official C# client library
 - **postgrest-csharp** - REST API client for database operations
 - **Supabase Auth** - Authentication and authorization
+- **Blazored.LocalStorage** (v4.5.0) - Client-side token storage
 
 ### Hosting & CI/CD
 - **GitHub Pages** - Free static site hosting with automatic HTTPS
 - **GitHub Actions** - Automated build, test, and deployment pipeline
 
 ### Testing
+- **xUnit** - Unit testing framework
 - **bUnit** - Blazor component testing framework
+- **Moq** - Mocking framework for tests
 - **Playwright for .NET** - End-to-end testing framework
 
 ### Development Tools
@@ -104,7 +114,7 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
 1. **Clone the repository**
    ```bash
    git clone https://github.com/domadev0101/10xMotoNomad.git
-   cd MotoNomad
+   cd 10xMotoNomad
    ```
 
 2. **Restore dependencies**
@@ -117,25 +127,24 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
    Create a new project in [Supabase Dashboard](https://app.supabase.com):
    
    - Note your project URL and anon key
-   - Create the following tables:
-     - `trips` (id, user_id, name, start_date, end_date, description, transport_type, created_at)
-     - `companions` (id, trip_id, first_name, last_name, contact, created_at)
+   - Run database migrations from `supabase/migrations/` directory
    - Configure Row Level Security (RLS) policies to ensure users can only access their own data
 
 4. **Set up configuration**
    
-   Create `appsettings.Development.json` in the project root:
+   Edit `MotoNomad.App/wwwroot/appsettings.json`:
    ```json
    {
      "Supabase": {
        "Url": "YOUR_SUPABASE_URL",
-       "Key": "YOUR_SUPABASE_ANON_KEY"
+       "AnonKey": "YOUR_SUPABASE_ANON_KEY"
      }
    }
    ```
 
 5. **Run the application**
    ```bash
+   cd MotoNomad.App
    dotnet run
    ```
 
@@ -143,12 +152,17 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
    
    Navigate to `https://localhost:5001` (or the URL shown in terminal)
 
+7. **Verify connection**
+   
+   Visit `/health` to run diagnostics and verify Supabase connection
+
 ## 📜 Available Scripts
 
 ### Development
 
 ```bash
 # Run the application in development mode
+cd MotoNomad.App
 dotnet run
 
 # Run with hot reload
@@ -162,20 +176,20 @@ dotnet watch run
 dotnet publish -c Release -o release
 
 # Build for GitHub Pages deployment
-dotnet publish 10xMotoNomad.App/10xMotoNomad.App.csproj -c Release -o release --nologo
+dotnet publish MotoNomad.App/MotoNomad.App.csproj -c Release -o release --nologo
 ```
 
 ### Testing
 
 ```bash
-# Run all tests
+# Run all tests (when available)
 dotnet test
 
 # Run tests with coverage
 dotnet test --collect:"XPlat Code Coverage"
 
 # Run specific test project
-dotnet test 10xMotoNomad.Tests/MotoNomad.Tests.csproj
+dotnet test MotoNomad.Tests/MotoNomad.Tests.csproj
 ```
 
 ### Code Quality
@@ -210,7 +224,7 @@ dotnet build /p:TreatWarningsAsErrors=true
 ### Data Flow
 
 1. User interacts with Blazor components
-2. Components call Supabase C# client
+2. Components call Supabase C# client  
 3. Client sends authenticated requests to Supabase REST API
 4. PostgreSQL processes queries with Row Level Security
 5. Data returned to client and rendered in UI
@@ -219,8 +233,30 @@ dotnet build /p:TreatWarningsAsErrors=true
 
 - **Authentication**: JWT tokens managed by Supabase Auth
 - **Authorization**: Row Level Security policies at database level
-- **HTTPS**: All communication encrypted (GitHub Pages + Supabase)
+- **HTTPS**: All communication encrypted
 - **Data Privacy**: Users can only access their own trips and companions
+
+## 📚 Documentation
+
+### Project Documentation
+
+- **[Health Check Guide](docs/health-check-guide.md)** - How to use the health check feature
+- **[Supabase Client Summary](docs/supabase-client-summary.md)** - Implementation details and examples
+
+### Planning Documents
+
+Located in `.ai/` directory:
+- **[Product Requirements](.ai/prd.md)** - Product vision and requirements
+- **[Tech Stack](.ai/tech-stack.md)** - Technology decisions
+- **[Database Plan](.ai/db-plan.md)** - Database schema and migrations
+- **[WASM Architecture](.ai/wasm-arch.md)** - Blazor WebAssembly architecture
+- **[Services Plan](.ai/services-plan.md)** - Service layer design
+- **[API Contracts](.ai/api-contracts.md)** - API interface definitions
+- **[Entities Plan](.ai/entities-plan.md)** - Database entities documentation
+
+### Coding Standards
+
+See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for detailed coding practices and conventions.
 
 ## 📦 Project Scope
 
@@ -231,6 +267,7 @@ dotnet build /p:TreatWarningsAsErrors=true
 - Companion management
 - Date validation and duration calculation
 - Responsive design (mobile + desktop)
+- Health check diagnostics
 - End-to-end testing
 - CI/CD pipeline with GitHub Actions
 - Public URL deployment on GitHub Pages
@@ -263,7 +300,12 @@ MotoNomad uses a multi-layered testing approach:
    - Verify UI rendering and interactions
    - Mock Supabase client dependencies
 
-2. **End-to-End Tests** (Playwright)
+2. **Unit Tests** (xUnit)
+   - Test business logic and services
+   - Validate data transformations
+   - Verify edge cases
+
+3. **End-to-End Tests** (Playwright)
    - Test complete user workflows
    - Verify authentication flow
    - Test trip creation with companions
@@ -271,7 +313,7 @@ MotoNomad uses a multi-layered testing approach:
 ### Running Tests
 
 ```bash
-# Run all tests
+# Run all tests (when test projects are implemented)
 dotnet test
 
 # Run only unit tests
@@ -299,7 +341,7 @@ The project uses GitHub Actions for continuous integration and deployment:
 
 1. **Trigger**: Push to `main` branch
 2. **Build**: Compile Blazor WebAssembly project
-3. **Test**: Run automated tests
+3. **Test**: Run automated tests (when available)
 4. **Publish**: Generate production-ready static files
 5. **Deploy**: Push to `gh-pages` branch
 6. **Live**: Available at `https://domadev0101.github.io/10xMotoNomad`
@@ -310,7 +352,7 @@ To deploy manually:
 
 ```bash
 # Build for production
-dotnet publish 10xMotoNomad.App/10xMotoNomad.App.csproj -c Release -o release --nologo
+dotnet publish MotoNomad.App/MotoNomad.App.csproj -c Release -o release --nologo
 
 # Update base href for GitHub Pages
 sed -i 's/<base href="\/" \/>/<base href="\/10xMotoNomad\/" \/>/g' release/wwwroot/index.html
@@ -335,9 +377,9 @@ Configure the following in your deployment environment:
 
 ### Current Phase
 
-**Phase 6: Certification Ready** ✅
+**Phase 3: Infrastructure & Services** 🚧
 
-The project has completed all development phases and is ready for certification in the 10xDevs program.
+The project is currently implementing core infrastructure and service layers.
 
 ### Completion Criteria
 
@@ -356,6 +398,30 @@ The project has completed all development phases and is ready for certification 
 - [x] Public URL (GitHub Pages deployment)
 - [x] Custom project (not a template)
 - [x] First deadline submission (target: November 16, 2025)
+
+### Completed
+
+- [x] Project setup and configuration
+- [x] Supabase integration
+- [x] Database entities and models
+- [x] Health check diagnostics
+- [x] Documentation structure
+- [x] CI/CD pipeline setup
+
+### In Progress
+
+- [ ] Service layer implementation (Trips, Companions, Auth)
+- [ ] UI components and pages
+- [ ] Authentication flow
+- [ ] CRUD operations
+
+### Upcoming
+
+- [ ] Unit and integration tests
+- [ ] End-to-end testing
+- [ ] User acceptance testing
+- [ ] Performance optimization
+- [ ] Final documentation
 
 ### Success Metrics
 
