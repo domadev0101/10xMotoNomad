@@ -2,6 +2,7 @@ using MotoNomad.App;
 using MotoNomad.App.Infrastructure.Configuration;
 using MotoNomad.App.Infrastructure.Services;
 using MotoNomad.App.Application.Interfaces;
+using MotoNomad.Infrastructure.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
@@ -23,6 +24,12 @@ builder.Services.AddSingleton(supabaseSettings);
 
 // Register Supabase client service as Singleton
 builder.Services.AddSingleton<ISupabaseClientService, SupabaseClientService>();
+
+// Register application services as Scoped
+builder.Services.AddScoped<MotoNomad.Application.Interfaces.IAuthService, AuthService>();
+builder.Services.AddScoped<MotoNomad.Application.Interfaces.ITripService, TripService>();
+builder.Services.AddScoped<MotoNomad.Application.Interfaces.ICompanionService, CompanionService>();
+builder.Services.AddScoped<MotoNomad.Application.Interfaces.IProfileService, ProfileService>();
 
 // Register Blazored LocalStorage
 builder.Services.AddBlazoredLocalStorage();
