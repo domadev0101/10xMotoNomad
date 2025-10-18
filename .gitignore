@@ -54,3 +54,12 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 /MotoNomad.App/Infrastructure/Database/.vscode
+
+# Ignore appsettings with real secrets
+**/wwwroot/appsettings.Development.json
+**/wwwroot/appsettings.Production.json
+**/appsettings.Development.json
+**/appsettings.Production.json
+
+# Keep templates
+!**/appsettings*.template
