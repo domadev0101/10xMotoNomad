@@ -331,37 +331,29 @@ public record CompanionDto
 
 ### 5.1 Commands
 
-#### UpdateDisplayNameCommand
+#### UpdateProfileCommand
 
-Request to update user's display name.
+Request to update user profile information with partial update support.
 
 ```csharp
-namespace MotoNomad.Application.Commands.Profile;
+namespace MotoNomad.Application.Commands.Profiles;
 
-public record UpdateDisplayNameCommand
+public record UpdateProfileCommand
 {
-    public required string DisplayName { get; init; }
+    public string? DisplayName { get; init; }
+    public string? AvatarUrl { get; init; }
 }
 ```
 
 **Validation Rules:**
-- `DisplayName`: Required, max 100 characters, non-empty after trim
+- At least one field must be provided (not both null)
+- `DisplayName` (if provided): Max 100 characters, non-empty after trim
+- `AvatarUrl` (if provided): Valid URL format, max 500 characters
 
-#### UpdateAvatarUrlCommand
-
-Request to update user's avatar URL.
-
-```csharp
-namespace MotoNomad.Application.Commands.Profile;
-
-public record UpdateAvatarUrlCommand
-{
-    public required string AvatarUrl { get; init; }
-}
-```
-
-**Validation Rules:**
-- `AvatarUrl`: Required, valid URL format, max 500 characters
+**Partial Update Behavior:**
+- Only non-null fields will be updated
+- Allows updating DisplayName only, AvatarUrl only, or both fields
+- More flexible than separate commands for each field
 
 ### 5.2 DTOs
 
@@ -370,7 +362,7 @@ public record UpdateAvatarUrlCommand
 User profile information.
 
 ```csharp
-namespace MotoNomad.Application.DTOs.Profile;
+namespace MotoNomad.Application.DTOs.Profiles;
 
 public record ProfileDto
 {
@@ -385,11 +377,16 @@ public record ProfileDto
 
 **Field Descriptions:**
 - `Id`: User ID (same as auth.users.id)
-- `Email`: User's email address
+- `Email`: User's email address (read-only, from Supabase Auth)
 - `DisplayName`: Optional display name
 - `AvatarUrl`: Optional avatar image URL
 - `CreatedAt`: Profile creation timestamp (UTC)
 - `UpdatedAt`: Last profile update timestamp (UTC)
+
+**Note on Email Field:**
+- Email is included in ProfileDto for display purposes
+- Email cannot be updated through ProfileService (it's managed by Supabase Auth)
+- To change email, use Supabase Auth methods directly
 
 ---
 
@@ -487,8 +484,10 @@ Services should throw `ValidationException` with clear, user-friendly messages:
 - "Contact information cannot exceed 255 characters"
 
 **Profile:**
-- "Display name is required"
+- "At least one field must be provided for update"
+- "Display name cannot be empty"
 - "Display name cannot exceed 100 characters"
+- "Avatar URL cannot be empty"
 - "Avatar URL format is invalid"
 - "Avatar URL cannot exceed 500 characters"
 

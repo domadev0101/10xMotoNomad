@@ -234,26 +234,23 @@ public interface IProfileService
     Task<ProfileDto> GetCurrentProfileAsync();
 
     /// <summary>
-    /// Updates display name for current user profile.
+    /// Updates user profile with provided fields (partial update).
+    /// Only non-null fields will be updated.
     /// </summary>
-    /// <param name="displayName">New display name</param>
+    /// <param name="command">Profile update command with optional DisplayName and AvatarUrl</param>
     /// <returns>Updated profile information</returns>
     /// <exception cref="UnauthorizedException">User not authenticated</exception>
-    /// <exception cref="ValidationException">Display name too long or contains invalid characters</exception>
+    /// <exception cref="ValidationException">Invalid field values or no fields provided</exception>
     /// <exception cref="DatabaseException">Database update failed</exception>
-    Task<ProfileDto> UpdateDisplayNameAsync(string displayName);
-
-    /// <summary>
-    /// Updates avatar URL for current user profile.
-    /// </summary>
-    /// <param name="avatarUrl">New avatar image URL</param>
-    /// <returns>Updated profile information</returns>
-    /// <exception cref="UnauthorizedException">User not authenticated</exception>
-    /// <exception cref="ValidationException">Invalid URL format</exception>
-    /// <exception cref="DatabaseException">Database update failed</exception>
-    Task<ProfileDto> UpdateAvatarUrlAsync(string avatarUrl);
+    Task<ProfileDto> UpdateProfileAsync(UpdateProfileCommand command);
 }
 ```
+
+**Design Rationale:**
+- Single `UpdateProfileAsync` method supports partial updates
+- More flexible than separate methods for each field
+- Reduces number of database operations (one update instead of multiple)
+- Follows REST API best practices (PATCH semantics)
 
 ---
 
@@ -282,10 +279,10 @@ builder.Services.AddScoped(_ =>
     }));
 
 // Register application services
-builder.Services.AddScoped<IAuthService, SupabaseAuthService>();
-builder.Services.AddScoped<ITripService, SupabaseTripService>();
-builder.Services.AddScoped<ICompanionService, SupabaseCompanionService>();
-builder.Services.AddScoped<IProfileService, SupabaseProfileService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITripService, TripService>();
+builder.Services.AddScoped<ICompanionService, CompanionService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 await builder.Build().RunAsync();
 ```
