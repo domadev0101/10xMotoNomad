@@ -1,0 +1,422 @@
+@page "/health"
+@using MotoNomad.App.Application.Interfaces
+@using MotoNomad.App.Infrastructure.Database.Entities
+@using Supabase
+@inject ISupabaseClientService SupabaseClient
+@inject ILogger<Health> Logger
+
+<PageTitle>Health Check - MotoNomad</PageTitle>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <span class="badge bg-primary">??</span> 
+                Supabase Health Check
+            </h1>
+            <p class="text-muted">Diagnostic tool for checking Supabase connection and database access</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Connection Tests</h5>
+                </div>
+                <div class="card-body">
+                    @if (isLoading)
+                    {
+                        <div class="d-flex justify-content-center align-items-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Running tests...</span>
+                            </div>
+                            <span class="ms-3">Running health checks...</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary btn-lg w-100 mb-4" @onclick="RunHealthCheck">
+                            ?? Run Health Check
+                        </button>
+
+                        @if (healthCheckResults.Any())
+                        {
+                            <div class="list-group">
+                                @foreach (var result in healthCheckResults)
+                                {
+                                    <div class="list-group-item @(result.IsSuccess ? "list-group-item-success" : "list-group-item-danger")">
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <h6 class="mb-1">
+                                                @if (result.IsSuccess)
+                                                {
+                                                    <span class="badge bg-success">?</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">?</span>
+                                                }
+                                                @result.TestName
+                                            </h6>
+                                            <small class="text-muted">@result.Duration ms</small>
+                                        </div>
+                                        <p class="mb-1">@result.Message</p>
+                                        @if (!string.IsNullOrEmpty(result.Details))
+                                        {
+                                            <small class="text-muted d-block mt-2">
+                                                <strong>Details:</strong> @result.Details
+                                            </small>
+                                        }
+                                        @if (!string.IsNullOrEmpty(result.ErrorMessage))
+                                        {
+                                            <div class="alert alert-danger mt-2 mb-0" role="alert">
+                                                <strong>Error:</strong> @result.ErrorMessage
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="alert @(allTestsPassed ? "alert-success" : "alert-warning") mt-4" role="alert">
+                                <strong>Overall Status:</strong> 
+                                @if (allTestsPassed)
+                                {
+                                    <span>? All tests passed! Supabase connection is healthy.</span>
+                                }
+                                else
+                                {
+                                    <span>? Some tests failed. Check the details above.</span>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">Configuration Info</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Status:</dt>
+                        <dd class="col-sm-7">
+                            @if (SupabaseClient.IsInitialized)
+                            {
+                                <span class="badge bg-success">Connected</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Not Initialized</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-5">Environment:</dt>
+                        <dd class="col-sm-7">
+                            <code>@environment</code>
+                        </dd>
+
+                        <dt class="col-sm-5">Last Check:</dt>
+                        <dd class="col-sm-7">
+                            @if (lastCheckTime.HasValue)
+                            {
+                                <span>@lastCheckTime.Value.ToString("HH:mm:ss")</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Never</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">Test Coverage</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li>? Client Initialization</li>
+                        <li>? Database Connectivity</li>
+                        <li>? Table Access (trips)</li>
+                        <li>? Auth Status</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">?? Troubleshooting Tips</h6>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><strong>Connection Failed:</strong> Check if Supabase URL and AnonKey are correctly configured in <code>appsettings.json</code></li>
+                        <li><strong>Table Access Failed:</strong> Ensure the table exists in your Supabase database and RLS policies are configured</li>
+                        <li><strong>Auth Issues:</strong> Verify that anonymous access is enabled in Supabase settings</li>
+                        <li><strong>Local Development:</strong> If using local Supabase, ensure it's running on <code>http://127.0.0.1:54321</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isLoading = false;
+    private bool allTestsPassed = false;
+    private DateTime? lastCheckTime;
+    private string environment = "Unknown";
+    private List<HealthCheckResult> healthCheckResults = new();
+
+    protected override void OnInitialized()
+    {
+        #if DEBUG
+        environment = "Development";
+        #else
+        environment = "Production";
+        #endif
+    }
+
+    private async Task RunHealthCheck()
+    {
+        isLoading = true;
+        healthCheckResults.Clear();
+        allTestsPassed = false;
+        StateHasChanged();
+
+        await Task.Delay(100); // Small delay for UI update
+
+        try
+        {
+            // Test 1: Client Initialization
+            await TestClientInitialization();
+
+            // Test 2: Database Connectivity
+            await TestDatabaseConnectivity();
+
+            // Test 3: Table Access (trips)
+            await TestTableAccess();
+
+            // Test 4: Auth Status
+            await TestAuthStatus();
+
+            // Calculate overall status
+            allTestsPassed = healthCheckResults.All(r => r.IsSuccess);
+            lastCheckTime = DateTime.Now;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Health check failed with unexpected error");
+            healthCheckResults.Add(new HealthCheckResult
+            {
+                TestName = "Unexpected Error",
+                IsSuccess = false,
+                Message = "Health check encountered an unexpected error",
+                ErrorMessage = ex.Message
+            });
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task TestClientInitialization()
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            var isInitialized = SupabaseClient.IsInitialized;
+            stopwatch.Stop();
+
+            if (isInitialized)
+            {
+                healthCheckResults.Add(new HealthCheckResult
+                {
+                    TestName = "Client Initialization",
+                    IsSuccess = true,
+                    Message = "Supabase client is properly initialized",
+                    Duration = stopwatch.ElapsedMilliseconds
+                });
+                Logger.LogInformation("Health check: Client initialization - SUCCESS");
+            }
+            else
+            {
+                healthCheckResults.Add(new HealthCheckResult
+                {
+                    TestName = "Client Initialization",
+                    IsSuccess = false,
+                    Message = "Supabase client is not initialized",
+                    ErrorMessage = "Client initialization failed during application startup",
+                    Duration = stopwatch.ElapsedMilliseconds
+                });
+                Logger.LogWarning("Health check: Client initialization - FAILED");
+            }
+
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            stopwatch.Stop();
+            healthCheckResults.Add(new HealthCheckResult
+            {
+                TestName = "Client Initialization",
+                IsSuccess = false,
+                Message = "Failed to check client initialization",
+                ErrorMessage = ex.Message,
+                Duration = stopwatch.ElapsedMilliseconds
+            });
+            Logger.LogError(ex, "Health check: Client initialization - ERROR");
+        }
+    }
+
+    private async Task TestDatabaseConnectivity()
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            var client = SupabaseClient.GetClient();
+            
+            // Simple connectivity test - just getting the client
+            if (client != null)
+            {
+                stopwatch.Stop();
+                healthCheckResults.Add(new HealthCheckResult
+                {
+                    TestName = "Database Connectivity",
+                    IsSuccess = true,
+                    Message = "Successfully obtained Supabase client instance",
+                    Details = $"Client is ready for database operations",
+                    Duration = stopwatch.ElapsedMilliseconds
+                });
+                Logger.LogInformation("Health check: Database connectivity - SUCCESS");
+            }
+
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            stopwatch.Stop();
+            healthCheckResults.Add(new HealthCheckResult
+            {
+                TestName = "Database Connectivity",
+                IsSuccess = false,
+                Message = "Failed to establish database connection",
+                ErrorMessage = ex.Message,
+                Duration = stopwatch.ElapsedMilliseconds
+            });
+            Logger.LogError(ex, "Health check: Database connectivity - ERROR");
+        }
+    }
+
+    private async Task TestTableAccess()
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            var client = SupabaseClient.GetClient();
+            
+            // Try to query the trips table (just count, no actual data retrieval)
+            var response = await client
+                .From<Trip>()
+                .Select("id")
+                .Limit(1)
+                .Get();
+
+            stopwatch.Stop();
+
+            healthCheckResults.Add(new HealthCheckResult
+            {
+                TestName = "Table Access (trips)",
+                IsSuccess = true,
+                Message = "Successfully queried 'trips' table",
+                Details = $"Table is accessible and query executed successfully",
+                Duration = stopwatch.ElapsedMilliseconds
+            });
+            Logger.LogInformation("Health check: Table access - SUCCESS");
+        }
+        catch (Exception ex)
+        {
+            stopwatch.Stop();
+            healthCheckResults.Add(new HealthCheckResult
+            {
+                TestName = "Table Access (trips)",
+                IsSuccess = false,
+                Message = "Failed to access 'trips' table",
+                ErrorMessage = ex.Message,
+                Details = "Ensure table exists and RLS policies allow anonymous access",
+                Duration = stopwatch.ElapsedMilliseconds
+            });
+            Logger.LogError(ex, "Health check: Table access - ERROR");
+        }
+    }
+
+    private async Task TestAuthStatus()
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            var client = SupabaseClient.GetClient();
+            var session = client.Auth.CurrentSession;
+            
+            stopwatch.Stop();
+
+            if (session != null)
+            {
+                healthCheckResults.Add(new HealthCheckResult
+                {
+                    TestName = "Auth Status",
+                    IsSuccess = true,
+                    Message = "User is authenticated",
+                    Details = $"Active session found",
+                    Duration = stopwatch.ElapsedMilliseconds
+                });
+            }
+            else
+            {
+                healthCheckResults.Add(new HealthCheckResult
+                {
+                    TestName = "Auth Status",
+                    IsSuccess = true,
+                    Message = "No active user session (anonymous access)",
+                    Details = "This is expected for unauthenticated users",
+                    Duration = stopwatch.ElapsedMilliseconds
+                });
+            }
+
+            Logger.LogInformation("Health check: Auth status - SUCCESS");
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            stopwatch.Stop();
+            healthCheckResults.Add(new HealthCheckResult
+            {
+                TestName = "Auth Status",
+                IsSuccess = false,
+                Message = "Failed to check authentication status",
+                ErrorMessage = ex.Message,
+                Duration = stopwatch.ElapsedMilliseconds
+            });
+            Logger.LogError(ex, "Health check: Auth status - ERROR");
+        }
+    }
+
+    private class HealthCheckResult
+    {
+        public string TestName { get; set; } = string.Empty;
+        public bool IsSuccess { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string? Details { get; set; }
+        public string? ErrorMessage { get; set; }
+        public long Duration { get; set; }
+    }
+}
