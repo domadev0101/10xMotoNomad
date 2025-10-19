@@ -459,3 +459,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Status:** Ready for Certification ✅
 
 Made with ❤️ for travelers who love organized adventures
+
+## Kitchen Sink - Component Showcase
+
+The project includes a **Kitchen Sink** page that showcases all MudBlazor components used in the application. This serves as:
+
+- **Visual Documentation**: See how components look and behave
+- **Component Catalog**: Browse all UI elements in one place
+- **Design Reference**: Guide for maintaining consistent UI
+- **Developer Tool**: Test responsiveness and styling
+
+### Access Kitchen Sink
+
+**URL**: `/kitchen-sink`
+
+After running the application (`dotnet run`), navigate to `/kitchen-sink` in your browser.
+
+### Components Included
+
+1. **Layout & Navigation** - MudNavMenu, MudNavLink
+2. **Typography** - All MudText variants (h3-h6, body1-2, caption)
+3. **Buttons** - MudButton (variants), MudIconButton, MudFab
+4. **Feedback** - MudAlert (all severities), MudProgressCircular, Snackbar
+5. **Icons** - Transport icons and navigation icons
+6. **Cards** - MudCard with complete example
+7. **Tabs** - MudTabs with panels
+
+### Documentation
+
+- **Component List**: [.ai/mudblazor-components-list.md](.ai/mudblazor-components-list.md) - Complete inventory of 35+ components
+- **Kitchen Sink Guide**: [.ai/kitchen-sink-readme.md](.ai/kitchen-sink-readme.md) - Usage and maintenance guide
+

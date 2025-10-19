@@ -1,0 +1,159 @@
+@page "/kitchen-sink"
+
+<PageTitle>Kitchen Sink - MotoNomad Components</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4 mb-8">
+    <MudText Typo="Typo.h3" Class="mb-2">MotoNomad Kitchen Sink</MudText>
+    <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-6">
+        All MudBlazor components used in MotoNomad application
+    </MudText>
+
+    <MudDivider Class="mb-6" />
+
+    <!-- 1. LAYOUT & NAVIGATION -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-3">1. Layout & Navigation</MudText>
+        
+        <MudText Typo="Typo.h6" Class="mb-2">MudNavMenu</MudText>
+        <MudNavMenu>
+            <MudNavLink Icon="@Icons.Material.Filled.Map">My Trips</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Add">New Trip</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
+        </MudNavMenu>
+    </MudPaper>
+
+    <!-- 2. TYPOGRAPHY -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-3">2. Typography - MudText</MudText>
+        
+        <MudText Typo="Typo.h3" Class="mb-2">Heading 3 (h3)</MudText>
+        <MudText Typo="Typo.h4" Class="mb-2">Heading 4 (h4) - Page Headers</MudText>
+        <MudText Typo="Typo.h5" Class="mb-2">Heading 5 (h5) - EmptyState</MudText>
+        <MudText Typo="Typo.h6" Class="mb-2">Heading 6 (h6) - Cards</MudText>
+        <MudText Typo="Typo.body1" Class="mb-2">Body 1 - Main Content</MudText>
+        <MudText Typo="Typo.body2" Class="mb-2">Body 2 - Helper Text</MudText>
+        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2">Body 2 Secondary - Dates, Descriptions</MudText>
+        <MudText Typo="Typo.caption">Caption - Small Information</MudText>
+    </MudPaper>
+
+    <!-- 3. BUTTONS -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-3">3. Buttons</MudText>
+        
+        <MudText Typo="Typo.h6" Class="mb-2">MudButton - Variants</MudText>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;" class="mb-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary">Filled Primary</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Error">Filled Error</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Default">Text Default</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary">Outlined</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="true">Disabled</MudButton>
+        </div>
+
+        <MudText Typo="Typo.h6" Class="mb-2">MudIconButton</MudText>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;" class="mb-4">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" />
+            <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" />
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" />
+        </div>
+
+        <MudText Typo="Typo.h6" Class="mb-2">MudFab (Floating Action Button)</MudText>
+        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" />
+    </MudPaper>
+
+    <!-- 4. FEEDBACK -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-3">4. Feedback Components</MudText>
+        
+        <MudText Typo="Typo.h6" Class="mb-2">MudAlert - Severity</MudText>
+        <MudAlert Severity="Severity.Success" Class="mb-2">Operation completed successfully!</MudAlert>
+        <MudAlert Severity="Severity.Error" Class="mb-2">An error occurred. Invalid credentials.</MudAlert>
+        <MudAlert Severity="Severity.Warning" Class="mb-2">Warning: This operation is irreversible.</MudAlert>
+        <MudAlert Severity="Severity.Info" Class="mb-4">Information: Your data is secure.</MudAlert>
+
+        <MudText Typo="Typo.h6" Class="mb-2">MudProgressCircular</MudText>
+        <div style="display: flex; gap: 20px; align-items: center;" class="mb-4">
+            <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" />
+            <MudProgressCircular Indeterminate="true" Size="Size.Medium" Color="Color.Secondary" />
+            <MudProgressCircular Indeterminate="true" Size="Size.Small" Color="Color.Primary" />
+        </div>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowSnackbar">
+            Show Snackbar
+        </MudButton>
+    </MudPaper>
+
+    <!-- 5. ICONS -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-3">5. Icons - Transport</MudText>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="text-align: center;">
+                <MudIcon Icon="@Icons.Material.Filled.TwoWheeler" Size="Size.Large" Color="Color.Primary" />
+                <MudText Typo="Typo.caption">Motorcycle</MudText>
+            </div>
+            <div style="text-align: center;">
+                <MudIcon Icon="@Icons.Material.Filled.Flight" Size="Size.Large" Color="Color.Primary" />
+                <MudText Typo="Typo.caption">Airplane</MudText>
+            </div>
+            <div style="text-align: center;">
+                <MudIcon Icon="@Icons.Material.Filled.Train" Size="Size.Large" Color="Color.Primary" />
+                <MudText Typo="Typo.caption">Train</MudText>
+            </div>
+            <div style="text-align: center;">
+                <MudIcon Icon="@Icons.Material.Filled.DirectionsCar" Size="Size.Large" Color="Color.Primary" />
+                <MudText Typo="Typo.caption">Car</MudText>
+            </div>
+            <div style="text-align: center;">
+                <MudIcon Icon="@Icons.Material.Filled.TravelExplore" Size="Size.Large" Color="Color.Primary" />
+                <MudText Typo="Typo.caption">Other</MudText>
+            </div>
+        </div>
+    </MudPaper>
+
+    <!-- 6. CARDS -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-3">6. Cards</MudText>
+        
+        <MudCard Elevation="3" Style="max-width: 400px;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <MudIcon Icon="@Icons.Material.Filled.TwoWheeler" Size="Size.Large" Color="Color.Primary" />
+                        <MudText Typo="Typo.h6">Motorcycle Trip</MudText>
+                    </div>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.body2" Class="mb-1">15.06.2025 - 22.06.2025</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2">(7 days)</MudText>
+                <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.People">3 companions</MudChip>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Text" Color="Color.Primary">Details</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudPaper>
+
+    <!-- 7. TABS -->
+    <MudPaper Class="pa-4 mb-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-3">7. Tabs</MudText>
+        
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
+            <MudTabPanel Text="Upcoming">
+                <MudText Class="pa-4">Content of "Upcoming" tab</MudText>
+            </MudTabPanel>
+            <MudTabPanel Text="Past">
+                <MudText Class="pa-4">Content of "Past" tab</MudText>
+            </MudTabPanel>
+        </MudTabs>
+    </MudPaper>
+
+    <MudDivider Class="my-6" />
+
+    <!-- FOOTER -->
+    <MudText Typo="Typo.body2" Color="Color.Secondary" Align="Align.Center" Class="mt-8">
+        <strong>MotoNomad Kitchen Sink</strong> - All MudBlazor components in one place<br/>
+        Program: 10xDevs | Project: MotoNomad MVP | 2025
+    </MudText>
+</MudContainer>
