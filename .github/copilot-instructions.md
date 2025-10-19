@@ -61,6 +61,12 @@ When modifying the directory structure, always update this section.
 - Dispose resources properly (implement `IDisposable` or `IAsyncDisposable`)
 - Call `StateHasChanged()` only when necessary to trigger re-renders
 - Use `@key` directive for lists to optimize rendering
+- **Code-Behind Pattern (MANDATORY)**:
+  - **Always** create separate `.razor.cs` files for all Blazor components with C# logic
+  - **Never** use `@code` blocks in `.razor` files - move all C# code to code-behind files
+  - Mark code-behind classes as `partial` and use the same namespace as the component
+  - Use `[Inject]` attribute for dependency injection in code-behind files
+  - Add XML documentation comments (`///`) to all public methods and classes in code-behind files
 
 ### Supabase Integration
 - Store Supabase URL and Anon Key in `appsettings.json` (never hardcode)
@@ -167,3 +173,4 @@ When modifying the directory structure, always update this section.
 - **Always** use DTOs for data transfer, Entities for database operations
 - **Always** use Command objects for write operations (CQRS)
 - **Always** throw typed exceptions from Application/Exceptions/
+- **Always** use code-behind pattern (`.razor.cs` files) - never use `@code` blocks in `.razor` files
