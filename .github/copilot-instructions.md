@@ -16,23 +16,43 @@ Web application for planning individual and group trips (motorcycle, airplane, t
 When introducing changes to the project, always follow the directory structure below:
 
 - `./MotoNomad.App` - main application project
-- `./MotoNomad.App/Layout` - Blazor layouts (MainLayout.razor, NavMenu.razor)
-- `./MotoNomad.App/Components` - Reusable Blazor components
-- `./MotoNomad.App/Pages` - Blazor pages (Home.razor, TripList.razor, Login.razor)
-- `./MotoNomad.App/Services/Contracts` - Service interfaces (ITripService.cs, ICompanionService.cs)
-- `./MotoNomad.App/Services` - Service implementations
-- `./MotoNomad.App/Models` - Data models and DTOs matching Supabase schema
-- `./MotoNomad.App/Auth` - Authentication (CustomAuthStateProvider.cs)
-- `./MotoNomad.App/wwwroot` - Static assets (css, js)
+- `./MotoNomad.App/Infrastructure/` - Infrastructure layer (database, services, configuration)
+- `./MotoNomad.App/Infrastructure/Database/Entities/` - Database entity models (Trip.cs, Companion.cs, Profile.cs)
+- `./MotoNomad.App/Infrastructure/Database/supabase/migrations/` - Supabase database migrations
+- `./MotoNomad.App/Infrastructure/Services/` - Service implementations (TripService.cs, CompanionService.cs, AuthService.cs, ProfileService.cs)
+- `./MotoNomad.App/Infrastructure/Configuration/` - Configuration classes (SupabaseSettings.cs)
+- `./MotoNomad.App/Application/` - Application layer (interfaces, DTOs, commands, exceptions)
+- `./MotoNomad.App/Application/Interfaces/` - Service interfaces (ITripService.cs, ICompanionService.cs, IAuthService.cs, IProfileService.cs)
+- `./MotoNomad.App/Application/DTOs/` - Data Transfer Objects (Auth, Trips, Companions, Profiles)
+- `./MotoNomad.App/Application/Commands/` - Command objects for CQRS pattern (Trips, Companions, Profiles, Auth)
+- `./MotoNomad.App/Application/Exceptions/` - Custom exceptions (ValidationException.cs, NotFoundException.cs, UnauthorizedException.cs)
+- `./MotoNomad.App/Pages/` - Blazor pages (Index.razor, Login.razor, Register.razor, Trips/, Profiles/)
+- `./MotoNomad.App/Layout/` - Blazor layouts (MainLayout.razor, NavMenu.razor)
+- `./MotoNomad.App/Shared/` - Shared components and dialogs
+- `./MotoNomad.App/Shared/Components/` - Reusable Blazor components (TripCard.razor, CompanionList.razor, DateRangePicker.razor)
+- `./MotoNomad.App/Shared/Dialogs/` - Dialog components (ConfirmDialog.razor, TripFormDialog.razor)
+- `./MotoNomad.App/wwwroot/` - Static assets (css, js, images)
 - `./MotoNomad.App/appsettings.json` - Configuration (Supabase URL and keys)
 - `./MotoNomad.App/Program.cs` - Application startup and DI configuration
-- `./MotoNomad.Tests` - xUnit test project
-- `./MotoNomad.Tests/Services` - Service unit tests
-- `./MotoNomad.Tests/Components` - bUnit component tests
+- `./MotoNomad.Tests/` - xUnit test project
+- `./MotoNomad.Tests/Unit/Services/` - Service unit tests
+- `./MotoNomad.Tests/Components/` - bUnit component tests
+- `./MotoNomad.Tests/Integration/` - Integration tests
+- `./MotoNomad.Tests/E2E/` - End-to-end tests
+- `./.ai/` - Architecture documentation (prd.md, db-plan.md, wasm-arch.md, etc.)
+- `./.github/` - GitHub configuration (workflows, copilot-instructions.md)
 
 When modifying the directory structure, always update this section.
 
 ## Coding Practices
+
+### Architecture Patterns
+- **Layered Architecture**: Infrastructure (data access) ? Application (business logic) ? Presentation (UI)
+- **Service Layer Pattern**: Interfaces in Application/Interfaces/, implementations in Infrastructure/Services/
+- **Repository Pattern**: Services act as repositories for data access
+- **DTO Pattern**: Separate entities (database) from DTOs (data transfer)
+- **CQRS Pattern**: Use Command objects for write operations in Application/Commands/
+- **Exception Handling**: Typed exceptions in Application/Exceptions/
 
 ### Blazor WebAssembly Patterns
 - Always use `async`/`await` for Supabase API calls and I/O operations
@@ -57,12 +77,15 @@ When modifying the directory structure, always update this section.
 - Store JWT tokens securely using Blazored.LocalStorage
 
 ### Data Models
-- Create C# models matching Supabase table schemas
+- **Entities**: Database models in Infrastructure/Database/Entities/ matching Supabase schema
+- **DTOs**: Data Transfer Objects in Application/DTOs/ for API responses
+- **Commands**: Command objects in Application/Commands/ for write operations
 - Use `[PrimaryKey]` and `[Column]` attributes for mapping
 - Include `Id`, `CreatedAt`, `UpdatedAt` fields for all entities
 - Use proper data types (`Guid` for IDs, `DateTime` for dates)
 
 ### Error Handling
+- Use custom exceptions from Application/Exceptions/ (ValidationException, NotFoundException, UnauthorizedException)
 - Use exceptions for exceptional cases only, not for control flow
 - Handle errors at the beginning of methods using guard clauses
 - Use early returns for error conditions
@@ -72,9 +95,10 @@ When modifying the directory structure, always update this section.
 
 ### Validation
 - Use Data Annotations for model validation (`[Required]`, `[StringLength]`)
-- Validate business rules before Supabase API calls (e.g., end date > start date)
+- Validate business rules in Commands before service calls (e.g., end date > start date)
 - Implement client-side validation with `EditForm` and `ValidationMessage`
 - Display validation errors clearly in UI
+- Throw ValidationException for business rule violations
 
 ### MudBlazor UI
 - Use MudBlazor components for consistent Material Design
@@ -139,3 +163,7 @@ When modifying the directory structure, always update this section.
 - **Always** handle exceptions gracefully with proper logging
 - **Always** use MudBlazor components for UI consistency
 - **Always** write unit tests for business logic
+- **Always** follow layered architecture: Infrastructure ? Application ? Presentation
+- **Always** use DTOs for data transfer, Entities for database operations
+- **Always** use Command objects for write operations (CQRS)
+- **Always** throw typed exceptions from Application/Exceptions/
