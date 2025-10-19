@@ -1,9 +1,7 @@
-@page "/health"
+﻿@page "/health"
 @using MotoNomad.App.Application.Interfaces
 @using MotoNomad.App.Infrastructure.Database.Entities
 @using Supabase
-@inject ISupabaseClientService SupabaseClient
-@inject ILogger<Health> Logger
 
 <PageTitle>Health Check - MotoNomad</PageTitle>
 
@@ -11,7 +9,7 @@
     <div class="row">
         <div class="col-12">
             <h1 class="mb-4">
-                <span class="badge bg-primary">??</span> 
+                <span class="badge bg-primary">❤️</span> 
                 Supabase Health Check
             </h1>
             <p class="text-muted">Diagnostic tool for checking Supabase connection and database access</p>
@@ -37,7 +35,7 @@
                     else
                     {
                         <button class="btn btn-primary btn-lg w-100 mb-4" @onclick="RunHealthCheck">
-                            ?? Run Health Check
+                            🔍 Run Health Check
                         </button>
 
                         @if (healthCheckResults.Any())
@@ -50,11 +48,11 @@
                                             <h6 class="mb-1">
                                                 @if (result.IsSuccess)
                                                 {
-                                                    <span class="badge bg-success">?</span>
+                                                    <span class="badge bg-success">✅</span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge bg-danger">?</span>
+                                                    <span class="badge bg-danger">❌</span>
                                                 }
                                                 @result.TestName
                                             </h6>
@@ -81,11 +79,11 @@
                                 <strong>Overall Status:</strong> 
                                 @if (allTestsPassed)
                                 {
-                                    <span>? All tests passed! Supabase connection is healthy.</span>
+                                    <span>✅ All tests passed! Supabase connection is healthy.</span>
                                 }
                                 else
                                 {
-                                    <span>? Some tests failed. Check the details above.</span>
+                                    <span>⚠️ Some tests failed. Check the details above.</span>
                                 }
                             </div>
                         }
@@ -139,10 +137,10 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0">
-                        <li>? Client Initialization</li>
-                        <li>? Database Connectivity</li>
-                        <li>? Table Access (trips)</li>
-                        <li>? Auth Status</li>
+                        <li>🔧 Client Initialization</li>
+                        <li>🔌 Database Connectivity</li>
+                        <li>📊 Table Access (trips)</li>
+                        <li>🔐 Auth Status</li>
                     </ul>
                 </div>
             </div>
@@ -153,7 +151,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-light">
-                    <h6 class="mb-0">?? Troubleshooting Tips</h6>
+                    <h6 class="mb-0">💡 Troubleshooting Tips</h6>
                 </div>
                 <div class="card-body">
                     <ul>
@@ -167,256 +165,3 @@
         </div>
     </div>
 </div>
-
-@code {
-    private bool isLoading = false;
-    private bool allTestsPassed = false;
-    private DateTime? lastCheckTime;
-    private string environment = "Unknown";
-    private List<HealthCheckResult> healthCheckResults = new();
-
-    protected override void OnInitialized()
-    {
-        #if DEBUG
-        environment = "Development";
-        #else
-        environment = "Production";
-        #endif
-    }
-
-    private async Task RunHealthCheck()
-    {
-        isLoading = true;
-        healthCheckResults.Clear();
-        allTestsPassed = false;
-        StateHasChanged();
-
-        await Task.Delay(100); // Small delay for UI update
-
-        try
-        {
-            // Test 1: Client Initialization
-            await TestClientInitialization();
-
-            // Test 2: Database Connectivity
-            await TestDatabaseConnectivity();
-
-            // Test 3: Table Access (trips)
-            await TestTableAccess();
-
-            // Test 4: Auth Status
-            await TestAuthStatus();
-
-            // Calculate overall status
-            allTestsPassed = healthCheckResults.All(r => r.IsSuccess);
-            lastCheckTime = DateTime.Now;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Health check failed with unexpected error");
-            healthCheckResults.Add(new HealthCheckResult
-            {
-                TestName = "Unexpected Error",
-                IsSuccess = false,
-                Message = "Health check encountered an unexpected error",
-                ErrorMessage = ex.Message
-            });
-        }
-        finally
-        {
-            isLoading = false;
-            StateHasChanged();
-        }
-    }
-
-    private async Task TestClientInitialization()
-    {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        try
-        {
-            var isInitialized = SupabaseClient.IsInitialized;
-            stopwatch.Stop();
-
-            if (isInitialized)
-            {
-                healthCheckResults.Add(new HealthCheckResult
-                {
-                    TestName = "Client Initialization",
-                    IsSuccess = true,
-                    Message = "Supabase client is properly initialized",
-                    Duration = stopwatch.ElapsedMilliseconds
-                });
-                Logger.LogInformation("Health check: Client initialization - SUCCESS");
-            }
-            else
-            {
-                healthCheckResults.Add(new HealthCheckResult
-                {
-                    TestName = "Client Initialization",
-                    IsSuccess = false,
-                    Message = "Supabase client is not initialized",
-                    ErrorMessage = "Client initialization failed during application startup",
-                    Duration = stopwatch.ElapsedMilliseconds
-                });
-                Logger.LogWarning("Health check: Client initialization - FAILED");
-            }
-
-            await Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            stopwatch.Stop();
-            healthCheckResults.Add(new HealthCheckResult
-            {
-                TestName = "Client Initialization",
-                IsSuccess = false,
-                Message = "Failed to check client initialization",
-                ErrorMessage = ex.Message,
-                Duration = stopwatch.ElapsedMilliseconds
-            });
-            Logger.LogError(ex, "Health check: Client initialization - ERROR");
-        }
-    }
-
-    private async Task TestDatabaseConnectivity()
-    {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        try
-        {
-            var client = SupabaseClient.GetClient();
-            
-            // Simple connectivity test - just getting the client
-            if (client != null)
-            {
-                stopwatch.Stop();
-                healthCheckResults.Add(new HealthCheckResult
-                {
-                    TestName = "Database Connectivity",
-                    IsSuccess = true,
-                    Message = "Successfully obtained Supabase client instance",
-                    Details = $"Client is ready for database operations",
-                    Duration = stopwatch.ElapsedMilliseconds
-                });
-                Logger.LogInformation("Health check: Database connectivity - SUCCESS");
-            }
-
-            await Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            stopwatch.Stop();
-            healthCheckResults.Add(new HealthCheckResult
-            {
-                TestName = "Database Connectivity",
-                IsSuccess = false,
-                Message = "Failed to establish database connection",
-                ErrorMessage = ex.Message,
-                Duration = stopwatch.ElapsedMilliseconds
-            });
-            Logger.LogError(ex, "Health check: Database connectivity - ERROR");
-        }
-    }
-
-    private async Task TestTableAccess()
-    {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        try
-        {
-            var client = SupabaseClient.GetClient();
-            
-            // Try to query the trips table (just count, no actual data retrieval)
-            var response = await client
-                .From<Trip>()
-                .Select("id")
-                .Limit(1)
-                .Get();
-
-            stopwatch.Stop();
-
-            healthCheckResults.Add(new HealthCheckResult
-            {
-                TestName = "Table Access (trips)",
-                IsSuccess = true,
-                Message = "Successfully queried 'trips' table",
-                Details = $"Table is accessible and query executed successfully",
-                Duration = stopwatch.ElapsedMilliseconds
-            });
-            Logger.LogInformation("Health check: Table access - SUCCESS");
-        }
-        catch (Exception ex)
-        {
-            stopwatch.Stop();
-            healthCheckResults.Add(new HealthCheckResult
-            {
-                TestName = "Table Access (trips)",
-                IsSuccess = false,
-                Message = "Failed to access 'trips' table",
-                ErrorMessage = ex.Message,
-                Details = "Ensure table exists and RLS policies allow anonymous access",
-                Duration = stopwatch.ElapsedMilliseconds
-            });
-            Logger.LogError(ex, "Health check: Table access - ERROR");
-        }
-    }
-
-    private async Task TestAuthStatus()
-    {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        try
-        {
-            var client = SupabaseClient.GetClient();
-            var session = client.Auth.CurrentSession;
-            
-            stopwatch.Stop();
-
-            if (session != null)
-            {
-                healthCheckResults.Add(new HealthCheckResult
-                {
-                    TestName = "Auth Status",
-                    IsSuccess = true,
-                    Message = "User is authenticated",
-                    Details = $"Active session found",
-                    Duration = stopwatch.ElapsedMilliseconds
-                });
-            }
-            else
-            {
-                healthCheckResults.Add(new HealthCheckResult
-                {
-                    TestName = "Auth Status",
-                    IsSuccess = true,
-                    Message = "No active user session (anonymous access)",
-                    Details = "This is expected for unauthenticated users",
-                    Duration = stopwatch.ElapsedMilliseconds
-                });
-            }
-
-            Logger.LogInformation("Health check: Auth status - SUCCESS");
-            await Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            stopwatch.Stop();
-            healthCheckResults.Add(new HealthCheckResult
-            {
-                TestName = "Auth Status",
-                IsSuccess = false,
-                Message = "Failed to check authentication status",
-                ErrorMessage = ex.Message,
-                Duration = stopwatch.ElapsedMilliseconds
-            });
-            Logger.LogError(ex, "Health check: Auth status - ERROR");
-        }
-    }
-
-    private class HealthCheckResult
-    {
-        public string TestName { get; set; } = string.Empty;
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; } = string.Empty;
-        public string? Details { get; set; }
-        public string? ErrorMessage { get; set; }
-        public long Duration { get; set; }
-    }
-}
