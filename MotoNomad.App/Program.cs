@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
 using Microsoft.Extensions.Configuration;
+using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -33,6 +34,9 @@ builder.Services.AddScoped<MotoNomad.Application.Interfaces.IProfileService, Pro
 
 // Register Blazored LocalStorage
 builder.Services.AddBlazoredLocalStorage();
+
+// Register MudBlazor services
+builder.Services.AddMudServices();
 
 // Build the application
 var app = builder.Build();
