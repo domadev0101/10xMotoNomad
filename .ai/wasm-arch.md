@@ -274,6 +274,53 @@ MotoNomad/
 - Row Level Security (RLS) for database-level authorization
 - Session management via Supabase SDK
 
+### Client Abstraction Pattern
+
+**ISupabaseClientService** wraps `Supabase.Client` for better architecture:
+
+**Pattern Implementation:**
+```csharp
+// ❌ OLD: Direct dependency on concrete Supabase.Client
+public class TripService
+{
+    private readonly Supabase.Client _client;
+    
+    public TripService(Supabase.Client client)
+    {
+        _client = client;
+    }
+}
+
+// ✅ NEW: Dependency on ISupabaseClientService abstraction
+public class TripService
+{
+    private readonly ISupabaseClientService _supabaseClient;
+    
+    public TripService(ISupabaseClientService supabaseClient)
+    {
+        _supabaseClient = supabaseClient;
+    }
+    
+    public async Task<Trip> GetTripAsync(Guid id)
+    {
+        var client = _supabaseClient.GetClient();
+        return await client.From<Trip>().Where(t => t.Id == id).Single();
+    }
+}
+```
+
+**Advantages:**
+1. **Testability**: Easy to mock `ISupabaseClientService` in unit tests
+2. **Initialization Control**: Explicit `InitializeAsync()` ensures proper startup sequence
+3. **Encapsulation**: Hides Supabase SDK configuration details from business services
+4. **Flexibility**: Can swap implementations for testing or different backends
+5. **Singleton Pattern**: Shared instance reduces memory overhead and ensures consistent auth state
+
+**Lifecycle:**
+- **Registration**: `builder.Services.AddSingleton<ISupabaseClientService, SupabaseClientService>()`
+- **Initialization**: `await supabaseClient.InitializeAsync()` during app startup
+- **Usage**: Services inject `ISupabaseClientService` and call `GetClient()` when needed
+
 ---
 
 ## 🔄 Data Flow
@@ -319,6 +366,26 @@ UI Redirects to Dashboard
 ---
 
 ## 📦 Key Dependencies
+
+### Infrastructure Services
+
+**ISupabaseClientService** - Supabase client abstraction and lifecycle management
+- **Interface**: `MotoNomad.App/Application/Interfaces/ISupabaseClientService.cs`
+- **Implementation**: `MotoNomad.App/Infrastructure/Services/SupabaseClientService.cs`
+- **Lifetime**: Singleton (shared authentication state across all services)
+- **Purpose**: 
+  - Centralized Supabase client initialization and configuration
+  - Provides `GetClient()` method for accessing Supabase operations
+  - Ensures client is initialized before first use via `InitializeAsync()`
+  - Improves testability (easy to mock for unit tests)
+  - Encapsulates Supabase SDK configuration details
+
+**Benefits:**
+- ✅ Single source of truth for Supabase connectivity
+- ✅ Consistent authentication state across all business services
+- ✅ Better testability (mock interface instead of concrete client)
+- ✅ Controlled initialization during app startup
+- ✅ Reduces coupling between services and Supabase SDK
 
 ### NuGet Packages
 - **Supabase** (supabase-csharp) - Backend connectivity

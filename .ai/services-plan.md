@@ -267,22 +267,26 @@ using MotoNomad.Infrastructure.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-// Configure Supabase Client
-var supabaseUrl = builder.Configuration["Supabase:Url"];
-var supabaseKey = builder.Configuration["Supabase:Key"];
+// Load Supabase configuration from appsettings.json
+var supabaseSettings = new SupabaseSettings();
+builder.Configuration.GetSection("Supabase").Bind(supabaseSettings);
 
-builder.Services.AddScoped(_ => 
-    new Supabase.Client(supabaseUrl, supabaseKey, new SupabaseOptions
-    {
-        AutoRefreshToken = true,
-        AutoConnectRealtime = false
-    }));
+// Register Supabase configuration
+builder.Services.AddSingleton(supabaseSettings);
 
-// Register application services
+// Register Supabase client service as Singleton (shared state for authentication)
+builder.Services.AddSingleton<ISupabaseClientService, SupabaseClientService>();
+
+// Register application services as Scoped (isolated per request/circuit)
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<ICompanionService, CompanionService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+
+// Initialize Supabase client during startup
+var app = builder.Build();
+var supabaseClient = app.Services.GetRequiredService<ISupabaseClientService>();
+await supabaseClient.InitializeAsync();
 
 await builder.Build().RunAsync();
 ```
@@ -313,11 +317,17 @@ Development override in `appsettings.Development.json`:
 
 ### 3.3 Service Lifetime Rationale
 
-**Scoped Lifetime:** All services use scoped lifetime because:
+**Supabase Client Service Lifetime:** Singleton: ISupabaseClientService is registered as Singleton because:
+- Supabase client maintains connection state and authentication session
+- Authentication tokens are shared across all requests for the same user
+- Reduces overhead of creating multiple client instances
+- Thread-safe for Blazor WebAssembly (single-threaded environment)
+
+**Application Services Lifetime:** Scoped: All business logic services use Scoped lifetime because:
 - Each Blazor circuit/session requires isolated state
-- Supabase client maintains session-specific authentication
-- Prevents cross-user data leakage
+- Logging contexts are request-specific
 - Aligns with Blazor WebAssembly component lifecycle
+- Prevents cross-user data leakage (although single-user in WASM)
 
 ---
 
@@ -368,9 +378,61 @@ catch (DatabaseException ex)
 ### 5.1 Authentication Context
 
 All services except `IAuthService` must:
-1. Retrieve current user via `Supabase.Client.Auth.CurrentUser`
-2. Throw `UnauthorizedException` if user is null
-3. Use `user.Id` as `user_id` for RLS policy enforcement
+1. **Inject `ISupabaseClientService`** as constructor dependency
+2. **Retrieve Supabase client** via `_supabaseClient.GetClient()`
+3. **Get current user** via `client.Auth.CurrentUser`
+4. **Throw `UnauthorizedException`** if user is null
+5. **Use `user.Id`** as `user_id` for RLS policy enforcement
+
+**Example Implementation:**
+
+```csharp
+public class TripService : ITripService
+{
+    private readonly ISupabaseClientService _supabaseClient;
+    private readonly ILogger<TripService> _logger;
+
+    public TripService(
+        ISupabaseClientService supabaseClient,
+        ILogger<TripService> logger)
+    {
+        _supabaseClient = supabaseClient ?? throw new ArgumentNullException(nameof(supabaseClient));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    private Guid GetCurrentUserId()
+    {
+        var client = _supabaseClient.GetClient();
+        var currentUser = client.Auth.CurrentUser;
+
+        if (currentUser == null)
+        {
+            throw new UnauthorizedException("You must be logged in to manage trips.");
+        }
+
+        return Guid.Parse(currentUser.Id);
+    }
+
+    public async Task<IEnumerable<TripListItemDto>> GetAllTripsAsync()
+    {
+        var userId = GetCurrentUserId(); // ← Authentication check
+        
+        // Use userId for RLS-filtered query
+        var trips = await client
+            .From<Trip>()
+            .Where(t => t.UserId == userId)
+            .Get();
+        
+        // ...
+    }
+}
+```
+
+**Key Points:**
+- Always use `ISupabaseClientService`, never direct `Supabase.Client` injection
+- Extract `GetCurrentUserId()` as private helper method for reuse
+- Call authentication check at the start of every service method
+- RLS policies in database provide additional authorization layer
 
 ### 5.2 Validation Order
 
@@ -384,10 +446,66 @@ Service methods validate in this sequence:
 ### 5.3 RLS Policy Enforcement
 
 Services rely on Supabase RLS policies for authorization:
-- Do NOT implement manual ownership checks in service code
-- RLS policies automatically filter queries by `auth.uid()`
+- RLS policies automatically filter queries by `auth.uid()` at database level
 - If query returns empty result, throw `NotFoundException`
-- Trust RLS to prevent unauthorized access
+- Trust RLS to prevent unauthorized access for direct user-owned resources (Trips, Profiles)
+
+**Exception: Manual Ownership Checks for Indirect Relationships**
+
+While RLS policies handle authorization for direct user-owned tables, **manual ownership verification is required** for resources with indirect user relationships:
+
+**When Manual Checks Are Needed:**
+- **Companions → Trips → Users**: Companions don't have `user_id`, so RLS can't filter them directly
+- **Better error messages**: Distinguish "Trip not found" from "Trip exists but you don't own it"
+- **Performance optimization**: Prevent unnecessary queries before expensive operations
+
+**Example: CompanionService.VerifyTripOwnership()**
+
+```csharp
+private async Task VerifyTripOwnership(Guid tripId, Guid userId)
+{
+    try
+    {
+        var client = _supabaseClient.GetClient();
+        
+        var trip = await client
+            .From<Trip>()
+            .Where(t => t.Id == tripId && t.UserId == userId)
+            .Single();
+
+        if (trip == null)
+        {
+            throw new NotFoundException("Trip", tripId);
+        }
+    }
+    catch (NotFoundException)
+    {
+        throw;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Failed to verify trip ownership for trip {TripId}", tripId);
+        throw new DatabaseException("VerifyTripOwnership", "Failed to verify trip ownership.", ex);
+    }
+}
+
+// Usage in companion operations
+public async Task<CompanionDto> AddCompanionAsync(AddCompanionCommand command)
+{
+    var userId = GetCurrentUserId();
+    ValidateAddCompanionCommand(command);
+    
+    // Manual check required: companions don't have user_id
+    await VerifyTripOwnership(command.TripId, userId);
+    
+    // Proceed with companion creation...
+}
+```
+
+**Authorization Strategy Summary:**
+- ✅ **Direct relationships** (Trips, Profiles): Rely on RLS policies
+- ✅ **Indirect relationships** (Companions): Manual ownership checks
+- ✅ **Combine both**: RLS prevents SQL injection, manual checks provide better UX
 
 ### 5.4 DTO Mapping
 
