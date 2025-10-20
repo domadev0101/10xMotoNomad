@@ -36,6 +36,49 @@ a, .btn-link {
     color: red;
 }
 
+/* MotoNomad - Layout Styles */
+
+/* Hide drawer toggle button on desktop */
+@media (min-width: 960px) {
+    .drawer-toggle {
+        display: none;
+    }
+}
+
+/* Responsive padding for main content */
+.mud-main-content {
+    padding-top: 64px; /* AppBar height on desktop */
+}
+
+@media (max-width: 600px) {
+    .mud-main-content {
+        padding-top: 56px; /* Smaller AppBar height on mobile */
+    }
+}
+
+/* LoginDisplay responsive buttons */
+@media (min-width: 600px) {
+    .login-display-button {
+        display: inline-flex;
+    }
+    .login-display-icon {
+        display: none;
+    }
+}
+
+@media (max-width: 599px) {
+    .login-display-button {
+        display: none;
+    }
+    .login-display-icon {
+        display: inline-flex;
+    }
+    .login-display-text {
+        display: none; /* Hide greeting on mobile to save space */
+    }
+}
+
+/* Blazor Error UI */
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;

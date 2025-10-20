@@ -1,0 +1,17 @@
+<MudPaper Elevation="0" Class="pa-8 text-center">
+    <MudIcon Icon="@IconName" Size="Size.Large" Color="Color.Secondary" Class="mb-4" />
+    
+    <MudText Typo="Typo.h5" Class="mb-2">@Title</MudText>
+    
+    <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-4">@Message</MudText>
+    
+    @if (!string.IsNullOrEmpty(ButtonText))
+    {
+        <MudButton 
+            Variant="Variant.Filled" 
+            Color="Color.Primary"
+            OnClick="@OnButtonClick">
+            @ButtonText
+        </MudButton>
+    }
+</MudPaper>

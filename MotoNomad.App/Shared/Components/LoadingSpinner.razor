@@ -1,0 +1,11 @@
+<div style="display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 3rem;">
+    <MudProgressCircular 
+        Indeterminate="true" 
+        Size="@Size" 
+        Color="Color.Primary" />
+    
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <MudText Typo="Typo.body2" Class="mt-2">@Message</MudText>
+    }
+</div>

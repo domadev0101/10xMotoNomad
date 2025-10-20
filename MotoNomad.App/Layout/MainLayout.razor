@@ -1,16 +1,34 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
+
+<MudLayout>
+    <MudAppBar Elevation="1" Dense="true">
+        <MudIconButton 
+            Icon="@Icons.Material.Filled.Menu" 
+            Color="Color.Inherit" 
+            Edge="Edge.Start" 
+            OnClick="@ToggleDrawer" 
+            Class="drawer-toggle" />
+        
+        <MudText Typo="Typo.h6" Class="ml-3">
+            🏍️ MotoNomad
+        </MudText>
+        
+        <MudSpacer />
+        
+        <LoginDisplay />
+    </MudAppBar>
+
+    <MudDrawer 
+        @bind-Open="_drawerOpen" 
+        Elevation="1" 
+        Breakpoint="Breakpoint.Md"
+        Variant="@(_drawerOpen ? DrawerVariant.Persistent : DrawerVariant.Temporary)">
         <NavMenu />
-    </div>
+    </MudDrawer>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-4">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

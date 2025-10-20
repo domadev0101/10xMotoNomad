@@ -1,10 +1,12 @@
 using MotoNomad.App;
 using MotoNomad.App.Infrastructure.Configuration;
 using MotoNomad.App.Infrastructure.Services;
+using MotoNomad.App.Infrastructure.Auth;
 using MotoNomad.App.Application.Interfaces;
 using MotoNomad.Infrastructure.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Microsoft.Extensions.Configuration;
 using MudBlazor.Services;
@@ -25,6 +27,10 @@ builder.Services.AddSingleton(supabaseSettings);
 
 // Register Supabase client service as Singleton
 builder.Services.AddSingleton<ISupabaseClientService, SupabaseClientService>();
+
+// Register Authentication
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddAuthorizationCore();
 
 // Register application services as Scoped
 builder.Services.AddScoped<MotoNomad.Application.Interfaces.IAuthService, AuthService>();
