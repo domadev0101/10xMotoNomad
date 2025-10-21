@@ -38,7 +38,7 @@
   - Implementacja `IDisposable` dla cleanup timera
 - ? **Dependency Injection:**
   - `[Inject] IAuthService` - dla wylogowania
-  - `[Inject] NavigationManager` - dla przekierowa?
+  - `[Inject] NavigationManager` - dla przekierowania
   - `[Inject] ISnackbar` - dla komunikatów
 - ? **Komunikaty w j?zyku angielskim:**
   - "Session expired due to inactivity. Please log in again."
@@ -284,11 +284,11 @@
 - ? Timer bezczynno?ci zaimplementowany (15 minut)
 - ? Responsywny design (mobile-first) zaimplementowany
 - ? Code-behind pattern zastosowany we wszystkich komponentach
-- ? **Testy manualne** - DO WYKONANIA (wymaga stron Login/Register/Trips)
+- ?? **Testy manualne** - DO WYKONANIA (wymaga stron Login/Register/Trips)
 
 ---
 
-## ?? Zgodno?? z zasadami implementacji
+## ? Zgodno?? z zasadami implementacji
 
 ### Code-behind pattern ?
 - **MANDATORY**: Wszystkie komponenty maj? osobne pliki `.razor.cs`
@@ -447,7 +447,7 @@ Zgodnie z planem `__implementation_roadmap.md`:
 
 ---
 
-## ?? Podsumowanie sesji
+## ? Podsumowanie sesji
 
 ### ? Co zosta?o osi?gni?te:
 1. **Pe?na implementacja layoutu aplikacji** z MudBlazor
@@ -478,7 +478,7 @@ Zgodnie z planem `__implementation_roadmap.md`:
 - ? Nawigacja gotowa do testów (wymaga stron placeholder)
 - ? Infrastruktura autoryzacji gotowa (CustomAuthenticationStateProvider)
 - ? Serwisy gotowe (AuthService, TripService, CompanionService, ProfileService)
-- ? Brak stron do routingu (Login, Register, Trips) - **nast?pny krok**
+- ?? Brak stron do routingu (Login, Register, Trips) - **nast?pny krok**
 
 ---
 

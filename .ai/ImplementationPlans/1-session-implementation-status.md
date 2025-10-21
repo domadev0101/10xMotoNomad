@@ -50,7 +50,7 @@
 #### 3.1 RedirectToLogin
 - ? **Plik:** `MotoNomad.App/Shared/RedirectToLogin.razor`
 - ? **Funkcjonalno??:**
-  - Prosty helper do przekierowa?
+  - Prosty helper do przekierowania
   - Wykorzystuje `NavigationManager.NavigateTo("/login")`
   - Wywo?anie w `OnInitialized()`
 
@@ -110,7 +110,7 @@
   - `ToggleDrawer()` - metoda prze??czania
 - ? **Dependency Injection:**
   - `IAuthService` - dla wylogowania
-  - `NavigationManager` - dla przekierowa?
+  - `NavigationManager` - dla przekierowania
   - `ISnackbar` - dla komunikatów
 
 ### 5. NavMenu.razor - Menu nawigacyjne ?
