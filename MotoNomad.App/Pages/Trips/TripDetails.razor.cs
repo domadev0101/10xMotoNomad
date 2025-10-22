@@ -41,6 +41,8 @@ public partial class TripDetails : ComponentBase
     private List<CompanionListItemDto> companions = new();
     private bool isLoading = false;
     private bool isUpdatingTrip = false;
+    private bool showCompanionForm = false;
+    private bool isAddingCompanion = false;
     private int activeTabIndex = 0; // 0 = Details, 1 = Companions
     private string? errorMessage = null;
     private TripForm? tripFormRef = null;
@@ -247,6 +249,104 @@ trip = await tripTask;
         // TODO: Log error with ILogger
         }
   }
+
+    #endregion
+
+    #region Companion Event Handlers
+
+    /// <summary>
+    /// Handles adding a new companion to the trip.
+    /// Validates input, calls API and refreshes companion list.
+    /// </summary>
+    private async Task HandleAddCompanionAsync(MotoNomad.Application.Commands.Companions.AddCompanionCommand command)
+    {
+        isAddingCompanion = true;
+        showCompanionForm = false;
+
+        try
+   {
+var companion = await CompanionService.AddCompanionAsync(command);
+  
+      // Refresh companion list
+companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
+      
+     Snackbar.Add($"Added companion: {companion.FirstName} {companion.LastName}", Severity.Success);
+        }
+        catch (ValidationException ex)
+        {
+ Snackbar.Add(ex.Message, Severity.Warning);
+       showCompanionForm = true; // Show form again for correction
+        }
+        catch (DatabaseException)
+        {
+   Snackbar.Add("Failed to add companion. Please try again.", Severity.Error);
+      showCompanionForm = true;
+        }
+        catch (Exception ex)
+      {
+       Snackbar.Add("An unexpected error occurred.", Severity.Error);
+            // TODO: Log error with ILogger
+        }
+   finally
+        {
+    isAddingCompanion = false;
+  StateHasChanged();
+  }
+    }
+
+    /// <summary>
+    /// Handles removing a companion from the trip with confirmation dialog.
+    /// Refreshes companion list after successful deletion.
+    /// </summary>
+    private async Task HandleRemoveCompanionAsync(Guid companionId)
+    {
+        var companion = companions.FirstOrDefault(c => c.Id == companionId);
+        if (companion == null) return;
+
+        var parameters = new DialogParameters
+        {
+     { "FirstName", companion.FirstName },
+   { "LastName", companion.LastName }
+        };
+
+        var dialog = await DialogService.ShowAsync<DeleteCompanionConfirmationDialog>(
+        "Confirm Deletion",
+parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Small });
+
+        var result = await dialog.Result;
+
+        if (result.Canceled) return;
+
+      try
+        {
+         await CompanionService.RemoveCompanionAsync(companionId);
+            
+            // Refresh companion list
+          companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
+     
+          Snackbar.Add("Companion has been removed.", Severity.Success);
+        }
+  catch (NotFoundException)
+        {
+ Snackbar.Add("Companion not found.", Severity.Warning);
+       // Refresh list (may have been already deleted)
+  companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
+        }
+ catch (DatabaseException)
+        {
+            Snackbar.Add("Failed to remove companion. Please try again.", Severity.Error);
+        }
+  catch (Exception ex)
+        {
+       Snackbar.Add("An unexpected error occurred.", Severity.Error);
+   // TODO: Log error with ILogger
+   }
+        finally
+     {
+            StateHasChanged();
+        }
+    }
 
     #endregion
 }

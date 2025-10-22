@@ -4,6 +4,7 @@
 
 @using MotoNomad.Application.DTOs.Trips
 @using MotoNomad.Application.DTOs.Companions
+@using MotoNomad.Application.Commands.Companions
 @using Microsoft.AspNetCore.Authorization
 @using MotoNomad.App.Shared.Components
 @using MotoNomad.App.Shared.Dialogs
@@ -97,15 +98,52 @@ else if (trip != null)
          </MudCard>
             </MudTabPanel>
 
-   @* Tab 2: Companions (Placeholder for Phase 3) *@
+   @* Tab 2: Companions *@
             <MudTabPanel Text="@($"Companions ({companions.Count})")" Icon="@Icons.Material.Filled.People">
- @* Content will be added in Phase 3 *@
-      <MudPaper Elevation="0" Class="pa-4">
-          <MudText Typo="Typo.h6" Class="mb-4">Companion List</MudText>
-         <MudAlert Severity="Severity.Info">
-          The "Companions" tab with companion management will be implemented in Phase 3.
-    </MudAlert>
-     </MudPaper>
+<MudCard Elevation="0">
+            <MudCardHeader>
+          <CardHeaderContent>
+ <MudText Typo="Typo.h6">Companion List</MudText>
+            </CardHeaderContent>
+             <CardHeaderActions>
+       @if (!showCompanionForm)
+         {
+  <MudButton StartIcon="@Icons.Material.Filled.Add"
+     Color="Color.Primary"
+                  OnClick="@(() => showCompanionForm = true)"
+          Variant="Variant.Filled">
+         Add Companion
+                </MudButton>
+         }
+       </CardHeaderActions>
+    </MudCardHeader>
+
+        <MudCardContent>
+         @if (showCompanionForm)
+   {
+           <CompanionForm TripId="@trip.Id"
+        OnSubmit="HandleAddCompanionAsync"
+         OnCancel="@(() => showCompanionForm = false)"
+      IsLoading="@isAddingCompanion" />
+
+        <MudDivider Class="my-4" />
+        }
+
+      @if (companions.Count == 0 && !showCompanionForm)
+             {
+       <EmptyState Title="No Companions"
+         Message="Add people who will accompany you on this trip"
+         IconName="@Icons.Material.Filled.People"
+            ButtonText="Add First Companion"
+              OnButtonClick="@(() => showCompanionForm = true)" />
+     }
+        else if (companions.Count > 0)
+         {
+     <CompanionList Companions="@companions"
+           OnRemove="HandleRemoveCompanionAsync" />
+          }
+                  </MudCardContent>
+   </MudCard>
     </MudTabPanel>
     </MudTabs>
     </MudContainer>
