@@ -1,0 +1,26 @@
+@namespace MotoNomad.App.Shared.Components
+
+<MudCard Class="trip-card" Style="cursor: pointer; transition: box-shadow 0.3s;" @onclick="HandleClick">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <MudIcon Icon="@GetTransportIcon()" Size="Size.Large" Color="Color.Primary" />
+                <MudText Typo="Typo.h6">@Trip.Name</MudText>
+            </div>
+        </CardHeaderContent>
+    </MudCardHeader>
+    
+    <MudCardContent>
+        <MudText Typo="Typo.body2" Class="mb-1">
+            @Trip.StartDate.ToString("dd.MM.yyyy") - @Trip.EndDate.ToString("dd.MM.yyyy")
+        </MudText>
+        
+        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2">
+            (@GetDurationLabel())
+        </MudText>
+        
+        <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.People" Color="Color.Default">
+            @GetCompanionLabel()
+        </MudChip>
+    </MudCardContent>
+</MudCard>

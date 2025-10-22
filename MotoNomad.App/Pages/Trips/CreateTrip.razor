@@ -1,0 +1,34 @@
+@page "/trip/create"
+
+@using Microsoft.AspNetCore.Authorization
+@using MotoNomad.Application.Commands.Trips
+@using MotoNomad.Application.Interfaces
+@using MotoNomad.Application.Exceptions
+@using MotoNomad.App.Shared.Components
+
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudText Typo="Typo.h4" Class="mb-4">New Trip</MudText>
+    
+    <MudCard Elevation="5">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">Basic Information</MudText>
+        </MudCardHeader>
+        
+        <MudCardContent>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-4">
+                    @errorMessage
+                </MudAlert>
+            }
+            
+            <TripForm 
+                Trip="null" 
+                OnSubmit="EventCallback.Factory.Create<object>(this, HandleCreateTripAsync)" 
+                OnCancel="EventCallback.Factory.Create(this, HandleCancel)"
+                IsLoading="@isLoading" />
+        </MudCardContent>
+    </MudCard>
+</MudContainer>

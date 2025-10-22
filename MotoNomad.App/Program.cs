@@ -22,14 +22,39 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 var supabaseSettings = new SupabaseSettings();
 builder.Configuration.GetSection("Supabase").Bind(supabaseSettings);
 
+// Load MockAuth configuration from appsettings.json
+var mockAuthSettings = new MockAuthSettings();
+builder.Configuration.GetSection("MockAuth").Bind(mockAuthSettings);
+
 // Register Supabase configuration
 builder.Services.AddSingleton(supabaseSettings);
+builder.Services.AddSingleton(mockAuthSettings);
 
 // Register Supabase client service as Singleton
 builder.Services.AddSingleton<ISupabaseClientService, SupabaseClientService>();
 
-// Register Authentication
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+// Register Authentication - use Mock if enabled, otherwise use real Supabase auth
+if (mockAuthSettings.Enabled)
+{
+    builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
+    {
+        var supabaseClient = sp.GetRequiredService<ISupabaseClientService>();
+        return new MockAuthenticationStateProvider(
+         supabaseClient,
+            mockAuthSettings.UserId, 
+          mockAuthSettings.Email, 
+   mockAuthSettings.DisplayName);
+});
+    
+    Console.WriteLine("?? MOCK AUTHENTICATION ENABLED ??");
+    Console.WriteLine($"Mock User: {mockAuthSettings.Email} (ID: {mockAuthSettings.UserId})");
+    Console.WriteLine("?? This should NEVER be enabled in production!");
+}
+else
+{
+    builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+}
+
 builder.Services.AddAuthorizationCore();
 
 // Register application services as Scoped

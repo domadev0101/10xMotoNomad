@@ -1,0 +1,30 @@
+@namespace MotoNomad.App.Shared.Components
+
+<MudList T="string">
+    @foreach (var companion in Companions)
+    {
+        <MudListItem T="string">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <MudText Typo="Typo.body1">
+                        @companion.FirstName @companion.LastName
+                    </MudText>
+                    
+                    @if (!string.IsNullOrEmpty(companion.Contact))
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            @companion.Contact
+                        </MudText>
+                    }
+                </div>
+                
+                <MudIconButton 
+                    Icon="@Icons.Material.Filled.Delete"
+                    Color="Color.Error"
+                    Size="Size.Small"
+                    OnClick="@(() => OnRemove.InvokeAsync(companion.Id))"
+                    Title="Remove companion" />
+            </div>
+        </MudListItem>
+    }
+</MudList>

@@ -1,0 +1,31 @@
+@page "/register"
+@layout MainLayout
+
+<PageTitle>Register - MotoNomad</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudPaper Elevation="3" Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">
+            Register
+        </MudText>
+        
+        <MudText Typo="Typo.body1" Align="Align.Center" Color="Color.Secondary">
+            Placeholder page - Implementation in progress
+        </MudText>
+        
+        <MudDivider Class="my-4" />
+        
+        <MudAlert Severity="Severity.Info">
+            This page will contain the registration form with email, password, confirm password and optional display name fields.
+        </MudAlert>
+        
+        <MudButton 
+            Variant="Variant.Text" 
+            Color="Color.Primary" 
+            FullWidth="true" 
+            Href="/login" 
+            Class="mt-4">
+            Already have an account? Login
+        </MudButton>
+    </MudPaper>
+</MudContainer>

@@ -1,0 +1,129 @@
+@page "/trip/{id:guid}"
+@attribute [Authorize]
+@namespace MotoNomad.App.Pages.Trips
+
+@using MotoNomad.Application.DTOs.Trips
+@using MotoNomad.Application.DTOs.Companions
+@using Microsoft.AspNetCore.Authorization
+@using MotoNomad.App.Shared.Components
+@using MotoNomad.App.Shared.Dialogs
+
+@* Page: Trip Details - View and edit trip information, manage companions *@
+
+@if (isLoading)
+{
+    <LoadingSpinner Message="Loading trip..." />
+}
+else if (trip != null)
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+        @* Breadcrumbs - Navigation *@
+        <MudBreadcrumbs Items="@breadcrumbItems" Class="mb-4">
+        <ItemTemplate Context="item">
+ @if (item.Disabled)
+         {
+         <MudText Typo="Typo.body1">@item.Text</MudText>
+                }
+   else
+     {
+            <MudLink Href="@item.Href" Typo="Typo.body1">@item.Text</MudLink>
+           }
+ </ItemTemplate>
+        </MudBreadcrumbs>
+
+        @* Tabs - Details and Companions *@
+      <MudTabs @bind-ActivePanelIndex="activeTabIndex" 
+     Elevation="2" 
+ Rounded="true" 
+      ApplyEffectsToContainer="true"
+        PanelClass="pa-4">
+    
+      @* Tab 1: Trip Details (Edit) *@
+    <MudTabPanel Text="Details" Icon="@Icons.Material.Filled.EditNote">
+          <MudCard Elevation="0">
+      <MudCardHeader>
+              <CardHeaderContent>
+        <MudText Typo="Typo.h6">Edit Trip</MudText>
+ </CardHeaderContent>
+          <CardHeaderActions>
+<MudIconButton Icon="@Icons.Material.Filled.Delete"
+   Color="Color.Error"
+     OnClick="HandleDeleteTrip"
+      title="Delete trip"
+          Size="Size.Large" />
+      </CardHeaderActions>
+     </MudCardHeader>
+
+         <MudCardContent>
+          @if (!string.IsNullOrEmpty(errorMessage))
+{
+          <MudAlert Severity="Severity.Error" Class="mb-4" Variant="Variant.Filled">
+         @errorMessage
+                </MudAlert>
+           }
+
+   <TripForm @ref="tripFormRef"
+           Trip="@trip"
+          OnSubmit="HandleUpdateTripAsync"
+         OnCancel="@(() => NavigationManager.NavigateTo("/trips"))"
+      IsLoading="@isUpdatingTrip"
+   ShowButtons="false" />
+      </MudCardContent>
+
+        <MudCardActions>
+         <MudButton Variant="Variant.Text"
+     Color="Color.Default"
+             OnClick="@(() => NavigationManager.NavigateTo("/trips"))"
+                    Disabled="@isUpdatingTrip">
+              Cancel
+      </MudButton>
+          <MudSpacer />
+        <MudButton Variant="Variant.Filled"
+              Color="Color.Primary"
+             OnClick="HandleUpdateTripClick"
+  Disabled="@isUpdatingTrip"
+          StartIcon="@Icons.Material.Filled.Save">
+        @if (isUpdatingTrip)
+      {
+              <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+              <text>Saving...</text>
+       }
+           else
+                {
+            <text>Save Changes</text>
+     }
+             </MudButton>
+      </MudCardActions>
+         </MudCard>
+            </MudTabPanel>
+
+   @* Tab 2: Companions (Placeholder for Phase 3) *@
+            <MudTabPanel Text="@($"Companions ({companions.Count})")" Icon="@Icons.Material.Filled.People">
+ @* Content will be added in Phase 3 *@
+      <MudPaper Elevation="0" Class="pa-4">
+          <MudText Typo="Typo.h6" Class="mb-4">Companion List</MudText>
+         <MudAlert Severity="Severity.Info">
+          The "Companions" tab with companion management will be implemented in Phase 3.
+    </MudAlert>
+     </MudPaper>
+    </MudTabPanel>
+    </MudTabs>
+    </MudContainer>
+}
+else
+{
+    @* Error state - Trip not found or access denied *@
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Filled">
+            <MudText Typo="Typo.h6" Class="mb-2">Trip Unavailable</MudText>
+     <MudText>Trip not found or you don't have access to it.</MudText>
+      <MudButton Variant="Variant.Text" 
+         Color="Color.Inherit" 
+  StartIcon="@Icons.Material.Filled.ArrowBack"
+      OnClick="@(() => NavigationManager.NavigateTo("/trips"))"
+ Class="mt-2">
+ Back to Trip List
+   </MudButton>
+   </MudAlert>
+    </MudContainer>
+}

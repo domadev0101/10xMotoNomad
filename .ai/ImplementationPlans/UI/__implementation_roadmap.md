@@ -82,32 +82,7 @@ Wszystkie plany znajdują się w folderze `.ai/implementation-plans/UI/`:
 
 ---
 
-### Faza 2: Autoryzacja
-
-**Cel:** Implementacja logowania i rejestracji użytkowników.
-
-**Kolejność:**
-
-4. **AuthService i infrastruktura**
-   - Implementacja IAuthService
-   - AuthService.cs (Login, Register, Logout)
-   - CustomAuthenticationStateProvider (aktualizacja po login/logout)
-
-5. **Widok logowania** → `login-view-implementation-plan.md`
-   - Login.razor (formularz logowania)
-   - Walidacja (email, hasło)
-   - Obsługa błędów AuthException
-
-6. **Widok rejestracji** → `register-view-implementation-plan.md`
-   - Register.razor (formularz rejestracji)
-   - Walidacja (email, hasło, potwierdzenie hasła, displayName)
-   - Obsługa błędów (email zajęty, hasło za słabe)
-
-**Rezultat:** Działająca autoryzacja - użytkownik może się zarejestrować, zalogować i wylogować.
-
----
-
-### Faza 3: CRUD Wycieczek
+### Faza 2: CRUD Wycieczek
 
 **Cel:** Implementacja głównej funkcjonalności - zarządzanie wycieczkami.
 
@@ -140,7 +115,7 @@ Wszystkie plany znajdują się w folderze `.ai/implementation-plans/UI/`:
 
 ---
 
-### Faza 4: CRUD Towarzyszy
+### Faza 3: CRUD Towarzyszy
 
 **Cel:** Implementacja zarządzania towarzyszami podróży.
 
@@ -164,6 +139,31 @@ Wszystkie plany znajdują się w folderze `.ai/implementation-plans/UI/`:
     - Usuwanie wycieczki (dialog potwierdzenia)
 
 **Rezultat:** Pełny CRUD towarzyszy - użytkownik może dodawać, przeglądać i usuwać towarzyszy.
+
+---
+
+### Faza 4: Autoryzacja
+
+**Cel:** Implementacja logowania i rejestracji użytkowników.
+
+**Kolejność:**
+
+4. **AuthService i infrastruktura**
+   - Implementacja IAuthService
+   - AuthService.cs (Login, Register, Logout)
+   - CustomAuthenticationStateProvider (aktualizacja po login/logout)
+
+5. **Widok logowania** → `login-view-implementation-plan.md`
+   - Login.razor (formularz logowania)
+   - Walidacja (email, hasło)
+   - Obsługa błędów AuthException
+
+6. **Widok rejestracji** → `register-view-implementation-plan.md`
+   - Register.razor (formularz rejestracji)
+   - Walidacja (email, hasło, potwierdzenie hasła, displayName)
+   - Obsługa błędów (email zajęty, hasło za słabe)
+
+**Rezultat:** Działająca autoryzacja - użytkownik może się zarejestrować, zalogować i wylogować.
 
 ---
 
