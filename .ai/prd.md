@@ -19,6 +19,8 @@ The solution's goal is to reduce trip planning time from hours to a few minutes 
 - Login to application (Supabase Auth SDK)
 - User session management (Supabase session management)
 - Ability to delete account along with associated data (soft delete in Supabase)
+- MVP: Email confirmation disabled for faster testing
+- Post-MVP: Can be enabled in Supabase Dashboard
 
 ### 3.2 Trip Management (CRUD)
 - Creating new trip with fields:
@@ -56,6 +58,7 @@ The solution's goal is to reduce trip planning time from hours to a few minutes 
 ## 4. Product Boundaries
 
 ### 4.1 Out of MVP Scope:
+- Email confirmation for registration (post-MVP feature)
 - Offline mode with IndexedDB (local cache)
 - Export trip plan to PDF
 - AI suggestions (attractions, route recommendations)
@@ -85,6 +88,8 @@ These features are valuable but not essential to solving the main problem: "info
 - Email is validated (correct format)
 - After correct completion, account is created and user is automatically logged in
 - Confirmation message is displayed for successful registration
+- MVP: Email confirmation disabled - auto login after registration
+- Post-MVP: Email confirmation can be enabled
 
 ### US-002: Application Login
 **As** a registered user  

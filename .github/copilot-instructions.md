@@ -164,6 +164,7 @@ When modifying the directory structure, always update this section.
 ## Key Reminders
 - **Never** use `localStorage` directly - always use Blazored.LocalStorage
 - **Never** expose Supabase service role key in client code
+- **Never** create any document files without asking 
 - **Always** configure Row Level Security in Supabase
 - **Always** validate user input on client side
 - **Always** handle exceptions gracefully with proper logging
