@@ -4,28 +4,80 @@
 <PageTitle>Login - MotoNomad</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
-    <MudPaper Elevation="3" Class="pa-8">
-        <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">
-            Login
-        </MudText>
+    <MudCard Elevation="5">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h4" Align="Align.Center">
+                    Login
+                </MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
         
-        <MudText Typo="Typo.body1" Align="Align.Center" Color="Color.Secondary">
-            Placeholder page - Implementation in progress
-        </MudText>
+        <MudCardContent>
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-4">
+                    @_errorMessage
+                </MudAlert>
+            }
+  
+            <MudForm @ref="_form" @bind-IsValid="@_formValid">
+                <MudTextField @bind-Value="_model.Email"
+                    Label="Email"
+                    Variant="Variant.Outlined"
+                    Required="true"
+                    RequiredError="Email is required"
+                    Validation="@EmailValidation"
+                    Immediate="true"
+                    MaxLength="255"
+                    Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Email"
+                    @ref="_emailField"
+                    Class="mb-4" />
+             
+                <MudTextField @bind-Value="_model.Password"
+                    Label="Password"
+                    Variant="Variant.Outlined"
+                    InputType="InputType.Password"
+                    Required="true"
+                    RequiredError="Password is required"
+                    Validation="@PasswordValidation"
+                    Immediate="true"
+                    MaxLength="100"
+                    Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Lock"
+                    Class="mb-4" />
+            </MudForm>
+  
+            @if (_isLoading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+            }
+        </MudCardContent>
         
-        <MudDivider Class="my-4" />
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        FullWidth="true"
+                        OnClick="HandleLoginAsync"
+                        Disabled="@(_isLoading || !_formValid)"
+                        StartIcon="@Icons.Material.Filled.Login">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                    <MudText Class="ml-2">Logging in...</MudText>
+                }
+                else
+                {
+                    <span>Login</span>
+                }
+            </MudButton>
+        </MudCardActions>
         
-        <MudAlert Severity="Severity.Info">
-            This page will contain the login form with email and password fields.
-        </MudAlert>
-        
-        <MudButton 
-            Variant="Variant.Text" 
-            Color="Color.Primary" 
-            FullWidth="true" 
-            Href="/register" 
-            Class="mt-4">
-            Don't have an account? Register
-        </MudButton>
-    </MudPaper>
+        <MudCardActions Class="justify-center">
+            <MudLink Href="/register" Color="Color.Primary">
+                Don't have an account? Register
+            </MudLink>
+        </MudCardActions>
+    </MudCard>
 </MudContainer>

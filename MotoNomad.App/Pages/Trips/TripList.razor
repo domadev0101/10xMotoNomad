@@ -24,11 +24,11 @@
             else if (upcomingTrips.Count == 0)
             {
                 <EmptyState 
-                    Icon="@Icons.Material.Filled.TravelExplore"
+                    IconName="@Icons.Material.Filled.TravelExplore"
                     Title="No upcoming trips"
-                    Description="Start planning your next adventure!"
-                    ActionText="Create Trip"
-                    ActionHref="/trip/create" />
+                    Message="Start planning your next adventure!"
+                    ButtonText="Create Trip"
+                    OnButtonClick="@(() => NavigationManager.NavigateTo("/trip/create"))" />
             }
             else
             {
@@ -51,11 +51,9 @@
             else if (pastTrips.Count == 0)
             {
                 <EmptyState 
-                    Icon="@Icons.Material.Filled.History"
+                    IconName="@Icons.Material.Filled.History"
                     Title="No past trips"
-                    Description="Your completed trips will appear here"
-                    ActionText=""
-                    ActionHref="" />
+                    Message="Your completed trips will appear here" />
             }
             else
             {

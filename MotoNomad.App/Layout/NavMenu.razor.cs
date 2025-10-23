@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using MotoNomad.Application.Interfaces;
+using MotoNomad.App.Infrastructure.Auth;
 using MudBlazor;
 
 namespace MotoNomad.App.Layout;
@@ -12,6 +14,7 @@ public partial class NavMenu
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
     [Inject] private ISnackbar Snackbar { get; set; } = default!;
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     /// <summary>
     /// Handles user logout action.
@@ -22,7 +25,16 @@ public partial class NavMenu
         try
         {
             await AuthService.LogoutAsync();
+
+            // Notify authentication state changed
+            if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
+            {
+                customProvider.NotifyAuthenticationStateChanged();
+            }
+
             Snackbar.Add("Successfully logged out!", Severity.Success);
+
+            // Normal SPA navigation (no full page reload)
             NavigationManager.NavigateTo("/login");
         }
         catch (Exception ex)
