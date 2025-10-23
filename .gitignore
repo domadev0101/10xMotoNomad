@@ -63,3 +63,4 @@ nunit-*.xml
 
 # Keep templates
 !**/appsettings*.template
+/docs

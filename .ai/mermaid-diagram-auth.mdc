@@ -10,7 +10,7 @@ Jesteś specjalistą ds. bezpieczeństwa, którego zadaniem jest utworzenie diag
 Będziesz musiał odnieść się do następujących plików w celu poznania istniejących wymagań:
 
 <file_references>
-[project-prd.md](mdc:.ai/prd.md)
+.ai/prd.md)
 </file_references>
 
 <destination>
@@ -37,7 +37,7 @@ Kiedy będziesz gotowy do utworzenia diagramu, postępuj zgodnie z poniższymi w
 2. Uwzględnij następujące elementy w swoim diagramie:
 
    - Pełny cykl życia procesu autentykacji w nowoczesnej aplikacji używającej React, Astro i Supabase Auth
-   - Komunikacja między aktorami: 1) Przeglądarka 2) Middleware 3) Astro API 4) Supabase Auth
+   - Komunikacja między aktorami: 1) Przeglądarka 2) Middleware 3) API 4) Supabase Auth
    - Wyraźne punkty, w których następuje przekierowanie użytkownika lub weryfikacja tokenu
    - Przepływ danych po wdrożeniu nowych wymagań autentykacji
    - Jak działa sesja użytkownika po zalogowaniu i jak system reaguje na wygaśnięcie tokenu
