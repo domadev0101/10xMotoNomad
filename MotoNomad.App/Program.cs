@@ -1,4 +1,4 @@
-using MotoNomad.App;
+﻿using MotoNomad.App;
 using MotoNomad.App.Infrastructure.Configuration;
 using MotoNomad.App.Infrastructure.Services;
 using MotoNomad.App.Infrastructure.Auth;

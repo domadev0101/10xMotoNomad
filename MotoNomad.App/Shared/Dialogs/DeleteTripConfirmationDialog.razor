@@ -5,23 +5,23 @@
         <MudText Typo="Typo.body1" Class="mb-3">
             Are you sure you want to delete the trip <strong>@TripName</strong>?
         </MudText>
-        
+
         <MudAlert Severity="Severity.Warning" Dense="true">
-            This action is irreversible. All data related to the trip, 
+            This action is irreversible. All data related to the trip,
             including the list of companions, will be permanently deleted.
         </MudAlert>
     </DialogContent>
-    
+
     <DialogActions>
-        <MudButton 
-            Variant="Variant.Text" 
+        <MudButton
+            Variant="Variant.Text"
             Color="Color.Default"
             OnClick="Cancel">
             Cancel
         </MudButton>
-        
-        <MudButton 
-            Variant="Variant.Filled" 
+
+        <MudButton
+            Variant="Variant.Filled"
             Color="Color.Error"
             OnClick="Confirm">
             Delete

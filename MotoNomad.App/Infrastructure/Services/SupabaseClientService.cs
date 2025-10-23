@@ -1,4 +1,3 @@
-using Supabase;
 using MotoNomad.App.Infrastructure.Configuration;
 using MotoNomad.App.Application.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -7,7 +6,7 @@ namespace MotoNomad.App.Infrastructure.Services;
 
 public class SupabaseClientService : ISupabaseClientService
 {
-    private readonly Client _client;
+    private readonly Supabase.Client _client;
     private readonly ILogger<SupabaseClientService> _logger;
     private bool _isInitialized;
 
@@ -23,13 +22,15 @@ public class SupabaseClientService : ISupabaseClientService
 
         try
         {
-            var options = new SupabaseOptions
+            var options = new Supabase.SupabaseOptions
             {
                 AutoConnectRealtime = true,
-                AutoRefreshToken = true
+                AutoRefreshToken = true,
+                // Session persistence is handled automatically by supabase-csharp
+                // It stores session in browser localStorage by default
             };
 
-            _client = new Client(settings.Url, settings.AnonKey, options);
+            _client = new Supabase.Client(settings.Url, settings.AnonKey, options);
             _logger.LogInformation("Supabase client created successfully. URL: {Url}", settings.Url);
         }
         catch (Exception ex)
@@ -39,7 +40,7 @@ public class SupabaseClientService : ISupabaseClientService
         }
     }
 
-    public Client GetClient()
+    public Supabase.Client GetClient()
     {
         if (!_isInitialized)
         {
@@ -63,6 +64,18 @@ public class SupabaseClientService : ISupabaseClientService
             _logger.LogInformation("Initializing Supabase client connection...");
             await _client.InitializeAsync();
             _isInitialized = true;
+
+            // Try to restore session from storage
+            var session = await _client.Auth.RetrieveSessionAsync();
+            if (session != null)
+            {
+                _logger.LogInformation("Session restored for user: {Email}", session.User?.Email);
+            }
+            else
+            {
+                _logger.LogInformation("No existing session found");
+            }
+
             _logger.LogInformation("Supabase client initialized successfully");
         }
         catch (Exception ex)

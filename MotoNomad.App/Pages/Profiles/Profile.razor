@@ -1,0 +1,99 @@
+@page "/profile"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>My Profile - MotoNomad</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    @if (_isLoading)
+    {
+  <MudCard>
+        <MudCardContent>
+     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+      <MudText Typo="Typo.body1" Class="mt-4">Loading your profile...</MudText>
+ </MudCardContent>
+        </MudCard>
+    }
+    else if (_errorMessage != null)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4">
+          @_errorMessage
+        </MudAlert>
+    }
+    else if (_profile != null)
+    {
+   <MudCard>
+            <MudCardHeader>
+          <CardHeaderContent>
+       <MudText Typo="Typo.h5">My Profile</MudText>
+  </CardHeaderContent>
+      <CardHeaderActions>
+        <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+      Color="Color.Primary" 
+         OnClick="OpenEditDialog"
+   Title="Edit Profile" />
+     </CardHeaderActions>
+            </MudCardHeader>
+   <MudCardContent>
+        <MudStack Spacing="4">
+         <MudStack Row="true" Spacing="4" AlignItems="AlignItems.Center">
+       <MudAvatar Size="Size.Large" Color="Color.Primary">
+   @if (!string.IsNullOrWhiteSpace(_profile.AvatarUrl))
+                    {
+       <MudImage Src="@_profile.AvatarUrl" Alt="Profile Avatar" />
+      }
+                 else
+    {
+    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large" />
+      }
+    </MudAvatar>
+       <MudStack Spacing="1">
+         <MudText Typo="Typo.h6">
+           @(!string.IsNullOrWhiteSpace(_profile.DisplayName) ? _profile.DisplayName : "No display name set")
+ </MudText>
+               <MudText Typo="Typo.body2" Color="Color.Secondary">
+@_profile.Email
+  </MudText>
+        </MudStack>
+            </MudStack>
+
+        <MudDivider />
+
+     <MudStack Spacing="2">
+    <MudText Typo="Typo.subtitle2" Color="Color.Primary">Profile Details</MudText>
+                    
+  <MudStack Row="true" Spacing="2">
+           <MudText Typo="Typo.body2" Color="Color.Secondary">Display Name:</MudText>
+         <MudText Typo="Typo.body2">
+       @(!string.IsNullOrWhiteSpace(_profile.DisplayName) ? _profile.DisplayName : "Not set")
+              </MudText>
+            </MudStack>
+
+         <MudStack Row="true" Spacing="2">
+      <MudText Typo="Typo.body2" Color="Color.Secondary">Email:</MudText>
+         <MudText Typo="Typo.body2">@_profile.Email</MudText>
+             </MudStack>
+
+      <MudStack Row="true" Spacing="2">
+         <MudText Typo="Typo.body2" Color="Color.Secondary">Member Since:</MudText>
+    <MudText Typo="Typo.body2">@_profile.CreatedAt.ToString("MMMM dd, yyyy")</MudText>
+  </MudStack>
+
+         <MudStack Row="true" Spacing="2">
+         <MudText Typo="Typo.body2" Color="Color.Secondary">Last Updated:</MudText>
+          <MudText Typo="Typo.body2">@_profile.UpdatedAt.ToString("MMMM dd, yyyy")</MudText>
+           </MudStack>
+      </MudStack>
+         </MudStack>
+            </MudCardContent>
+            <MudCardActions>
+           <MudButton Variant="Variant.Filled" 
+     Color="Color.Primary" 
+ StartIcon="@Icons.Material.Filled.Edit"
+              OnClick="OpenEditDialog">
+          Edit Profile
+              </MudButton>
+            </MudCardActions>
+        </MudCard>
+    }
+</MudContainer>

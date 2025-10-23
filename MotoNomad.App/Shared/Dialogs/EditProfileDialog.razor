@@ -1,0 +1,70 @@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-2" />
+        Edit Profile
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" ValidationDelay="0">
+       <MudStack Spacing="3">
+    <MudTextField @bind-Value="_displayName"
+      Label="Display Name"
+          Variant="Variant.Outlined"
+                Immediate="true"
+      MaxLength="100"
+   Counter="100"
+            HelperText="Your display name (max 100 characters)"
+       Validation="@(new Func<string?, string?>(ValidateDisplayName))" />
+
+          <MudTextField @bind-Value="_avatarUrl"
+  Label="Avatar URL"
+          Variant="Variant.Outlined"
+    Immediate="true"
+    MaxLength="500"
+  HelperText="URL to your profile picture (optional)"
+     Validation="@(new Func<string?, string?>(ValidateAvatarUrl))" />
+
+    @if (!string.IsNullOrWhiteSpace(_avatarUrl))
+         {
+      <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+ <MudText Typo="Typo.body2" Color="Color.Secondary">Preview:</MudText>
+             <MudAvatar Size="Size.Medium">
+    <MudImage Src="@_avatarUrl" Alt="Avatar Preview" />
+           </MudAvatar>
+       </MudStack>
+   }
+
+        @if (_validationErrors.Count > 0)
+    {
+      <MudAlert Severity="Severity.Warning">
+ @foreach (var error in _validationErrors)
+     {
+      <MudText Typo="Typo.caption">• @error.Key: @error.Value.FirstOrDefault()</MudText>
+         }
+ </MudAlert>
+        }
+   </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+   <MudButton OnClick="Cancel" 
+Variant="Variant.Text">
+   Cancel
+        </MudButton>
+   <MudButton OnClick="SaveChanges" 
+  Color="Color.Primary" 
+  Variant="Variant.Filled"
+              Disabled="_isSaving">
+     @if (_isSaving)
+            {
+   <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+        <MudText Class="ml-2">Saving...</MudText>
+            }
+         else
+        {
+           <text>Save Changes</text>
+ }
+        </MudButton>
+    </DialogActions>
+</MudDialog>

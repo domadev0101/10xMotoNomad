@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using MotoNomad.App.Application.Interfaces;
 using Supabase.Gotrue;
