@@ -1,63 +1,61 @@
 <MudDialog>
     <DialogContent>
-   <MudForm @ref="_form" ValidationDelay="0">
+        <MudForm @ref="_form" @bind-IsValid="_formValid" ValidationDelay="0">
             <MudStack Spacing="3">
-  <MudTextField @bind-Value="_displayName"
-            Label="Display Name"
-     Variant="Variant.Outlined"
-          Immediate="true"
-              MaxLength="100"
-            Counter="100"
-         HelperText="Your display name (max 100 characters)"
-                    Validation="@(new Func<string?, string?>(ValidateDisplayName))" />
+                <MudTextField Value="_displayName"
+      ValueChanged="@((string? value) => OnDisplayNameChanged(value))"
+       Label="Display Name"
+              Required="true"
+              Variant="Variant.Outlined"
+          Validation="@ValidateDisplayName" Counter="100"
+            HelperText="Your display name (max 100 characters)" />
 
-         <MudTextField @bind-Value="_avatarUrl"
-           Label="Avatar URL"
-        Variant="Variant.Outlined"
-   Immediate="true"
-         MaxLength="500"
-    HelperText="URL to your profile picture (optional)"
-           Validation="@(new Func<string?, string?>(ValidateAvatarUrl))" />
+    <MudTextField Value="_avatarUrl"
+        ValueChanged="@((string? value) => OnAvatarUrlChanged(value))"
+     Label="Avatar URL"
+      Variant="Variant.Outlined"
+      Validation="@ValidateAvatarUrl" Counter="500"
+       HelperText="URL to your profile picture (optional)" />
 
-      @if (!string.IsNullOrWhiteSpace(_avatarUrl))
-       {
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-          <MudText Typo="Typo.body2" Color="Color.Secondary">Preview:</MudText>
-      <MudAvatar Size="Size.Medium">
-            <MudImage Src="@_avatarUrl" Alt="Avatar Preview" />
-               </MudAvatar>
-         </MudStack>
-   }
-
-   @if (_validationErrors.Count > 0)
-       {
-           <MudAlert Severity="Severity.Warning">
-          @foreach (var error in _validationErrors)
-     {
-         <MudText Typo="Typo.caption">• @error.Key: @error.Value.FirstOrDefault()</MudText>
-         }
-             </MudAlert>
+   @if (!string.IsNullOrWhiteSpace(_avatarUrl))
+             {
+       <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+ <MudText Typo="Typo.body2" Color="Color.Secondary">Preview:</MudText>
+     <MudAvatar Size="Size.Medium">
+  <MudImage Src="@_avatarUrl" Alt="Avatar Preview" />
+             </MudAvatar>
+       </MudStack>
                 }
-            </MudStack>
- </MudForm>
+
+                @if (_validationErrors.Count > 0)
+    {
+           <MudAlert Severity="Severity.Warning">
+            @foreach (var error in _validationErrors)
+     {
+            <MudText Typo="Typo.caption">• @error.Key: @error.Value.FirstOrDefault()</MudText>
+               }
+  </MudAlert>
+     }
+    </MudStack>
+  </MudForm>
     </DialogContent>
-    <DialogActions>
+<DialogActions>
         <MudButton OnClick="Cancel" Variant="Variant.Text">
-   Cancel
-        </MudButton>
+     Cancel
+</MudButton>
         <MudButton OnClick="SaveChanges" 
    Color="Color.Primary" 
-    Variant="Variant.Filled"
-            Disabled="_isSaving">
- @if (_isSaving)
-{
-      <MudProgressCircular Size="Size.Small" Indeterminate="true" />
- <MudText Class="ml-2">Saving...</MudText>
-    }
-   else
-  {
- <text>Save Changes</text>
-       }
+          Variant="Variant.Filled"
+           Disabled="@(!_formValid || _isSaving)">
+@if (_isSaving)
+            {
+    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+    <MudText Class="ml-2">Saving...</MudText>
+            }
+       else
+            {
+    <text>Save Changes</text>
+  }
         </MudButton>
     </DialogActions>
 </MudDialog>

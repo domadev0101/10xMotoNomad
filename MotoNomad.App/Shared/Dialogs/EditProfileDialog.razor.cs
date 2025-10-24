@@ -22,135 +22,186 @@ public partial class EditProfileDialog : ComponentBase
     private IProfileService ProfileService { get; set; } = default!;
 
     [Inject]
-  private ISnackbar Snackbar { get; set; } = default!;
+    private ISnackbar Snackbar { get; set; } = default!;
 
     [Inject]
     private ILogger<EditProfileDialog> Logger { get; set; } = default!;
 
     private MudForm _form = default!;
-private string? _displayName;
+    private string? _displayName;
     private string? _avatarUrl;
     private bool _isSaving;
+    private bool _formValid;
     private Dictionary<string, string[]> _validationErrors = new();
+    private bool _displayNameTouched = false;
+    private bool _avatarUrlTouched = false;
 
     /// <summary>
     /// Initializes the dialog with current profile data.
-/// </summary>
+    /// </summary>
     protected override void OnInitialized()
     {
         _displayName = Profile.DisplayName;
-        _avatarUrl = Profile.AvatarUrl;
+     _avatarUrl = Profile.AvatarUrl;
+ 
+        // In edit mode, mark fields as touched if they have values
+     _displayNameTouched = !string.IsNullOrWhiteSpace(Profile.DisplayName);
+        _avatarUrlTouched = !string.IsNullOrWhiteSpace(Profile.AvatarUrl);
     }
 
     /// <summary>
     /// Validates the display name field.
+    /// Display Name is REQUIRED - cannot be empty.
+    /// Only shows errors after user interaction.
     /// </summary>
-    private string? ValidateDisplayName(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return null; // Optional field
-        }
+    private Func<string?, string?> ValidateDisplayName => (value) =>
+{
+    // Don't show errors until user has interacted with the field
+        if (!_displayNameTouched)
+            return null;
 
-        if (value.Trim().Length > 100)
+     if (string.IsNullOrWhiteSpace(value))
+        {
+       return "Display name is required";
+     }
+
+    if (value.Trim().Length > 100)
         {
             return "Display name cannot exceed 100 characters";
         }
 
-        return null;
-    }
+  return null;
+    };
 
     /// <summary>
     /// Validates the avatar URL field.
+    /// Avatar URL is OPTIONAL.
+    /// Only shows errors after user interaction.
     /// </summary>
-private string? ValidateAvatarUrl(string? value)
+    private Func<string?, string?> ValidateAvatarUrl => (value) =>
     {
-        if (string.IsNullOrWhiteSpace(value))
+        // Don't show errors until user has interacted with the field
+ if (!_avatarUrlTouched)
+      return null;
+
+   if (string.IsNullOrWhiteSpace(value))
         {
-          return null; // Optional field
+    return null; // Optional field
+  }
+
+     if (value.Length > 500)
+        {
+     return "Avatar URL cannot exceed 500 characters";
         }
 
-        if (value.Length > 500)
+      if (!Uri.TryCreate(value, UriKind.Absolute, out var uriResult) ||
+        (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
         {
-            return "Avatar URL cannot exceed 500 characters";
-        }
-
- if (!Uri.TryCreate(value, UriKind.Absolute, out var uriResult) ||
-         (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
-    {
             return "Avatar URL must be a valid HTTP/HTTPS URL";
-      }
+        }
 
-  return null;
+        return null;
+    };
+
+    /// <summary>
+    /// Callback triggered when DisplayName changes. Re-validates the form.
+    /// </summary>
+    private async Task OnDisplayNameChanged(string? value)
+    {
+        _displayNameTouched = true;
+        _displayName = value;
+        if (_form != null)
+        {
+            await _form.Validate();
+     }
+StateHasChanged();
+    }
+
+    /// <summary>
+    /// Callback triggered when AvatarUrl changes. Re-validates the form.
+    /// </summary>
+    private async Task OnAvatarUrlChanged(string? value)
+  {
+        _avatarUrlTouched = true;
+        _avatarUrl = value;
+     if (_form != null)
+        {
+            await _form.Validate();
+        }
+        StateHasChanged();
     }
 
     /// <summary>
     /// Saves profile changes.
-    /// </summary>
+  /// </summary>
     private async Task SaveChanges()
     {
+    // Mark all fields as touched before validation
+_displayNameTouched = true;
+    _avatarUrlTouched = true;
+
         // Validate form first
         await _form.Validate();
 
     if (!_form.IsValid)
         {
-       Snackbar.Add("Please fix validation errors before saving", Severity.Warning);
-            return;
-        }
+   Snackbar.Add("Please fix validation errors before saving", Severity.Warning);
+  return;
+}
 
-        // Check if any changes were made
+  // Check if any changes were made
         var hasChanges = _displayName?.Trim() != Profile.DisplayName?.Trim() ||
-  _avatarUrl?.Trim() != Profile.AvatarUrl?.Trim();
+        _avatarUrl?.Trim() != Profile.AvatarUrl?.Trim();
 
-        if (!hasChanges)
+     if (!hasChanges)
         {
-     Snackbar.Add("No changes to save", Severity.Info);
-            MudDialog.Close(DialogResult.Ok(false));
- return;
-      }
+        Snackbar.Add("No changes to save", Severity.Info);
+        MudDialog.Close(DialogResult.Ok(false));
+  return;
+        }
 
         _isSaving = true;
         _validationErrors.Clear();
 
         try
-        {
-   var command = new UpdateProfileCommand
-       {
-                DisplayName = string.IsNullOrWhiteSpace(_displayName) ? null : _displayName.Trim(),
-       AvatarUrl = string.IsNullOrWhiteSpace(_avatarUrl) ? null : _avatarUrl.Trim()
-  };
+     {
+         var command = new UpdateProfileCommand
+            {
+   DisplayName = string.IsNullOrWhiteSpace(_displayName) ? null : _displayName.Trim(),
+     AvatarUrl = string.IsNullOrWhiteSpace(_avatarUrl) ? null : _avatarUrl.Trim()
+            };
 
-    var updatedProfile = await ProfileService.UpdateProfileAsync(command);
+       var updatedProfile = await ProfileService.UpdateProfileAsync(command);
 
-      Logger.LogInformation("Profile updated successfully for user {UserId}", updatedProfile.Id);
+     Logger.LogInformation("Profile updated successfully for user {UserId}", updatedProfile.Id);
 
-      Snackbar.Add("Profile updated successfully!", Severity.Success);
-       MudDialog.Close(DialogResult.Ok(true));
-  }
-        catch (ValidationException ex)
+       Snackbar.Add("Profile updated successfully!", Severity.Success);
+     MudDialog.Close(DialogResult.Ok(true));
+        }
+  catch (ValidationException ex)
         {
             _validationErrors = ex.ValidationErrors;
-            Snackbar.Add("Validation failed. Please check the form.", Severity.Warning);
-          Logger.LogWarning(ex, "Validation error updating profile");
+       Snackbar.Add("Validation failed. Please check the form.", Severity.Warning);
+            Logger.LogWarning(ex, "Validation error updating profile");
       }
-   catch (UnauthorizedException)
+        catch (UnauthorizedException)
         {
-            Snackbar.Add("Please log in to update your profile", Severity.Error);
-         Logger.LogWarning("Unauthorized attempt to update profile");
-   MudDialog.Close(DialogResult.Cancel());
+     Snackbar.Add("Please log in to update your profile", Severity.Error);
+            Logger.LogWarning("Unauthorized attempt to update profile");
+          MudDialog.Close(DialogResult.Cancel());
         }
-        catch (DatabaseException ex)
-     {
-     Snackbar.Add("Failed to update profile. Please try again.", Severity.Error);
-            Logger.LogError(ex, "Database error updating profile");
-     }
- catch (Exception ex)
+     catch (DatabaseException ex)
         {
-          Snackbar.Add("An unexpected error occurred. Please try again.", Severity.Error);
-       Logger.LogError(ex, "Unexpected error updating profile");
+         Snackbar.Add("Failed to update profile. Please try again.", Severity.Error);
+ Logger.LogError(ex, "Database error updating profile");
+ }
+     catch (Exception ex)
+        {
+      Snackbar.Add("An unexpected error occurred. Please try again.", Severity.Error);
+  Logger.LogError(ex, "Unexpected error updating profile");
         }
- finally
-      {
+        finally
+ {
             _isSaving = false;
         }
     }
