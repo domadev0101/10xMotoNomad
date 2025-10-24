@@ -57,6 +57,10 @@ public partial class TripForm
     private TripFormViewModel model = new();
     private bool formValid;
     private bool canSubmit = false;
+    private bool _nameTouched = false;
+    private bool _startDateTouched = false;
+    private bool _endDateTouched = false;
+    private bool _descriptionTouched = false;
 
     /// <summary>
     /// Public property indicating if form can be submitted based on validation rules.
@@ -198,6 +202,12 @@ public partial class TripForm
             model.EndDate = Trip.EndDate.ToDateTime(TimeOnly.MinValue);
             model.Description = Trip.Description;
             model.TransportType = Trip.TransportType;
+
+            // Mark all fields as touched in edit mode (user can see validation immediately)
+            _nameTouched = true;
+            _startDateTouched = true;
+            _endDateTouched = true;
+       _descriptionTouched = true;
         }
         // Create mode - fields remain empty (default values)
 
@@ -229,14 +239,19 @@ public partial class TripForm
     /// <summary>
     /// Custom validation function for name field.
     /// Ensures name is not empty and not longer than 200 characters.
+    /// Only shows errors after user interaction in create mode.
     /// </summary>
     private Func<string, string?> ValidateName => (name) =>
     {
-        if (string.IsNullOrWhiteSpace(name))
+        // Don't show errors until user has interacted with the field (create mode only)
+        if (!_nameTouched)
+return null;
+
+  if (string.IsNullOrWhiteSpace(name))
             return "Trip name is required";
 
-        if (name.Length > 200)
-            return "Trip name must not exceed 200 characters";
+    if (name.Length > 200)
+       return "Trip name must not exceed 200 characters";
 
         return null;
     };
@@ -244,11 +259,16 @@ public partial class TripForm
     /// <summary>
     /// Custom validation function for start date field.
     /// Ensures start date is selected.
+    /// Only shows errors after user interaction in create mode.
     /// </summary>
     private Func<DateTime?, string?> ValidateStartDate => (startDate) =>
     {
+     // Don't show errors until user has interacted with the field (create mode only)
+        if (!_startDateTouched)
+            return null;
+
         if (!startDate.HasValue)
-            return "Start date is required";
+ return "Start date is required";
 
         return null;
     };
@@ -256,14 +276,19 @@ public partial class TripForm
     /// <summary>
     /// Custom validation function for end date field.
     /// Ensures end date is after start date.
+    /// Only shows errors after user interaction in create mode.
     /// </summary>
     private Func<DateTime?, string?> ValidateEndDate => (endDate) =>
     {
+        // Don't show errors until user has interacted with the field (create mode only)
+        if (!_endDateTouched)
+     return null;
+
         if (!endDate.HasValue)
-            return "End date is required";
+ return "End date is required";
 
         if (!model.StartDate.HasValue)
-            return null; // Don't validate if start date not selected yet
+   return null; // Don't validate if start date not selected yet
 
         if (endDate.Value <= model.StartDate.Value)
             return "End date must be after start date";
@@ -274,13 +299,18 @@ public partial class TripForm
     /// <summary>
     /// Custom validation function for description field.
     /// Ensures description is not longer than 2000 characters.
+    /// Only shows errors after user interaction in create mode.
     /// </summary>
     private Func<string?, string?> ValidateDescription => (description) =>
     {
-        if (!string.IsNullOrEmpty(description) && description.Length > 2000)
-            return "Description must not exceed 2000 characters";
+        // Don't show errors until user has interacted with the field (create mode only)
+        if (!_descriptionTouched)
+    return null;
 
-        return null;
+      if (!string.IsNullOrEmpty(description) && description.Length > 2000)
+ return "Description must not exceed 2000 characters";
+
+    return null;
     };
 
     /// <summary>
@@ -289,6 +319,12 @@ public partial class TripForm
     /// </summary>
     private async Task HandleSubmit()
     {
+        // Mark all fields as touched before validation
+     _nameTouched = true;
+        _startDateTouched = true;
+        _endDateTouched = true;
+        _descriptionTouched = true;
+
         await form.Validate();
         if (!form.IsValid) return;
 
@@ -296,32 +332,32 @@ public partial class TripForm
 
         if (Trip == null)
         {
-            // Create mode - CreateTripCommand
+     // Create mode - CreateTripCommand
             command = new CreateTripCommand
-            {
-                Name = model.Name.Trim(),
-                StartDate = DateOnly.FromDateTime(model.StartDate!.Value),
+     {
+    Name = model.Name.Trim(),
+  StartDate = DateOnly.FromDateTime(model.StartDate!.Value),
                 EndDate = DateOnly.FromDateTime(model.EndDate!.Value),
-                Description = string.IsNullOrWhiteSpace(model.Description)
-                    ? null
-                    : model.Description.Trim(),
-                TransportType = model.TransportType
-            };
+    Description = string.IsNullOrWhiteSpace(model.Description)
+     ? null
+         : model.Description.Trim(),
+        TransportType = model.TransportType
+    };
         }
         else
         {
-            // Edit mode - UpdateTripCommand
-            command = new UpdateTripCommand
+   // Edit mode - UpdateTripCommand
+command = new UpdateTripCommand
             {
-                Id = Trip.Id,
-                Name = model.Name.Trim(),
+     Id = Trip.Id,
+           Name = model.Name.Trim(),
                 StartDate = DateOnly.FromDateTime(model.StartDate!.Value),
-                EndDate = DateOnly.FromDateTime(model.EndDate!.Value),
+     EndDate = DateOnly.FromDateTime(model.EndDate!.Value),
                 Description = string.IsNullOrWhiteSpace(model.Description)
-                    ? null
-                    : model.Description.Trim(),
-                TransportType = model.TransportType
-            };
+        ? null
+        : model.Description.Trim(),
+      TransportType = model.TransportType
+    };
         }
 
         await OnSubmit.InvokeAsync(command);
@@ -336,38 +372,47 @@ public partial class TripForm
         await HandleSubmit();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && form != null)
-        {
-            // Force initial validation to show disabled button on load
-            await form.Validate();
-        }
-    }
-
-    /// <summary>
-    /// Triggered after any component render to validate form state
-    /// </summary>
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-        if (form != null)
-        {
-            await Task.Delay(10); // Small delay to ensure UI updates
-            await form.Validate();
-        }
-    }
-
     /// <summary>
     /// Callback triggered when Name changes. Re-validates the form.
     /// </summary>
-    private async Task OnNameChanged(string value)
+ private async Task OnNameChanged(string value)
     {
-        model.Name = value;
+        _nameTouched = true;
+      model.Name = value;
         UpdateCanSubmit();
-        if (form != null)
+    if (form != null)
         {
+     await form.Validate();
+        }
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Callback triggered when StartDate changes. Re-validates the form.
+    /// </summary>
+    private async Task OnStartDateChanged(DateTime? value)
+    {
+        _startDateTouched = true;
+        model.StartDate = value;
+        UpdateCanSubmit();
+    if (form != null)
+      {
             await form.Validate();
+        }
+      StateHasChanged();
+    }
+
+    /// <summary>
+    /// Callback triggered when EndDate changes. Re-validates the form.
+    /// </summary>
+ private async Task OnEndDateChanged(DateTime? value)
+    {
+ _endDateTouched = true;
+ model.EndDate = value;
+        UpdateCanSubmit();
+     if (form != null)
+        {
+     await form.Validate();
         }
         StateHasChanged();
     }
@@ -377,12 +422,12 @@ public partial class TripForm
     /// </summary>
     private async Task OnTransportTypeChanged(TransportType value)
     {
-        model.TransportType = value;
+   model.TransportType = value;
         UpdateCanSubmit();
         if (form != null)
         {
             await form.Validate();
-        }
+ }
         StateHasChanged();
     }
 
@@ -391,12 +436,13 @@ public partial class TripForm
     /// </summary>
     private async Task OnDescriptionChanged(string? value)
     {
-        model.Description = value;
+        _descriptionTouched = true;
+  model.Description = value;
         UpdateCanSubmit();
         if (form != null)
         {
-            await form.Validate();
-        }
-        StateHasChanged();
+     await form.Validate();
+   }
+    StateHasChanged();
     }
 }

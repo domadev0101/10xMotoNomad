@@ -121,7 +121,7 @@ public class CompanionService : ICompanionService
                 UserId = null, // MVP doesn't link companions to users
                 FirstName = command.FirstName.Trim(),
                 LastName = command.LastName.Trim(),
-                Contact = command.Contact?.Trim(),
+                Contact = string.IsNullOrWhiteSpace(command.Contact) ? string.Empty : command.Contact.Trim(),
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -182,7 +182,7 @@ public class CompanionService : ICompanionService
             // Update companion properties
             existingCompanion.FirstName = command.FirstName.Trim();
             existingCompanion.LastName = command.LastName.Trim();
-            existingCompanion.Contact = command.Contact?.Trim();
+            existingCompanion.Contact = string.IsNullOrWhiteSpace(command.Contact) ? string.Empty : command.Contact.Trim();
 
             await client
                 .From<Companion>()

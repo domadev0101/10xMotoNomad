@@ -14,7 +14,8 @@
         Class="mb-3" />
     
     <MudDatePicker 
-        @bind-Date="model.StartDate"
+        Date="model.StartDate"
+        DateChanged="@((DateTime? value) => OnStartDateChanged(value))"
         Label="Start date"
         DateFormat="dd.MM.yyyy"
         Required="true"
@@ -23,11 +24,12 @@
         Class="mb-3" />
     
     <MudDatePicker 
-        @bind-Date="model.EndDate"
+        Date="model.EndDate"
+        DateChanged="@((DateTime? value) => OnEndDateChanged(value))"
         Label="End date"
- DateFormat="dd.MM.yyyy"
+        DateFormat="dd.MM.yyyy"
         Required="true"
-   Validation="@ValidateEndDate"
+        Validation="@ValidateEndDate"
         Disabled="@IsLoading"
         Class="mb-3" />
     

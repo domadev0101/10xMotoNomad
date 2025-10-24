@@ -2,29 +2,32 @@
 
 <MudForm @ref="form" @bind-IsValid="formValid">
     <MudTextField 
-        @bind-Value="model.FirstName"
-        Label="First name"
-        Required="true"
-        MaxLength="100"
+        Value="model.FirstName"
+        ValueChanged="@((string value) => OnFirstNameChanged(value))"
+      Label="First name"
+      Required="true"
+        Validation="@ValidateFirstName"
         Counter="100"
         HelperText="Max 100 characters"
         Disabled="@IsLoading"
         Class="mb-3" />
     
     <MudTextField 
-        @bind-Value="model.LastName"
-        Label="Last name"
+      Value="model.LastName"
+    ValueChanged="@((string value) => OnLastNameChanged(value))"
+     Label="Last name"
         Required="true"
-        MaxLength="100"
-        Counter="100"
+        Validation="@ValidateLastName"
+   Counter="100"
         HelperText="Max 100 characters"
         Disabled="@IsLoading"
         Class="mb-3" />
     
-    <MudTextField 
-        @bind-Value="model.Contact"
-        Label="Contact (optional)"
-        MaxLength="255"
+<MudTextField 
+        Value="model.Contact"
+ValueChanged="@((string? value) => OnContactChanged(value))"
+  Label="Contact (optional)"
+ Validation="@ValidateContact"
         Counter="255"
         HelperText="Email or phone number"
         Disabled="@IsLoading"
@@ -32,26 +35,26 @@
     
     <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 1rem;">
         <MudButton 
-            Variant="Variant.Text"
-            Color="Color.Default"
-            OnClick="@(() => OnCancel.InvokeAsync())"
-            Disabled="@IsLoading">
-            Cancel
+         Variant="Variant.Text"
+      Color="Color.Default"
+  OnClick="@(() => OnCancel.InvokeAsync())"
+       Disabled="@IsLoading">
+        Cancel
         </MudButton>
         
         <MudButton 
             Variant="Variant.Filled" 
             Color="Color.Primary"
-            OnClick="HandleSubmit"
+    OnClick="HandleSubmit"
             Disabled="@(!formValid || IsLoading)">
-            @if (IsLoading)
-            {
-                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-            }
+     @if (IsLoading)
+    {
+ <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+      }
             else
             {
-                <text>Save</text>
-            }
-        </MudButton>
+       <text>Save</text>
+       }
+   </MudButton>
     </div>
 </MudForm>
