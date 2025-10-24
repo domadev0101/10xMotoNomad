@@ -1,4 +1,4 @@
-@namespace MotoNomad.App.Shared.Components
+﻿@namespace MotoNomad.App.Shared.Components
 @using MotoNomad.App.Infrastructure.Database.Entities
 
 <MudForm @ref="form" @bind-IsValid="formValid">
@@ -45,11 +45,11 @@
         Required="true"
         Disabled="@IsLoading"
         Class="mb-3">
-        <MudSelectItem Value="@TransportType.Motorcycle">??? Motorcycle</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Airplane">?? Airplane</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Train">?? Train</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Car">?? Car</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Other">?? Other</MudSelectItem>
+        <MudSelectItem Value="@TransportType.Motorcycle">🏍️ Motorcycle</MudSelectItem>
+        <MudSelectItem Value="@TransportType.Airplane">✈️ Airplane</MudSelectItem>
+        <MudSelectItem Value="@TransportType.Train">🚂 Train</MudSelectItem>
+        <MudSelectItem Value="@TransportType.Car">🚗 Car</MudSelectItem>
+        <MudSelectItem Value="@TransportType.Other">⭐ Other</MudSelectItem>
     </MudSelect>
     
     @if (ShowButtons)
