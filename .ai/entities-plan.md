@@ -1,12 +1,12 @@
-# Database Entities - Documentation
+﻿# Database Entities - Documentation
 
-## ?? Overview
+## 📋 Overview
 
 All entities inherit from `Postgrest.Models.BaseModel` and are properly mapped to Supabase tables using attributes.
 
 ---
 
-## ??? Entities
+## 🏗️ Entities
 
 ### 1. Trip
 
@@ -95,7 +95,7 @@ public enum TransportType
 {
     Motorcycle = 0,
     Airplane = 1,
-    Train = 2,
+  Train = 2,
     Car = 3,
     Other = 4
 }
@@ -103,7 +103,7 @@ public enum TransportType
 
 ---
 
-## ?? Postgrest Attributes
+## 🔌 Postgrest Attributes
 
 ### `[Table("table_name")]`
 - Maps C# class to specific database table
@@ -119,7 +119,7 @@ public enum TransportType
 
 ---
 
-## ?? Usage Examples
+## 💡 Usage Examples
 
 ### Fetching data:
 
@@ -129,7 +129,7 @@ var client = supabaseClient.GetClient();
 // Get all trips
 var trips = await client
     .From<Trip>()
-    .Get();
+ .Get();
 
 // Get user trips
 var userTrips = await client
@@ -155,7 +155,7 @@ var newTrip = new Trip
     StartDate = new DateOnly(2025, 7, 1),
     EndDate = new DateOnly(2025, 7, 15),
     TransportType = TransportType.Motorcycle,
-    DurationDays = 14
+  DurationDays = 14
 };
 
 var response = await client
@@ -190,7 +190,7 @@ await client
 
 ---
 
-## ?? Important Notes
+## ⚠️ Important Notes
 
 1. **BaseModel is required** - all entities must inherit from `Postgrest.Models.BaseModel`
 
@@ -218,6 +218,6 @@ await client
 
 ---
 
-**Status:** ? Ready to use  
+**Status:** ✅ Ready to use  
 **Last Updated:** 2025-01-18  
 **Version:** 1.0
