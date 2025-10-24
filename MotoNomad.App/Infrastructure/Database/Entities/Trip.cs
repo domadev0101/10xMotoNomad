@@ -27,15 +27,9 @@ public class Trip : BaseModel
     [Column("transport_type")]
     public TransportType TransportType { get; set; }
     
-    [Column("duration_days")]
-    public int DurationDays { get; set; }
-    
     [Column("created_at")]
     public DateTime CreatedAt { get; set; }
     
     [Column("updated_at")]
     public DateTime UpdatedAt { get; set; }
-    
-    // Navigation property - not mapped to database
-    public List<Companion>? Companions { get; set; }
 }

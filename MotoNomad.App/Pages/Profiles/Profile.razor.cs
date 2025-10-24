@@ -88,9 +88,9 @@ try
         return;
         }
 
-        var parameters = new DialogParameters
+        var parameters = new DialogParameters<Shared.Dialogs.EditProfileDialog>
         {
-        ["Profile"] = _profile
+     { x => x.Profile, _profile }
         };
 
         var options = new DialogOptions
@@ -105,14 +105,14 @@ try
      parameters,
     options);
 
-        var result = await dialog.Result;
+     var result = await dialog.Result;
 
-    // Reload profile if dialog was not canceled (don't show snackbar - dialog already shows it)
-  if (result != null && !result.Canceled)
-   {
+        // Reload profile if dialog was not canceled
+        if (result != null && !result.Canceled)
+      {
             Logger.LogInformation("Reloading profile after successful edit");
-       await LoadProfileAsync();
- StateHasChanged(); // Force UI update
-    }
+    await LoadProfileAsync();
+   StateHasChanged(); // Force UI update
+        }
     }
 }

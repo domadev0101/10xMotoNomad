@@ -70,17 +70,12 @@ ISupabaseClientService supabaseClient,
         {
  var client = _supabaseClient.GetClient();
          
-   // Try to restore session if not already authenticated
-  if (client.Auth.CurrentSession == null)
-       {
-                _logger.LogDebug("No current session, attempting to restore from storage");
-await client.Auth.RetrieveSessionAsync();
-            }
-            
-      var user = client.Auth.CurrentUser;
+   // Session is restored during SupabaseClientService.InitializeAsync()
+  // so CurrentUser should be available if user was logged in
+    var user = client.Auth.CurrentUser;
 
      if (user == null)
-            {
+          {
      _logger.LogDebug("No authenticated user found");
      return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
          }
@@ -88,10 +83,10 @@ await client.Auth.RetrieveSessionAsync();
        var claims = new List<Claim>
     {
     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim("email", user.Email ?? string.Empty),
-            };
+       new Claim("email", user.Email ?? string.Empty),
+ };
 
-            // Add display_name from user metadata if available
+       // Add display_name from user metadata if available
      if (user.UserMetadata?.ContainsKey("display_name") == true)
       {
        var displayName = user.UserMetadata["display_name"]?.ToString();
@@ -101,17 +96,17 @@ await client.Auth.RetrieveSessionAsync();
    }
           }
 
-            var identity = new ClaimsIdentity(claims, "supabase");
+       var identity = new ClaimsIdentity(claims, "supabase");
      var principal = new ClaimsPrincipal(identity);
 
    _logger.LogInformation("User authenticated: {UserId} ({Email})", user.Id, user.Email);
   return new AuthenticationState(principal);
 }
         catch (Exception ex)
-        {
+      {
        _logger.LogError(ex, "Error getting authentication state");
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-        }
+       return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+      }
     }
 
     /// <summary>

@@ -12,9 +12,9 @@ public partial class DeleteTripConfirmationDialog : ComponentBase
     /// <summary>
     /// Cascading parameter from MudBlazor dialog system.
     /// Provides methods to close the dialog and return results.
- /// </summary>
+    /// </summary>
     [CascadingParameter]
-    private IDialogReference? MudDialog { get; set; }
+    private IMudDialogInstance MudDialog { get; set; } = default!;
 
     /// <summary>
     /// Trip name to display in the confirmation message.
@@ -26,11 +26,11 @@ public partial class DeleteTripConfirmationDialog : ComponentBase
     /// Cancels the dialog and returns canceled result.
     /// User clicked "Cancel" button.
     /// </summary>
-    private void Cancel() => MudDialog?.Close(DialogResult.Cancel());
+    private void Cancel() => MudDialog.Cancel();
 
     /// <summary>
     /// Confirms the deletion and returns success result.
     /// User clicked "Delete" button.
     /// </summary>
-    private void Confirm() => MudDialog?.Close(DialogResult.Ok(true));
+    private void Confirm() => MudDialog.Close(DialogResult.Ok(true));
 }

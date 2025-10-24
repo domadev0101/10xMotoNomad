@@ -46,6 +46,7 @@ public partial class TripDetails : ComponentBase
     private int activeTabIndex = 0; // 0 = Details, 1 = Companions
     private string? errorMessage = null;
     private TripForm? tripFormRef = null;
+    private bool canSubmitTrip = true; // Track form validation state
 
     #endregion
 
@@ -193,12 +194,21 @@ trip = await tripTask;
     {
         if (tripFormRef != null)
         {
-            await tripFormRef.SubmitAsync();
-    }
-     else
-        {
-    Snackbar.Add("Form is not ready. Please try again.", Severity.Warning);
+ await tripFormRef.SubmitAsync();
         }
+ else
+ {
+    Snackbar.Add("Form is not ready. Please try again.", Severity.Warning);
+  }
+    }
+
+    /// <summary>
+    /// Handles CanSubmit state changes from TripForm.
+  /// </summary>
+    private void HandleCanSubmitChanged(bool canSubmit)
+    {
+        canSubmitTrip = canSubmit;
+        StateHasChanged();
     }
 
     /// <summary>
@@ -207,48 +217,48 @@ trip = await tripTask;
     /// </summary>
     private async Task HandleDeleteTrip()
     {
-     if (trip == null) return;
+      if (trip == null) return;
 
-        var parameters = new DialogParameters
-      {
-            { "TripName", trip.Name }
+        var parameters = new DialogParameters<DeleteTripConfirmationDialog>
+        {
+ { x => x.TripName, trip.Name }
         };
 
   var dialog = await DialogService.ShowAsync<DeleteTripConfirmationDialog>(
-       "Confirm Deletion",
-     parameters,
-            new DialogOptions { MaxWidth = MaxWidth.Small });
+      "Confirm Deletion",
+    parameters,
+      new DialogOptions { MaxWidth = MaxWidth.Small, CloseButton = true });
 
-        var result = await dialog.Result;
+ var result = await dialog.Result;
 
-    if (result.Canceled) return;
+        if (result.Canceled) return;
 
-  try
+        try
+    {
+      await TripService.DeleteTripAsync(trip.Id);
+            Snackbar.Add($"Trip '{trip.Name}' has been deleted.", Severity.Success);
+   NavigationManager.NavigateTo("/trips");
+      }
+ catch (NotFoundException)
         {
-          await TripService.DeleteTripAsync(trip.Id);
-       Snackbar.Add($"Trip '{trip.Name}' has been deleted.", Severity.Success);
-    NavigationManager.NavigateTo("/trips");
-     }
-        catch (NotFoundException)
-     {
-     Snackbar.Add("Trip not found.", Severity.Warning);
-       NavigationManager.NavigateTo("/trips");
- }
-     catch (UnauthorizedException)
+  Snackbar.Add("Trip not found.", Severity.Warning);
+        NavigationManager.NavigateTo("/trips");
+        }
+        catch (UnauthorizedException)
         {
- Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-         NavigationManager.NavigateTo("/login");
-        }
-        catch (DatabaseException)
-   {
-         Snackbar.Add("Failed to delete trip. Please try again.", Severity.Error);
- }
-        catch (Exception ex)
- {
-        Snackbar.Add("An unexpected error occurred.", Severity.Error);
-        // TODO: Log error with ILogger
-        }
+        Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
+  NavigationManager.NavigateTo("/login");
   }
+        catch (DatabaseException)
+    {
+ Snackbar.Add("Failed to delete trip. Please try again.", Severity.Error);
+  }
+        catch (Exception ex)
+    {
+   Snackbar.Add("An unexpected error occurred.", Severity.Error);
+   // TODO: Log error with ILogger
+        }
+    }
 
     #endregion
 
@@ -303,49 +313,49 @@ companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
         var companion = companions.FirstOrDefault(c => c.Id == companionId);
         if (companion == null) return;
 
-        var parameters = new DialogParameters
+        var parameters = new DialogParameters<DeleteCompanionConfirmationDialog>
         {
-     { "FirstName", companion.FirstName },
-   { "LastName", companion.LastName }
-        };
+  { x => x.FirstName, companion.FirstName },
+   { x => x.LastName, companion.LastName }
+   };
 
         var dialog = await DialogService.ShowAsync<DeleteCompanionConfirmationDialog>(
-        "Confirm Deletion",
-parameters,
-            new DialogOptions { MaxWidth = MaxWidth.Small });
+  "Confirm Deletion",
+     parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Small, CloseButton = true });
 
-        var result = await dialog.Result;
+   var result = await dialog.Result;
 
         if (result.Canceled) return;
 
-      try
+        try
         {
-         await CompanionService.RemoveCompanionAsync(companionId);
+ await CompanionService.RemoveCompanionAsync(companionId);
             
-            // Refresh companion list
-          companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
-     
-          Snackbar.Add("Companion has been removed.", Severity.Success);
-        }
-  catch (NotFoundException)
-        {
- Snackbar.Add("Companion not found.", Severity.Warning);
-       // Refresh list (may have been already deleted)
+ // Refresh companion list
   companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
+       
+   Snackbar.Add("Companion has been removed.", Severity.Success);
         }
- catch (DatabaseException)
+      catch (NotFoundException)
         {
-            Snackbar.Add("Failed to remove companion. Please try again.", Severity.Error);
+  Snackbar.Add("Companion not found.", Severity.Warning);
+            // Refresh list (may have been already deleted)
+     companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
         }
-  catch (Exception ex)
-        {
-       Snackbar.Add("An unexpected error occurred.", Severity.Error);
-   // TODO: Log error with ILogger
-   }
-        finally
+        catch (DatabaseException)
      {
-            StateHasChanged();
+  Snackbar.Add("Failed to remove companion. Please try again.", Severity.Error);
         }
+        catch (Exception ex)
+        {
+Snackbar.Add("An unexpected error occurred.", Severity.Error);
+            // TODO: Log error with ILogger
+  }
+        finally
+    {
+            StateHasChanged();
+      }
     }
 
     #endregion

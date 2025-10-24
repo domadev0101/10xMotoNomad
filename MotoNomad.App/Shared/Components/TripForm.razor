@@ -3,10 +3,11 @@
 
 <MudForm @ref="form" @bind-IsValid="formValid">
     <MudTextField 
-        @bind-Value="model.Name"
+        Value="model.Name"
+        ValueChanged="@((string value) => OnNameChanged(value))"
         Label="Trip name"
         Required="true"
-        MaxLength="200"
+        Validation="@ValidateName"
         Counter="200"
         HelperText="Max 200 characters"
         Disabled="@IsLoading"
@@ -17,66 +18,69 @@
         Label="Start date"
         DateFormat="dd.MM.yyyy"
         Required="true"
+        Validation="@ValidateStartDate"
         Disabled="@IsLoading"
         Class="mb-3" />
     
     <MudDatePicker 
         @bind-Date="model.EndDate"
         Label="End date"
-        DateFormat="dd.MM.yyyy"
+ DateFormat="dd.MM.yyyy"
         Required="true"
-        Validation="@ValidateEndDate"
+   Validation="@ValidateEndDate"
         Disabled="@IsLoading"
         Class="mb-3" />
     
     <MudTextField 
-        @bind-Value="model.Description"
+        Value="model.Description"
+        ValueChanged="@((string? value) => OnDescriptionChanged(value))"
         Label="Description (optional)"
-        Lines="3"
-        MaxLength="2000"
+    Lines="3"
+        Validation="@ValidateDescription"
         Counter="2000"
         HelperText="Max 2000 characters"
         Disabled="@IsLoading"
-        Class="mb-3" />
+    Class="mb-3" />
     
     <MudSelect 
-        @bind-Value="model.TransportType"
+     Value="model.TransportType"
+        ValueChanged="@((TransportType value) => OnTransportTypeChanged(value))"
         Label="Transport type"
-        Required="true"
-        Disabled="@IsLoading"
+  Required="true"
+      Disabled="@IsLoading"
         Class="mb-3">
-        <MudSelectItem Value="@TransportType.Motorcycle">🏍️ Motorcycle</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Airplane">✈️ Airplane</MudSelectItem>
+    <MudSelectItem Value="@TransportType.Motorcycle">🏍️ Motorcycle</MudSelectItem>
+     <MudSelectItem Value="@TransportType.Airplane">✈️ Airplane</MudSelectItem>
         <MudSelectItem Value="@TransportType.Train">🚂 Train</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Car">🚗 Car</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Other">⭐ Other</MudSelectItem>
+    <MudSelectItem Value="@TransportType.Car">🚗 Car</MudSelectItem>
+     <MudSelectItem Value="@TransportType.Other">⭐ Other</MudSelectItem>
     </MudSelect>
     
     @if (ShowButtons)
     {
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 1rem;">
-            <MudButton 
-                Variant="Variant.Text"
-                Color="Color.Default"
-                OnClick="@(() => OnCancel.InvokeAsync())"
-                Disabled="@IsLoading">
-                Cancel
-            </MudButton>
+    <MudButton 
+          Variant="Variant.Text"
+ Color="Color.Default"
+           OnClick="@(() => OnCancel.InvokeAsync())"
+       Disabled="@IsLoading">
+           Cancel
+      </MudButton>
             
-            <MudButton 
-                Variant="Variant.Filled" 
-                Color="Color.Primary"
-                OnClick="HandleSubmit"
-                Disabled="@(!formValid || IsLoading)">
+  <MudButton 
+  Variant="Variant.Filled" 
+          Color="Color.Primary"
+         OnClick="HandleSubmit"
+     Disabled="@(!CanSubmit || IsLoading)">
                 @if (IsLoading)
-                {
-                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-                }
-                else
-                {
-                    <text>@(Trip == null ? "Save" : "Save changes")</text>
-                }
-            </MudButton>
+    {
+<MudProgressCircular Size="Size.Small" Indeterminate="true" />
+      }
+        else
+     {
+   <text>@(Trip == null ? "Save" : "Save changes")</text>
+      }
+     </MudButton>
         </div>
     }
 </MudForm>

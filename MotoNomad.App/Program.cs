@@ -26,6 +26,9 @@ builder.Configuration.GetSection("Supabase").Bind(supabaseSettings);
 var mockAuthSettings = new MockAuthSettings();
 builder.Configuration.GetSection("MockAuth").Bind(mockAuthSettings);
 
+// Register Blazored LocalStorage (MUST be before services that use it)
+builder.Services.AddBlazoredLocalStorage();
+
 // Register Supabase configuration
 builder.Services.AddSingleton(supabaseSettings);
 builder.Services.AddSingleton(mockAuthSettings);
@@ -62,9 +65,6 @@ builder.Services.AddScoped<MotoNomad.Application.Interfaces.IAuthService, AuthSe
 builder.Services.AddScoped<MotoNomad.Application.Interfaces.ITripService, TripService>();
 builder.Services.AddScoped<MotoNomad.Application.Interfaces.ICompanionService, CompanionService>();
 builder.Services.AddScoped<MotoNomad.Application.Interfaces.IProfileService, ProfileService>();
-
-// Register Blazored LocalStorage
-builder.Services.AddBlazoredLocalStorage();
 
 // Register MudBlazor services
 builder.Services.AddMudServices();

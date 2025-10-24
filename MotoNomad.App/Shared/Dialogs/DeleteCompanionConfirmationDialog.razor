@@ -4,22 +4,16 @@
     <DialogContent>
         <MudText Typo="Typo.body1">
             Are you sure you want to remove <strong>@FirstName @LastName</strong> from the trip?
-        </MudText>
+      </MudText>
     </DialogContent>
     
     <DialogActions>
- <MudButton 
-  Variant="Variant.Text" 
-     Color="Color.Default"
- OnClick="Cancel">
+        <MudButton OnClick="Cancel" Variant="Variant.Text" Color="Color.Default">
   Cancel
         </MudButton>
-     
-        <MudButton 
- Variant="Variant.Filled" 
-  Color="Color.Error"
-         OnClick="Confirm">
-  Delete
-  </MudButton>
+        
+        <MudButton OnClick="Confirm" Variant="Variant.Filled" Color="Color.Error">
+        Delete
+        </MudButton>
     </DialogActions>
 </MudDialog>

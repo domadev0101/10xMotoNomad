@@ -64,10 +64,11 @@ else if (trip != null)
            }
 
    <TripForm @ref="tripFormRef"
-           Trip="@trip"
-          OnSubmit="HandleUpdateTripAsync"
-         OnCancel="@(() => NavigationManager.NavigateTo("/trips"))"
-      IsLoading="@isUpdatingTrip"
+Trip="@trip"
+      OnSubmit="HandleUpdateTripAsync"
+   OnCancel="@(() => NavigationManager.NavigateTo("/trips"))"
+  IsLoading="@isUpdatingTrip"
+    OnCanSubmitChanged="HandleCanSubmitChanged"
    ShowButtons="false" />
       </MudCardContent>
 
@@ -75,26 +76,26 @@ else if (trip != null)
          <MudButton Variant="Variant.Text"
      Color="Color.Default"
              OnClick="@(() => NavigationManager.NavigateTo("/trips"))"
-                    Disabled="@isUpdatingTrip">
-              Cancel
+   Disabled="@isUpdatingTrip">
+  Cancel
       </MudButton>
-          <MudSpacer />
-        <MudButton Variant="Variant.Filled"
-              Color="Color.Primary"
-             OnClick="HandleUpdateTripClick"
-  Disabled="@isUpdatingTrip"
-          StartIcon="@Icons.Material.Filled.Save">
-        @if (isUpdatingTrip)
-      {
-              <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
-              <text>Saving...</text>
-       }
-           else
-                {
-            <text>Save Changes</text>
+        <MudSpacer />
+     <MudButton Variant="Variant.Filled"
+         Color="Color.Primary"
+    OnClick="HandleUpdateTripClick"
+  Disabled="@(isUpdatingTrip || !canSubmitTrip)"
+      StartIcon="@Icons.Material.Filled.Save">
+       @if (isUpdatingTrip)
+         {
+  <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+ <text>Saving...</text>
      }
-             </MudButton>
-      </MudCardActions>
+      else
+   {
+       <text>Save Changes</text>
+     }
+  </MudButton>
+     </MudCardActions>
          </MudCard>
             </MudTabPanel>
 

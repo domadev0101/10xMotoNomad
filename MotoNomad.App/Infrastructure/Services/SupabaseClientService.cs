@@ -1,5 +1,6 @@
-using MotoNomad.App.Infrastructure.Configuration;
+﻿using MotoNomad.App.Infrastructure.Configuration;
 using MotoNomad.App.Application.Interfaces;
+using Blazored.LocalStorage;
 using Microsoft.Extensions.Logging;
 
 namespace MotoNomad.App.Infrastructure.Services;
@@ -7,11 +8,17 @@ namespace MotoNomad.App.Infrastructure.Services;
 public class SupabaseClientService : ISupabaseClientService
 {
     private readonly Supabase.Client _client;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<SupabaseClientService> _logger;
     private bool _isInitialized;
+    private const string SessionKey = "supabase.auth.session";
 
-    public SupabaseClientService(SupabaseSettings settings, ILogger<SupabaseClientService> logger)
+    public SupabaseClientService(
+        SupabaseSettings settings,
+        IServiceProvider serviceProvider,
+        ILogger<SupabaseClientService> logger)
     {
+        _serviceProvider = serviceProvider;
         _logger = logger;
 
         if (!settings.IsValid())
@@ -25,9 +32,7 @@ public class SupabaseClientService : ISupabaseClientService
             var options = new Supabase.SupabaseOptions
             {
                 AutoConnectRealtime = true,
-                AutoRefreshToken = true,
-                // Session persistence is handled automatically by supabase-csharp
-                // It stores session in browser localStorage by default
+                AutoRefreshToken = true
             };
 
             _client = new Supabase.Client(settings.Url, settings.AnonKey, options);
@@ -63,25 +68,48 @@ public class SupabaseClientService : ISupabaseClientService
         {
             _logger.LogInformation("Initializing Supabase client connection...");
             await _client.InitializeAsync();
+
+            // Try to restore session from localStorage BEFORE marking as initialized
+            await RestoreSessionFromStorageAsync();
+
             _isInitialized = true;
-
-            // Try to restore session from storage
-            var session = await _client.Auth.RetrieveSessionAsync();
-            if (session != null)
-            {
-                _logger.LogInformation("Session restored for user: {Email}", session.User?.Email);
-            }
-            else
-            {
-                _logger.LogInformation("No existing session found");
-            }
-
             _logger.LogInformation("Supabase client initialized successfully");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to initialize Supabase client");
             throw;
+        }
+    }
+
+    /// <summary>
+    /// Restores the session from browser localStorage during initialization.
+    /// This ensures the session is available before any components try to check authentication.
+    /// </summary>
+    private async Task RestoreSessionFromStorageAsync()
+    {
+        try
+        {
+            // Create a scope to resolve scoped ILocalStorageService
+            using var scope = _serviceProvider.CreateScope();
+            var localStorage = scope.ServiceProvider.GetRequiredService<ILocalStorageService>();
+
+            var session = await localStorage.GetItemAsync<Supabase.Gotrue.Session>(SessionKey);
+
+            if (session != null && session.AccessToken != null && session.RefreshToken != null)
+            {
+                await _client.Auth.SetSession(session.AccessToken, session.RefreshToken);
+                _logger.LogInformation("Session restored from localStorage for user: {Email}", session.User?.Email);
+            }
+            else
+            {
+                _logger.LogInformation("No existing session found in localStorage");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to restore session from localStorage during initialization");
+            // Don't throw - missing session is not a fatal error
         }
     }
 
