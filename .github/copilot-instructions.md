@@ -132,10 +132,20 @@ When modifying the directory structure, always update this section.
 ### Testing
 - Write unit tests for business logic and services (xUnit)
 - Write component tests using bUnit
-- Mock Supabase client using Moq
+- Mock Supabase client and services using Moq
 - Test validation logic thoroughly
-- Use descriptive test names (Given_When_Then pattern)
-- Run tests in Visual Studio Test Explorer
+- **Test Naming**: Use `MethodName_StateUnderTest_ExpectedBehavior` pattern
+  - Example: `Login_WithInvalidCredentials_ThrowsAuthException`
+- **AAA Pattern**: Structure all tests with clear Arrange-Act-Assert sections
+- **Test Isolation**: Each test must be independent, no shared state between tests
+- **Assertions**: Use FluentAssertions for readable test assertions
+- **bUnit Setup**: 
+  - Always add MudBlazor services: `ctx.Services.AddMudServices()`
+  - Mock navigation with `FakeNavigationManager`
+  - Mock IAuthService, ITripService in component tests
+- **Test Data**: Create helper methods/fixtures for reusable test data
+- **One Focus Per Test**: Each test should verify one specific behavior
+- Run tests with `dotnet test --verbosity normal`
 
 ### Naming Conventions
 - **PascalCase**: Classes, methods, public members, components
