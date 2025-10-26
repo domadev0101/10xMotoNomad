@@ -155,7 +155,7 @@ The Kitchen Sink page is divided into 17 sections, each presenting a different c
 
 If you're adding a new MudBlazor component to the application:
 
-1. Open `MotoNomad.App/Pages/KitchenSink.razor`
+1. Open `MotoNomad.App/Pages/Dev/KitchenSink.razor`
 2. Find the appropriate section or create a new one
 3. Add `MudPaper` with example:
    ```razor

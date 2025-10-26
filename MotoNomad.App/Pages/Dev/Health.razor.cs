@@ -3,7 +3,7 @@ using MotoNomad.App.Infrastructure.Database.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 
-namespace MotoNomad.App.Pages;
+namespace MotoNomad.App.Pages.Dev;
 
 /// <summary>
 /// Health Check page - diagnostic tool for verifying Supabase connection and database access.

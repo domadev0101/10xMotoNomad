@@ -1,7 +1,7 @@
 using MudBlazor;
 using Microsoft.AspNetCore.Components;
 
-namespace MotoNomad.App.Pages;
+namespace MotoNomad.App.Pages.Dev;
 
 /// <summary>
 /// Kitchen Sink page - demonstrates all MudBlazor components used in MotoNomad application.
