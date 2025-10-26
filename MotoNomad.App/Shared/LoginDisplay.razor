@@ -1,51 +1,54 @@
 <AuthorizeView>
     <Authorized>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <MudText Typo="Typo.body2" Class="login-display-text">
-                Hello, @GetDisplayName(context)!
-            </MudText>
-            
+         <MudText Typo="Typo.body2" Class="login-display-text" Style="color: white; font-weight: 500;">
+  Hello, @GetDisplayName(context)!
+     </MudText>
+      
             <MudIconButton 
-                Icon="@Icons.Material.Filled.Logout"
-                Color="Color.Inherit"
-                OnClick="@HandleLogout"
-                Title="Logout" />
-        </div>
+       Icon="@Icons.Material.Filled.Logout"
+      Color="Color.Inherit"
+   OnClick="@HandleLogout"
+    Title="Logout"
+      Style="color: white;" />
+      </div>
     </Authorized>
     
     <NotAuthorized>
-        <div style="display: flex; gap: 10px;">
-            @* Desktop - full buttons *@
-            <MudButton 
-                Variant="Variant.Text" 
-                Color="Color.Inherit"
-                Href="/login"
-                Class="login-display-button">
-                Login
-            </MudButton>
+ <div style="display: flex; gap: 10px;">
+          @* Desktop - full buttons *@
+   <MudButton 
+     Variant="Variant.Text" 
+       Color="Color.Inherit"
+    Href="/login"
+     Class="login-display-button"
+    Style="color: white;">
+        Login
+        </MudButton>
             
-            <MudButton 
-                Variant="Variant.Filled" 
-                Color="Color.Primary"
-                Href="/register"
-                Class="login-display-button">
-                Register
-            </MudButton>
-            
-            @* Mobile - icons *@
-            <MudIconButton 
-                Icon="@Icons.Material.Filled.Login"
-                Color="Color.Inherit"
-                Href="/login"
-                Class="login-display-icon"
-                Title="Login" />
-            
-            <MudIconButton 
-                Icon="@Icons.Material.Filled.PersonAdd"
-                Color="Color.Primary"
-                Href="/register"
-                Class="login-display-icon"
-                Title="Register" />
+       <MudButton 
+          Variant="Variant.Filled" 
+    Href="/register"
+                Class="login-display-button"
+             Style="background: white; color: #667eea;">
+     Register
+       </MudButton>
+          
+       @* Mobile - icons *@
+    <MudIconButton 
+          Icon="@Icons.Material.Filled.Login"
+         Color="Color.Inherit"
+              Href="/login"
+        Class="login-display-icon"
+           Title="Login"
+                Style="color: white;" />
+      
+         <MudIconButton 
+      Icon="@Icons.Material.Filled.PersonAdd"
+            Href="/register"
+       Class="login-display-icon"
+       Title="Register"
+                Style="background: white; color: #667eea;" />
         </div>
     </NotAuthorized>
 </AuthorizeView>

@@ -1,26 +1,55 @@
-@namespace MotoNomad.App.Shared.Components
+﻿@namespace MotoNomad.App.Shared.Components
 
-<MudCard Class="trip-card" Style="cursor: pointer; transition: box-shadow 0.3s;" @onclick="HandleClick">
+<MudCard 
+ Class="trip-card" 
+    Style="cursor: pointer; border-radius: 16px; overflow: hidden; position: relative;" 
+    @onclick="HandleClick">
+    
+    @* Gradient Header Strip *@
+    <div style="height: 8px; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>
+    
     <MudCardHeader>
         <CardHeaderContent>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <MudIcon Icon="@GetTransportIcon()" Size="Size.Large" Color="Color.Primary" />
-                <MudText Typo="Typo.h6">@Trip.Name</MudText>
-            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+ @* Transport Icon in Colored Circle *@
+       <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.25)); display: flex; align-items: center; justify-content: center;">
+          <MudIcon Icon="@GetTransportIcon()" Size="Size.Large" Color="Color.Primary" />
+                </div>
+        
+   <div style="flex: 1;">
+                <MudText Typo="Typo.h6" Style="font-weight: 600; margin-bottom: 4px;">
+    @Trip.Name
+      </MudText>
+     <MudText Typo="Typo.caption" Color="Color.Secondary">
+   @GetDurationLabel()
+    </MudText>
+    </div>
+          
+    @* Chevron Icon *@
+     <MudIcon Icon="@Icons.Material.Filled.ChevronRight" Color="Color.Secondary" />
+          </div>
         </CardHeaderContent>
     </MudCardHeader>
     
     <MudCardContent>
-        <MudText Typo="Typo.body2" Class="mb-1">
-            @Trip.StartDate.ToString("dd.MM.yyyy") - @Trip.EndDate.ToString("dd.MM.yyyy")
-        </MudText>
-        
-        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2">
-            (@GetDurationLabel())
-        </MudText>
-        
-        <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.People" Color="Color.Default">
-            @GetCompanionLabel()
-        </MudChip>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+            @* Date Chip *@
+<MudChip 
+                T="string" 
+      Size="Size.Small" 
+    Variant="Variant.Filled"
+    Style="background: rgba(102, 126, 234, 0.15); color: #667eea; border-radius: 8px;">
+            📅 @Trip.StartDate.ToString("dd.MM.yyyy")
+   </MudChip>
+            
+  @* Companion Chip *@
+         <MudChip 
+       T="string" 
+              Size="Size.Small" 
+       Variant="Variant.Filled"
+      Style="background: rgba(38, 194, 129, 0.15); color: #26C281; border-radius: 8px;">
+                👥 @GetCompanionLabel()
+       </MudChip>
+        </div>
     </MudCardContent>
 </MudCard>

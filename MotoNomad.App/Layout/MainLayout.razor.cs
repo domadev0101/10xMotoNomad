@@ -24,6 +24,19 @@ public partial class MainLayout : IDisposable
     }
 
     /// <summary>
+    /// Handles logo click navigation in AppBar.
+    /// Redirects to home page (/) for both authenticated and non-authenticated users.
+    /// Also resets the inactivity timer.
+    /// </summary>
+    private async Task HandleLogoClick()
+    {
+        // Always redirect to home page (/) - dashboard for authenticated, marketing for non-authenticated
+        NavigationManager.NavigateTo("/");
+
+        ResetInactivityTimer();
+    }
+
+    /// <summary>
     /// Toggles the navigation drawer open/closed state and resets inactivity timer.
     /// </summary>
     private void ToggleDrawer()

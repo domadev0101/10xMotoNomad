@@ -43,21 +43,25 @@ public class TripService : ITripService
                 return Enumerable.Empty<TripListItemDto>();
             }
 
-            // Get companion counts for each trip
-            var tripIds = trips.Models.Select(t => t.Id).ToList();
-            var companions = await client
-                .From<Companion>()
-                .Where(c => tripIds.Contains(c.TripId))
-                .Get();
+            // Get companion counts for each trip (N+1 approach - simple and works)
+            // For MVP this is fine, future optimization: batch query with IN operator
+            var result = new List<TripListItemDto>();
+            
+            foreach (var trip in trips.Models)
+ {
+        // Count companions for this trip
+                var companions = await client
+       .From<Companion>()
+        .Where(c => c.TripId == trip.Id)
+      .Get();
+      
+        var companionCount = companions?.Models?.Count ?? 0;
+result.Add(MapToListItemDto(trip, companionCount));
+  }
 
-            var companionCounts = companions?.Models?
-                .GroupBy(c => c.TripId)
-                .ToDictionary(g => g.Key, g => g.Count())
-                ?? new Dictionary<Guid, int>();
+     _logger.LogInformation("Retrieved {Count} trips for user {UserId}", result.Count, userId);
 
-            _logger.LogInformation("Retrieved {Count} trips for user {UserId}", trips.Models.Count, userId);
-
-            return trips.Models.Select(trip => MapToListItemDto(trip, companionCounts.GetValueOrDefault(trip.Id, 0)));
+       return result;
         }
         catch (Exception ex)
         {

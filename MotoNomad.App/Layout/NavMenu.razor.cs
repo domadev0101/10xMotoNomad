@@ -17,6 +17,16 @@ public partial class NavMenu
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     /// <summary>
+    /// Handles logo click navigation.
+    /// Redirects to home page (/) for both authenticated and non-authenticated users.
+    /// </summary>
+    private void HandleLogoClick()
+    {
+        // Always redirect to home page (/) - dashboard for authenticated, marketing for non-authenticated
+        NavigationManager.NavigateTo("/");
+    }
+
+    /// <summary>
     /// Handles user logout action.
     /// Logs out the user, displays a success message, and redirects to login page.
     /// </summary>

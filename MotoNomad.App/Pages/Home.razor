@@ -1,7 +1,550 @@
 ﻿@page "/"
+@using MotoNomad.Application.Interfaces
+@using MotoNomad.App.Shared.Components
+@using MudBlazor
 
-<PageTitle>Home</PageTitle>
+<PageTitle>MotoNomad - Plan Your Next Adventure</PageTitle>
 
-<h1>Hello, world!</h1>
+<AuthorizeView>
+    <Authorized>
+  @* Dashboard for Logged-in Users *@
+  <div class="dashboard-container">
+         @* Welcome Banner *@
+     <section class="welcome-banner">
+<div class="welcome-content">
+   <h1 class="welcome-title">Welcome back, @GetUserDisplayName(context)! 👋</h1>
+  <p class="welcome-subtitle">Ready to plan your next adventure?</p>
+     </div>
+          </section>
 
-Welcome to your new app.
+   @* Quick Actions *@
+  <section class="quick-actions-section">
+                <div class="quick-actions-grid">
+       <MudButton 
+        Variant="Variant.Filled" 
+                    Size="Size.Large"
+           StartIcon="@Icons.Material.Filled.Add"
+Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; border-radius: 12px; padding: 20px 32px; text-transform: none; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);"
+             Href="/trip/create">
+ Create New Trip
+                  </MudButton>
+        
+         <MudButton 
+  Variant="Variant.Filled" 
+         Size="Size.Large"
+  StartIcon="@Icons.Material.Filled.Map"
+         Style="background: white; color: #667eea; font-weight: 600; border-radius: 12px; padding: 20px 32px; text-transform: none; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);"
+    Href="/trips">
+      View All Trips
+         </MudButton>
+    </div>
+        </section>
+
+       @* Stats Cards *@
+         <section class="stats-section">
+              <div class="stats-grid">
+ <div class="stat-card">
+    <div class="stat-icon">🗓️</div>
+       <div class="stat-value">@upcomingTripsCount</div>
+  <div class="stat-label">Upcoming Trips</div>
+           </div>
+           
+    <div class="stat-card">
+              <div class="stat-icon">🗺️</div>
+              <div class="stat-value">@totalTripsCount</div>
+           <div class="stat-label">Total Trips</div>
+        </div>
+     
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+        <div class="stat-value">@totalCompanionsCount</div>
+ <div class="stat-label">Travel Companions</div>
+       </div>
+            </div>
+      </section>
+
+         @* Recent Activity *@
+         <section class="recent-activity-section">
+             <h2 class="section-title">Your Recent Trips</h2>
+           
+    @if (isLoading)
+        {
+    <div style="text-align: center; padding: 40px;">
+           <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" />
+    </div>
+        }
+     else if (recentTrips.Count == 0)
+ {
+        <EmptyState 
+      Title="No trips yet"
+  Message="Start planning your first adventure!"
+     IconName="@Icons.Material.Filled.Map"
+       ButtonText="Create First Trip"
+         OnButtonClick="@HandleCreateFirstTrip" />
+     }
+      else
+                {
+        <div class="recent-trips-grid">
+  @foreach (var trip in recentTrips.Take(3))
+{
+               <TripListItem Trip="@trip" OnTripClick="@HandleTripClick" />
+             }
+     </div>
+      
+     @if (recentTrips.Count > 3)
+         {
+       <div style="text-align: center; margin-top: 24px;">
+               <MudButton 
+        Variant="Variant.Text" 
+              Color="Color.Primary"
+  EndIcon="@Icons.Material.Filled.ArrowForward"
+       Href="/trips">
+                 View All Trips
+           </MudButton>
+            </div>
+ }
+       }
+ </section>
+        </div>
+    </Authorized>
+    
+    <NotAuthorized>
+        @* Marketing Page for Non-logged Users *@
+ <div class="home-container">
+         @* Hero Section *@
+            <section class="hero-section">
+    <div class="hero-content">
+          <div class="hero-icon">🏍️</div>
+     <h1 class="hero-title">Plan Your Next Adventure</h1>
+          <p class="hero-subtitle">
+          Organize motorcycle trips, track companions, and create unforgettable memories with MotoNomad
+        </p>
+     
+ <div class="hero-buttons">
+             <MudButton 
+           Variant="Variant.Filled" 
+       Size="Size.Large"
+     Style="background: white; color: #667eea; font-weight: 600; border-radius: 12px; padding: 16px 40px; text-transform: none;"
+         Href="/register">
+ Get Started - It's Free
+ </MudButton>
+      
+   <MudButton 
+  Variant="Variant.Outlined" 
+     Size="Size.Large"
+           Style="border-color: white; color: white; font-weight: 600; border-radius: 12px; padding: 16px 40px; text-transform: none;"
+     Href="/login">
+     Sign In
+  </MudButton>
+ </div>
+        </div>
+   
+     @* Decorative Elements *@
+                <div class="hero-decoration">
+   <span class="decoration-emoji">✈️</span>
+        <span class="decoration-emoji">🚂</span>
+     <span class="decoration-emoji">🚗</span>
+         <span class="decoration-emoji">🌍</span>
+  </div>
+            </section>
+
+    @* Features Section *@
+            <section class="features-section">
+                <h2 class="section-title">Everything You Need for Trip Planning</h2>
+           
+         <div class="features-grid">
+             @* Feature 1 *@
+      <div class="feature-card">
+    <div class="feature-icon">🗺️</div>
+  <h3 class="feature-title">Plan Trips</h3>
+          <p class="feature-description">
+        Create detailed trip plans with dates, destinations, and transport types. Keep everything organized in one place.
+        </p>
+                </div>
+      
+  @* Feature 2 *@
+         <div class="feature-card">
+    <div class="feature-icon">👥</div>
+      <h3 class="feature-title">Manage Companions</h3>
+       <p class="feature-description">
+Add travel companions to your trips. Keep track of who's joining and their contact information.
+       </p>
+         </div>
+        
+     @* Feature 3 *@
+           <div class="feature-card">
+      <div class="feature-icon">📊</div>
+              <h3 class="feature-title">Track History</h3>
+                <p class="feature-description">
+  View your upcoming and past trips. Build a timeline of your adventures and relive the memories.
+           </p>
+     </div>
+     </div>
+            </section>
+
+   @* How It Works Section *@
+            <section class="how-it-works-section">
+      <h2 class="section-title">How It Works</h2>
+             
+ <div class="steps-container">
+       @* Step 1 *@
+  <div class="step-card">
+     <div class="step-number">1</div>
+        <h3 class="step-title">Create Account</h3>
+<p class="step-description">
+   Sign up in seconds with just your email. No credit card required.
+        </p>
+          </div>
+             
+      @* Step 2 *@
+        <div class="step-card">
+     <div class="step-number">2</div>
+   <h3 class="step-title">Plan Your Trip</h3>
+     <p class="step-description">
+   Add trip details: name, dates, transport type, and description.
+        </p>
+       </div>
+       
+ @* Step 3 *@
+  <div class="step-card">
+           <div class="step-number">3</div>
+      <h3 class="step-title">Invite Companions</h3>
+            <p class="step-description">
+          Add friends and family who'll join you on the adventure.
+               </p>
+      </div>
+    </div>
+            </section>
+
+ @* CTA Bottom Section *@
+   <section class="cta-bottom-section">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to Start Planning?</h2>
+   <p class="cta-subtitle">
+           Join thousands of travelers organizing their adventures with MotoNomad
+            </p>
+     <MudButton 
+    Variant="Variant.Filled" 
+      Size="Size.Large"
+       Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; border-radius: 12px; padding: 16px 48px; text-transform: none; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);"
+     Href="/register">
+  Create Free Account
+   </MudButton>
+    </div>
+     </section>
+
+       @* Footer *@
+       <footer class="home-footer">
+         <p style="color: #718096;">
+      © 2025 MotoNomad. Built with ❤️ for travelers.
+          </p>
+     </footer>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+<style>
+    /* Dashboard Styles (Logged-in Users) */
+    .dashboard-container {
+      min-height: 100vh;
+  background: #F5F7FA;
+      padding: 0;
+    }
+
+    .welcome-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 60px 20px;
+        text-align: center;
+        animation: fadeInDown 0.6s ease-out;
+  }
+
+    .welcome-content {
+        max-width: 800px;
+   margin: 0 auto;
+    }
+
+    .welcome-title {
+        font-size: 36px;
+  font-weight: 700;
+        color: white;
+  margin-bottom: 8px;
+    }
+
+    .welcome-subtitle {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .quick-actions-section {
+        max-width: 1200px;
+        margin: -30px auto 40px;
+        padding: 0 20px;
+    position: relative;
+        z-index: 2;
+    }
+
+    .quick-actions-grid {
+    display: flex;
+   gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .stats-section {
+        max-width: 1200px;
+        margin: 0 auto 60px;
+        padding: 0 20px;
+ }
+
+    .stats-grid {
+    display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 24px;
+    }
+
+    .stat-card {
+        background: white;
+  padding: 32px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+   transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .stat-card:hover {
+transform: translateY(-4px);
+     box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
+    }
+
+    .stat-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+
+    .stat-value {
+      font-size: 48px;
+        font-weight: 700;
+        color: #667eea;
+ margin-bottom: 8px;
+    }
+
+.stat-label {
+        font-size: 16px;
+        color: #718096;
+   font-weight: 500;
+    }
+
+    .recent-activity-section {
+      max-width: 1200px;
+    margin: 0 auto 60px;
+        padding: 0 20px;
+    }
+
+ .recent-trips-grid {
+    display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+      margin-top: 24px;
+    }
+
+    /* Marketing Page Styles */
+    .home-container {
+    min-height: 100vh;
+    background: #F5F7FA;
+    }
+
+  .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   padding: 80px 20px 100px;
+        text-align: center;
+      position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+    z-index: 2;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .hero-icon {
+        font-size: 80px;
+        margin-bottom: 24px;
+        animation: bounce 2s infinite;
+    }
+
+  .hero-title {
+        font-size: 48px;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 16px;
+  line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    }
+
+    .hero-decoration {
+      position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0.1;
+    }
+
+    .decoration-emoji {
+      position: absolute;
+        font-size: 60px;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .decoration-emoji:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+    .decoration-emoji:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+    .decoration-emoji:nth-child(3) { bottom: 15%; left: 15%; animation-delay: 2s; }
+    .decoration-emoji:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; }
+
+    .features-section {
+    padding: 80px 20px;
+     max-width: 1200px;
+    margin: 0 auto;
+    }
+
+ .section-title {
+        font-size: 36px;
+        font-weight: 700;
+    color: #2D3748;
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 32px;
+ }
+
+    .feature-card {
+        background: white;
+        padding: 40px 32px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+    }
+
+ .feature-icon { font-size: 64px; margin-bottom: 24px; }
+    .feature-title { font-size: 24px; font-weight: 600; color: #2D3748; margin-bottom: 12px; }
+    .feature-description { font-size: 16px; color: #718096; line-height: 1.6; }
+
+    .how-it-works-section {
+        padding: 80px 20px;
+        background: white;
+    }
+
+    .steps-container {
+        display: flex;
+        justify-content: center;
+        gap: 48px;
+ flex-wrap: wrap;
+    max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .step-card {
+        flex: 1;
+        min-width: 250px;
+        max-width: 350px;
+     text-align: center;
+   animation: fadeInUp 0.6s ease-out;
+    }
+
+    .step-number {
+      width: 80px;
+   height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 36px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+   margin: 0 auto 24px;
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    }
+
+    .step-title { font-size: 24px; font-weight: 600; color: #2D3748; margin-bottom: 12px; }
+    .step-description { font-size: 16px; color: #718096; line-height: 1.6; }
+
+    .cta-bottom-section {
+        padding: 80px 20px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        text-align: center;
+    }
+
+    .cta-content { max-width: 800px; margin: 0 auto; }
+    .cta-title { font-size: 36px; font-weight: 700; color: #2D3748; margin-bottom: 16px; }
+    .cta-subtitle { font-size: 18px; color: #718096; margin-bottom: 40px; line-height: 1.6; }
+
+    .home-footer { padding: 40px 20px; text-align: center; background: white; }
+
+    @@keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+   to { opacity: 1; transform: translateY(0); }
+    }
+
+    @@keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @@keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    @@media (max-width: 768px) {
+        .welcome-title { font-size: 28px; }
+        .hero-title { font-size: 36px; }
+      .hero-subtitle { font-size: 18px; }
+        .section-title { font-size: 28px; }
+        .cta-title { font-size: 28px; }
+        .hero-buttons, .quick-actions-grid {
+            flex-direction: column;
+            align-items: center;
+        }
+   .hero-buttons .mud-button-root,
+        .quick-actions-grid .mud-button-root {
+    width: 100%;
+ max-width: 300px;
+        }
+        .stat-value { font-size: 36px; }
+    }
+</style>

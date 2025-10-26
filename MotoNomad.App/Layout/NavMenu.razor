@@ -1,53 +1,71 @@
-﻿<div class="pa-4">
-    <MudText Typo="Typo.h6" Class="mb-2">
-        🏍️ MotoNomad
-    </MudText>
-    <MudDivider Class="mb-4" />
+﻿<div class="pa-4" style="background: white; height: 100%;">
+    @* Logo Section - Clickable *@
+    <div 
+        style="padding: 16px 0; margin-bottom: 24px; text-align: center; cursor: pointer;" 
+        @onclick="HandleLogoClick">
+        <div style="width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">
+       <span style="font-size: 32px;">🏍️</span>
+        </div>
+        <MudText Typo="Typo.h6" Style="font-weight: 600; color: #2D3748; margin-bottom: 4px;">
+  MotoNomad
+        </MudText>
+        <MudText Typo="Typo.caption" Color="Color.Secondary">
+            Plan your adventure
+        </MudText>
+    </div>
     
-    <MudNavMenu>
+    <MudDivider Class="mb-4" Style="opacity: 0.2;" />
+    
+<MudNavMenu Style="padding: 0;">
         <AuthorizeView>
-            <Authorized>
+        <Authorized>
                 <MudNavLink 
-                    Href="/trips" 
-                    Icon="@Icons.Material.Filled.Map"
-                    Match="NavLinkMatch.All">
-                    My Trips
-                </MudNavLink>
-                
+       Href="/trips" 
+    Icon="@Icons.Material.Filled.Map"
+   Match="NavLinkMatch.All"
+                    Class="nav-menu-link">
+ My Trips
+         </MudNavLink>
+      
+       <MudNavLink 
+         Href="/trip/create" 
+       Icon="@Icons.Material.Filled.Add"
+     Class="nav-menu-link">
+        New Trip
+           </MudNavLink>
+ 
                 <MudNavLink 
-                    Href="/trip/create" 
-                    Icon="@Icons.Material.Filled.Add">
-                    New Trip
-                </MudNavLink>
-                
+    Href="/profile" 
+    Icon="@Icons.Material.Filled.Person"
+   Class="nav-menu-link">
+ My Profile
+      </MudNavLink>
+     
+          <MudDivider Class="my-4" Style="opacity: 0.2;" />
+             
+        <MudNavLink 
+          OnClick="@HandleLogout"
+           Icon="@Icons.Material.Filled.Logout"
+ Class="nav-menu-link nav-menu-logout">
+          Logout
+         </MudNavLink>
+     </Authorized>
+   
+  <NotAuthorized>
+         <MudNavLink 
+           Href="/login" 
+   Icon="@Icons.Material.Filled.Login"
+          Class="nav-menu-link">
+          Login
+    </MudNavLink>
+      
                 <MudNavLink 
-                    Href="/profile" 
-                    Icon="@Icons.Material.Filled.Person">
-                    My Profile
-                </MudNavLink>
-                
-                <MudDivider Class="my-2" />
-                
-                <MudNavLink 
-                    OnClick="@HandleLogout"
-                    Icon="@Icons.Material.Filled.Logout">
-                    Logout
-                </MudNavLink>
-            </Authorized>
-            
-            <NotAuthorized>
-                <MudNavLink 
-                    Href="/login" 
-                    Icon="@Icons.Material.Filled.Login">
-                    Login
-                </MudNavLink>
-                
-                <MudNavLink 
-                    Href="/register" 
-                    Icon="@Icons.Material.Filled.PersonAdd">
-                    Register
-                </MudNavLink>
+             Href="/register" 
+        Icon="@Icons.Material.Filled.PersonAdd"
+          Class="nav-menu-link">
+     Register
+          </MudNavLink>
             </NotAuthorized>
         </AuthorizeView>
-    </MudNavMenu>
+  </MudNavMenu>
 </div>
