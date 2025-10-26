@@ -1,0 +1,90 @@
+﻿@namespace MotoNomad.App.Shared.Components
+
+<MudPaper 
+    Elevation="0" 
+    Style="border: 2px dashed var(--mud-palette-info); padding: 1.5rem; margin-bottom: 1.5rem;">
+    
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
+        <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Color="Color.Info" Size="Size.Large" />
+        <MudText Typo="Typo.h6">AI Trip Assistant</MudText>
+      <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Outlined">
+    🧪 Experimental
+   </MudChip>
+    </div>
+ 
+    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3">
+        Let AI suggest interesting places and activities for your trip based on your destination and travel dates.
+    </MudText>
+    
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-3" Dense="true">
+          @_errorMessage
+      </MudAlert>
+    }
+    
+    @if (_suggestion != null && !_isLoading)
+    {
+        <MudAlert Severity="Severity.Success" Class="mb-3" Dense="true">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+  <span>✅ AI suggestions generated successfully!</span>
+    <MudButton 
+        Size="Size.Small" 
+       Variant="Variant.Filled" 
+           Color="Color.Success"
+         OnClick="HandleApplySuggestion">
+        Apply to Description
+       </MudButton>
+  </div>
+    </MudAlert>
+  
+        <MudPaper Elevation="1" Class="pa-3 mb-3">
+    <MudText Typo="Typo.subtitle2" Class="mb-2">
+      <strong>Suggested Description:</strong>
+            </MudText>
+   <MudText Typo="Typo.body2" Class="mb-3">
+        @_suggestion.SuggestedDescription
+       </MudText>
+ 
+            @if (_suggestion.Highlights.Any())
+            {
+<MudText Typo="Typo.subtitle2" Class="mb-2">
+ <strong>Top Highlights:</strong>
+ </MudText>
+         <MudList T="string" Dense="true">
+    @foreach (var highlight in _suggestion.Highlights)
+                {
+   <MudListItem T="string" Icon="@Icons.Material.Filled.Place" IconColor="Color.Info">
+        <MudText Typo="Typo.body2">@highlight</MudText>
+         </MudListItem>
+        }
+  </MudList>
+}
+        </MudPaper>
+ }
+
+    <MudButton 
+        Variant="Variant.Filled" 
+   Color="Color.Info"
+        StartIcon="@Icons.Material.Filled.AutoAwesome"
+        OnClick="HandleGenerateSuggestions"
+        Disabled="@(!CanGenerateSuggestions() || _isLoading)"
+      FullWidth="true">
+   @if (_isLoading)
+        {
+  <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+   <span style="margin-left: 8px;">Generating suggestions...</span>
+        }
+    else
+     {
+            <text>Generate AI Suggestions</text>
+        }
+    </MudButton>
+  
+    @if (!CanGenerateSuggestions() && !_isLoading)
+ {
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2">
+       Please fill in trip name, dates, and transport type to generate suggestions.
+   </MudText>
+    }
+</MudPaper>

@@ -26,6 +26,10 @@ builder.Configuration.GetSection("Supabase").Bind(supabaseSettings);
 var mockAuthSettings = new MockAuthSettings();
 builder.Configuration.GetSection("MockAuth").Bind(mockAuthSettings);
 
+// Load OpenRouter configuration from appsettings.json
+builder.Services.Configure<OpenRouterSettings>(
+    builder.Configuration.GetSection(OpenRouterSettings.SectionName));
+
 // Register Blazored LocalStorage (MUST be before services that use it)
 builder.Services.AddBlazoredLocalStorage();
 
@@ -65,6 +69,15 @@ builder.Services.AddScoped<MotoNomad.Application.Interfaces.IAuthService, AuthSe
 builder.Services.AddScoped<MotoNomad.Application.Interfaces.ITripService, TripService>();
 builder.Services.AddScoped<MotoNomad.Application.Interfaces.ICompanionService, CompanionService>();
 builder.Services.AddScoped<MotoNomad.Application.Interfaces.IProfileService, ProfileService>();
+
+// Register HttpClient for OpenRouter
+builder.Services.AddHttpClient<IOpenRouterService, OpenRouterService>();
+
+// Register OpenRouter service as Scoped
+builder.Services.AddScoped<IOpenRouterService, OpenRouterService>();
+
+// Register AI Trip Planner service as Scoped
+builder.Services.AddScoped<IAiTripPlannerService, AiTripPlannerService>();
 
 // Register MudBlazor services
 builder.Services.AddMudServices();

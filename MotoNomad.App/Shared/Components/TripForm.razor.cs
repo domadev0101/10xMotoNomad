@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MotoNomad.Application.DTOs.Trips;
 using MotoNomad.Application.Commands.Trips;
 using MotoNomad.App.Infrastructure.Database.Entities;
+using MotoNomad.App.Application.DTOs;
 using MudBlazor;
 using System.ComponentModel;
 
@@ -439,10 +440,47 @@ command = new UpdateTripCommand
         _descriptionTouched = true;
   model.Description = value;
         UpdateCanSubmit();
-        if (form != null)
+  if (form != null)
         {
      await form.Validate();
    }
     StateHasChanged();
     }
+
+    /// <summary>
+    /// Handles AI-generated trip suggestions and formats them for the description field.
+    /// </summary>
+    /// <param name="suggestion">The AI-generated trip suggestion.</param>
+  private async Task HandleAiSuggestion(TripSuggestionDto suggestion)
+    {
+     var formattedDescription = suggestion.SuggestedDescription;
+
+        // Add highlights if available
+        if (suggestion.Highlights.Any())
+        {
+ formattedDescription += "\n\nMiejsca warte odwiedzenia:";
+      foreach (var highlight in suggestion.Highlights)
+       {
+   formattedDescription += $"\n- {highlight}";
+    }
+        }
+
+        // Update description field
+        await OnDescriptionChanged(formattedDescription);
+    }
+
+    /// <summary>
+    /// Gets the display label for a transport type.
+ /// </summary>
+    /// <param name="transportType">The transport type.</param>
+    /// <returns>The display label.</returns>
+    private string GetTransportTypeLabel(TransportType transportType) => transportType switch
+    {
+        TransportType.Motorcycle => "Motorcycle",
+     TransportType.Airplane => "Airplane",
+        TransportType.Train => "Train",
+        TransportType.Car => "Car",
+        TransportType.Other => "Other",
+        _ => "Unknown"
+    };
 }

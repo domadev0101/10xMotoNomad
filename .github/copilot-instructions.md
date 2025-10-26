@@ -53,6 +53,7 @@ When modifying the directory structure, always update this section.
 - **DTO Pattern**: Separate entities (database) from DTOs (data transfer)
 - **CQRS Pattern**: Use Command objects for write operations in Application/Commands/
 - **Exception Handling**: Typed exceptions in Application/Exceptions/
+- **Clean Architecture approach**: SOLID, separation of concerns, dependency inversion
 
 ### Blazor WebAssembly Patterns
 - Always use `async`/`await` for Supabase API calls and I/O operations

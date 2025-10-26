@@ -54,9 +54,16 @@
     <MudSelectItem Value="@TransportType.Motorcycle">🏍️ Motorcycle</MudSelectItem>
      <MudSelectItem Value="@TransportType.Airplane">✈️ Airplane</MudSelectItem>
         <MudSelectItem Value="@TransportType.Train">🚂 Train</MudSelectItem>
-    <MudSelectItem Value="@TransportType.Car">🚗 Car</MudSelectItem>
+ <MudSelectItem Value="@TransportType.Car">🚗 Car</MudSelectItem>
      <MudSelectItem Value="@TransportType.Other">⭐ Other</MudSelectItem>
-    </MudSelect>
+  </MudSelect>
+    
+    <AiAssistantPanel 
+        TripName="@model.Name"
+        StartDate="@model.StartDate"
+        EndDate="@model.EndDate"
+ TransportType="@GetTransportTypeLabel(model.TransportType)"
+        OnSuggestionGenerated="HandleAiSuggestion" />
     
     @if (ShowButtons)
     {
