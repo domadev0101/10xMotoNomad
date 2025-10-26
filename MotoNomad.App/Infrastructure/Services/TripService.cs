@@ -110,11 +110,11 @@ public class TripService : ITripService
     }
 
     public async Task<TripDetailDto> CreateTripAsync(CreateTripCommand command)
-    {
-        var userId = GetCurrentUserId();
-
+    {    
         // Validate command
         ValidateCreateTripCommand(command);
+
+        var userId = GetCurrentUserId();
 
         try
         {
@@ -160,10 +160,10 @@ public class TripService : ITripService
 
     public async Task<TripDetailDto> UpdateTripAsync(UpdateTripCommand command)
     {
-        var userId = GetCurrentUserId();
-
         // Validate command
         ValidateUpdateTripCommand(command);
+
+        var userId = GetCurrentUserId();        
 
         try
         {
