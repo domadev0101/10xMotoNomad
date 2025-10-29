@@ -31,7 +31,7 @@ public class SupabaseClientService : ISupabaseClientService
         {
             var options = new Supabase.SupabaseOptions
             {
-                AutoConnectRealtime = true,
+                AutoConnectRealtime = false, //disabled for MVP
                 AutoRefreshToken = true
             };
 

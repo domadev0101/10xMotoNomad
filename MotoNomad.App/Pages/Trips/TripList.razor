@@ -16,23 +16,25 @@
     <MudDivider Class="my-4" />
     
     <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-        <MudTabPanel Text="Upcoming">
+        <MudTabPanel Text="Upcoming" data-testid="trips-tab-upcoming">
             @if (isLoadingUpcoming)
             {
                 <LoadingSpinner Message="Loading upcoming trips..." />
             }
             else if (upcomingTrips.Count == 0)
             {
-                <EmptyState 
-                    IconName="@Icons.Material.Filled.TravelExplore"
-                    Title="No upcoming trips"
-                    Message="Start planning your next adventure!"
-                    ButtonText="Create Trip"
-                    OnButtonClick="@(() => NavigationManager.NavigateTo("/trip/create"))" />
+                <div data-testid="trips-empty-state">
+                    <EmptyState 
+                        IconName="@Icons.Material.Filled.TravelExplore"
+                        Title="No upcoming trips"
+                        Message="Start planning your next adventure!"
+                        ButtonText="Create Trip"
+                        OnButtonClick="@(() => NavigationManager.NavigateTo("/trip/create"))" />
+                </div>
             }
             else
             {
-                <MudGrid Spacing="3">
+                <MudGrid Spacing="3" data-testid="trips-list-upcoming">
                     @foreach (var trip in upcomingTrips)
                     {
                         <MudItem xs="12" sm="6" md="4">
@@ -43,21 +45,23 @@
             }
         </MudTabPanel>
         
-        <MudTabPanel Text="Past">
+        <MudTabPanel Text="Past" data-testid="trips-tab-past">
             @if (isLoadingPast)
             {
                 <LoadingSpinner Message="Loading past trips..." />
             }
             else if (pastTrips.Count == 0)
             {
-                <EmptyState 
-                    IconName="@Icons.Material.Filled.History"
-                    Title="No past trips"
-                    Message="Your completed trips will appear here" />
+                <div data-testid="trips-past-empty-state">
+                    <EmptyState 
+                        IconName="@Icons.Material.Filled.History"
+                        Title="No past trips"
+                        Message="Your completed trips will appear here" />
+                </div>
             }
             else
             {
-                <MudGrid Spacing="3">
+                <MudGrid Spacing="3" data-testid="trips-list-past">
                     @foreach (var trip in pastTrips)
                     {
                         <MudItem xs="12" sm="6" md="4">
@@ -75,5 +79,6 @@
         StartIcon="@Icons.Material.Filled.Add" 
         Href="/trip/create"
         Style="position: fixed; bottom: 20px; right: 20px;"
-        Title="Create new trip" />
+        Title="Create new trip"
+        data-testid="create-trip-btn" />
 </MudContainer>

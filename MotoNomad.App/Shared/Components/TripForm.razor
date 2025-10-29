@@ -3,93 +3,99 @@
 
 <MudForm @ref="form" @bind-IsValid="formValid">
     <MudTextField 
-        Value="model.Name"
+      Value="model.Name"
         ValueChanged="@((string value) => OnNameChanged(value))"
         Label="Trip name"
-        Required="true"
+   Required="true"
         Validation="@ValidateName"
         Counter="200"
-        HelperText="Max 200 characters"
+     HelperText="Max 200 characters"
         Disabled="@IsLoading"
-        Class="mb-3" />
+        Class="mb-3"
+   data-testid="trip-name" />
     
     <MudDatePicker 
-        Date="model.StartDate"
+     Date="model.StartDate"
         DateChanged="@((DateTime? value) => OnStartDateChanged(value))"
-        Label="Start date"
+ Label="Start date"
         DateFormat="dd.MM.yyyy"
         Required="true"
-        Validation="@ValidateStartDate"
+     Validation="@ValidateStartDate"
         Disabled="@IsLoading"
-        Class="mb-3" />
+     Class="mb-3"
+        data-testid="trip-start-date" />
     
     <MudDatePicker 
         Date="model.EndDate"
         DateChanged="@((DateTime? value) => OnEndDateChanged(value))"
-        Label="End date"
+Label="End date"
         DateFormat="dd.MM.yyyy"
         Required="true"
         Validation="@ValidateEndDate"
-        Disabled="@IsLoading"
-        Class="mb-3" />
+   Disabled="@IsLoading"
+        Class="mb-3"
+        data-testid="trip-end-date" />
     
     <MudTextField 
         Value="model.Description"
         ValueChanged="@((string? value) => OnDescriptionChanged(value))"
         Label="Description (optional)"
-    Lines="3"
+        Lines="3"
         Validation="@ValidateDescription"
         Counter="2000"
-        HelperText="Max 2000 characters"
+ HelperText="Max 2000 characters"
         Disabled="@IsLoading"
-    Class="mb-3" />
+        Class="mb-3"
+      data-testid="trip-description" />
     
     <MudSelect 
-     Value="model.TransportType"
+        Value="model.TransportType"
         ValueChanged="@((TransportType value) => OnTransportTypeChanged(value))"
         Label="Transport type"
-  Required="true"
+        Required="true"
       Disabled="@IsLoading"
-        Class="mb-3">
-    <MudSelectItem Value="@TransportType.Motorcycle">🏍️ Motorcycle</MudSelectItem>
-     <MudSelectItem Value="@TransportType.Airplane">✈️ Airplane</MudSelectItem>
-        <MudSelectItem Value="@TransportType.Train">🚂 Train</MudSelectItem>
- <MudSelectItem Value="@TransportType.Car">🚗 Car</MudSelectItem>
-     <MudSelectItem Value="@TransportType.Other">⭐ Other</MudSelectItem>
-  </MudSelect>
+        Class="mb-3"
+        data-testid="trip-transport">
+<MudSelectItem Value="@TransportType.Motorcycle">🏍️ Motorcycle</MudSelectItem>
+        <MudSelectItem Value="@TransportType.Airplane">✈️ Airplane</MudSelectItem>
+ <MudSelectItem Value="@TransportType.Train">🚂 Train</MudSelectItem>
+        <MudSelectItem Value="@TransportType.Car">🚗 Car</MudSelectItem>
+ <MudSelectItem Value="@TransportType.Other">⭐ Other</MudSelectItem>
+    </MudSelect>
     
-    <AiAssistantPanel 
-        TripName="@model.Name"
+  <AiAssistantPanel 
+    TripName="@model.Name"
         StartDate="@model.StartDate"
         EndDate="@model.EndDate"
- TransportType="@GetTransportTypeLabel(model.TransportType)"
+  TransportType="@GetTransportTypeLabel(model.TransportType)"
         OnSuggestionGenerated="HandleAiSuggestion" />
     
     @if (ShowButtons)
     {
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 1rem;">
-    <MudButton 
-          Variant="Variant.Text"
- Color="Color.Default"
-           OnClick="@(() => OnCancel.InvokeAsync())"
-       Disabled="@IsLoading">
-           Cancel
-      </MudButton>
-            
-  <MudButton 
+     <MudButton 
+       Variant="Variant.Text"
+        Color="Color.Default"
+         OnClick="@(() => OnCancel.InvokeAsync())"
+      Disabled="@IsLoading">
+       Cancel
+            </MudButton>
+         
+            <MudButton 
   Variant="Variant.Filled" 
-          Color="Color.Primary"
-         OnClick="HandleSubmit"
-     Disabled="@(!CanSubmit || IsLoading)">
-                @if (IsLoading)
+       Color="Color.Primary"
+          OnClick="HandleSubmit"
+         Disabled="@(!CanSubmit || IsLoading)"
+                data-testid="trip-submit">
+           @if (IsLoading)
+         {
+   <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+    }
+  else
     {
-<MudProgressCircular Size="Size.Small" Indeterminate="true" />
-      }
-        else
-     {
-   <text>@(Trip == null ? "Save" : "Save changes")</text>
-      }
-     </MudButton>
-        </div>
+    <text>@(Trip == null ? "Save" : "Save changes")</text>
+   }
+            </MudButton>
+  </div>
     }
 </MudForm>

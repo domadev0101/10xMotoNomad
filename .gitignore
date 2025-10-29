@@ -64,3 +64,4 @@ nunit-*.xml
 # Keep templates
 !**/appsettings*.template
 /docs
+/MotoNomad.App/wwwroot/appsettings.Test.json

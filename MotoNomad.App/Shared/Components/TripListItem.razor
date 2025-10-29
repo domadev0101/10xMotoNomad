@@ -3,7 +3,8 @@
 <MudCard 
  Class="trip-card" 
     Style="cursor: pointer; border-radius: 16px; overflow: hidden; position: relative;" 
-    @onclick="HandleClick">
+    @onclick="HandleClick" 
+    data-testid="@("trip-item-" + Trip.Id)">
     
     @* Gradient Header Strip *@
     <div style="height: 8px; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>
@@ -13,14 +14,14 @@
             <div style="display: flex; align-items: center; gap: 12px;">
  @* Transport Icon in Colored Circle *@
        <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.25)); display: flex; align-items: center; justify-content: center;">
-          <MudIcon Icon="@GetTransportIcon()" Size="Size.Large" Color="Color.Primary" />
+          <MudIcon Icon="@GetTransportIcon()" Size="Size.Large" Color="Color.Primary" data-testid="trip-transport-icon" />
                 </div>
         
    <div style="flex: 1;">
-                <MudText Typo="Typo.h6" Style="font-weight: 600; margin-bottom: 4px;">
+                <MudText Typo="Typo.h6" Style="font-weight: 600; margin-bottom: 4px;" data-testid="trip-name">
     @Trip.Name
       </MudText>
-     <MudText Typo="Typo.caption" Color="Color.Secondary">
+     <MudText Typo="Typo.caption" Color="Color.Secondary" data-testid="trip-duration">
    @GetDurationLabel()
     </MudText>
     </div>
@@ -38,7 +39,8 @@
                 T="string" 
       Size="Size.Small" 
     Variant="Variant.Filled"
-    Style="background: rgba(102, 126, 234, 0.15); color: #667eea; border-radius: 8px;">
+    Style="background: rgba(102, 126, 234, 0.15); color: #667eea; border-radius: 8px;"
+    data-testid="trip-start-date">
             📅 @Trip.StartDate.ToString("dd.MM.yyyy")
    </MudChip>
             
@@ -47,7 +49,8 @@
        T="string" 
               Size="Size.Small" 
        Variant="Variant.Filled"
-      Style="background: rgba(38, 194, 129, 0.15); color: #26C281; border-radius: 8px;">
+      Style="background: rgba(38, 194, 129, 0.15); color: #26C281; border-radius: 8px;"
+        data-testid="trip-companions">
                 👥 @GetCompanionLabel()
        </MudChip>
         </div>

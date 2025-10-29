@@ -5,101 +5,106 @@
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
     <MudCard Elevation="5">
-      <MudCardHeader>
-    <CardHeaderContent>
-          <MudText Typo="Typo.h4" Align="Align.Center">
-       Register
- </MudText>
-  </CardHeaderContent>
-    </MudCardHeader>
+        <MudCardHeader>
+      <CardHeaderContent>
+     <MudText Typo="Typo.h4" Align="Align.Center">
+     Register
+     </MudText>
+   </CardHeaderContent>
+        </MudCardHeader>
         
-   <MudCardContent>
-          @if (!string.IsNullOrEmpty(_errorMessage))
-     {
-    <MudAlert Severity="Severity.Error" Class="mb-4">
-      @_errorMessage
-  </MudAlert>
-   }
-     
-     <MudForm @ref="_form" @bind-IsValid="@_formValid">
-   <MudTextField @bind-Value="_model.Email"
-        Label="Email"
-    Variant="Variant.Outlined"
-Required="true"
-           RequiredError="Email is required"
-      Validation="@EmailValidation"
-  Immediate="true"
-           MaxLength="255"
-         Adornment="Adornment.Start"
-     AdornmentIcon="@Icons.Material.Filled.Email"
-             @ref="_emailField"
-     Class="mb-4" />
+  <MudCardContent>
+      @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+             <MudAlert Severity="Severity.Error" Class="mb-4" data-testid="register-error">
+           @_errorMessage
+            </MudAlert>
+            }
     
-    <MudTextField @bind-Value="_model.Password"
-         Label="Password"
-        Variant="Variant.Outlined"
-      InputType="InputType.Password"
-       Required="true"
+            <MudForm @ref="_form" @bind-IsValid="@_formValid">
+    <MudTextField @bind-Value="_model.Email"
+          Label="Email"
+          Variant="Variant.Outlined"
+            Required="true"
+    RequiredError="Email is required"
+          Validation="@EmailValidation"
+        Immediate="true"
+         MaxLength="255"
+     Adornment="Adornment.Start"
+         AdornmentIcon="@Icons.Material.Filled.Email"
+          @ref="_emailField"
+                    Class="mb-4"
+        data-testid="register-email" />
+ 
+           <MudTextField @bind-Value="_model.Password"
+          Label="Password"
+           Variant="Variant.Outlined"
+         InputType="InputType.Password"
+        Required="true"
  RequiredError="Password is required"
       Validation="@PasswordValidation"
        Immediate="true"
-            MaxLength="100"
-   Adornment="Adornment.Start"
-     AdornmentIcon="@Icons.Material.Filled.Lock"
-       Class="mb-4" />
-         
-     <MudTextField @bind-Value="_model.ConfirmPassword"
- Label="Confirm Password"
-     Variant="Variant.Outlined"
-     InputType="InputType.Password"
-       Required="true"
-RequiredError="Password confirmation is required"
-      Validation="@MatchPasswordValidation"
-    Immediate="true"
-         MaxLength="100"
-  Adornment="Adornment.Start"
-   AdornmentIcon="@Icons.Material.Filled.Lock"
- Class="mb-4" />
-      
-    <MudTextField @bind-Value="_model.DisplayName"
-  Label="Display Name (optional)"
+      MaxLength="100"
+             Adornment="Adornment.Start"
+               AdornmentIcon="@Icons.Material.Filled.Lock"
+              Class="mb-4"
+           data-testid="register-password" />
+    
+       <MudTextField @bind-Value="_model.ConfirmPassword"
+     Label="Confirm Password"
     Variant="Variant.Outlined"
-       Validation="@DisplayNameValidation"
-   MaxLength="100"
-    Adornment="Adornment.Start"
-    AdornmentIcon="@Icons.Material.Filled.Person"
-   Class="mb-4" />
-  </MudForm>
-      
-      @if (_isLoading)
-       {
+    InputType="InputType.Password"
+               Required="true"
+   RequiredError="Password confirmation is required"
+         Validation="@MatchPasswordValidation"
+            Immediate="true"
+    MaxLength="100"
+          Adornment="Adornment.Start"
+              AdornmentIcon="@Icons.Material.Filled.Lock"
+           Class="mb-4"
+              data-testid="register-confirm-password" />
+     
+                <MudTextField @bind-Value="_model.DisplayName"
+       Label="Display Name (optional)"
+Variant="Variant.Outlined"
+          Validation="@DisplayNameValidation"
+  MaxLength="100"
+   Adornment="Adornment.Start"
+      AdornmentIcon="@Icons.Material.Filled.Person"
+            Class="mb-4"
+              data-testid="register-display-name" />
+        </MudForm>
+            
+          @if (_isLoading)
+   {
       <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
-       }
-    </MudCardContent>
-   
- <MudCardActions>
-            <MudButton Variant="Variant.Filled"
-      Color="Color.Primary"
-                FullWidth="true"
-     OnClick="HandleRegisterAsync"
-  Disabled="@(_isLoading || !_formValid)"
-  StartIcon="@Icons.Material.Filled.PersonAdd">
-    @if (_isLoading)
-     {
-      <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-<MudText Class="ml-2">Creating account...</MudText>
-     }
-  else
+            }
+     </MudCardContent>
+        
+        <MudCardActions>
+  <MudButton Variant="Variant.Filled"
+     Color="Color.Primary"
+            FullWidth="true"
+        OnClick="HandleRegisterAsync"
+   Disabled="@(_isLoading || !_formValid)"
+      StartIcon="@Icons.Material.Filled.PersonAdd"
+          data-testid="register-submit">
+     @if (_isLoading)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+  <MudText Class="ml-2">Creating account...</MudText>
+}
+                else
        {
-      <span>Register</span>
-       }
-     </MudButton>
+         <span>Register</span>
+           }
+   </MudButton>
         </MudCardActions>
         
-<MudCardActions Class="justify-center">
-            <MudLink Href="/login" Color="Color.Primary">
-      Already have an account? Login
-  </MudLink>
- </MudCardActions>
+        <MudCardActions Class="justify-center">
+    <MudLink Href="/login" Color="Color.Primary">
+    Already have an account? Login
+            </MudLink>
+        </MudCardActions>
     </MudCard>
 </MudContainer>

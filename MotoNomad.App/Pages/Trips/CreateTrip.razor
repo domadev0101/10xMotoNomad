@@ -19,7 +19,7 @@
         <MudCardContent>
             @if (!string.IsNullOrEmpty(errorMessage))
             {
-                <MudAlert Severity="Severity.Error" Class="mb-4">
+                <MudAlert Severity="Severity.Error" Class="mb-4" data-testid="trip-validation-error">
                     @errorMessage
                 </MudAlert>
             }

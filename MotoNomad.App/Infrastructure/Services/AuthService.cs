@@ -143,7 +143,7 @@ public class AuthService : IAuthService
                 var profileResponse = await client
                     .From<Profile>()
                     .Select("*")
-                    .Filter("id", Postgrest.Constants.Operator.Equals, Guid.Parse(user.Id))
+                    .Filter("id", Postgrest.Constants.Operator.Equals, user.Id)
                     .Single();
                 
                 profile = profileResponse;
@@ -220,7 +220,7 @@ public class AuthService : IAuthService
          var profileResponse = await client
      .From<Profile>()
       .Select("*")
-     .Filter("id", Postgrest.Constants.Operator.Equals, Guid.Parse(user.Id))
+     .Filter("id", Postgrest.Constants.Operator.Equals, user.Id)
     .Single();
   
        profile = profileResponse;
