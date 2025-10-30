@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "fifFyNYH",
+  "version": "FXrGCIUi",
   "assets": [
     {
       "hash": "sha256-98jNT1lMdfy9KjGh5PhMsBXRRUNQKAaIUmnrraTuzTs=",
@@ -142,8 +142,8 @@ self.assetsManifest = {
       "url": "_framework/MimeMapping.uuj6opn66y.wasm"
     },
     {
-      "hash": "sha256-W5ZMqkdT219Oehmtz7Ic5DuRIFVGMLIFSmhpIRs+F6o=",
-      "url": "_framework/MotoNomad.App.jul7opdhcl.wasm"
+      "hash": "sha256-S2mxBJRp9LJX4MM8xxBhZm/KHlthIuTmOWPj/CAidkI=",
+      "url": "_framework/MotoNomad.App.v34iwt9hau.wasm"
     },
     {
       "hash": "sha256-FxQ/zV9Votoxd3+q6xpplAICSTSh7MuMeoWvwYx0Pqc=",
@@ -434,7 +434,7 @@ self.assetsManifest = {
       "url": "_framework/Websocket.Client.cjybiyd9xl.wasm"
     },
     {
-      "hash": "sha256-6woQ9W3EHUL7ywABz1L8Xq53YXY1s43bh4ZdNnTCmOw=",
+      "hash": "sha256-7o4TpN7CuDzN+O8JwXbmJ7RX0g33V2Xtr0yTKMYlr/s=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -478,7 +478,7 @@ self.assetsManifest = {
       "url": "appsettings.example.json"
     },
     {
-      "hash": "sha256-fRevznItWn+dyUvC0eGGgohpfI0ahOaJDBRFUZwqRXw=",
+      "hash": "sha256-aGoxo5dDe5aoOxB3VU2lPDTm1/QJSOHCZbnNXRMiaeo=",
       "url": "appsettings.json"
     },
     {
