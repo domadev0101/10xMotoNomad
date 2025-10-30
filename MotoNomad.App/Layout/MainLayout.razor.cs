@@ -31,7 +31,7 @@ public partial class MainLayout : IDisposable
     private async Task HandleLogoClick()
     {
         // Always redirect to home page (/) - dashboard for authenticated, marketing for non-authenticated
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("");
 
         ResetInactivityTimer();
     }
@@ -78,7 +78,7 @@ public partial class MainLayout : IDisposable
             await InvokeAsync(() =>
             {
                 Snackbar.Add("Session expired due to inactivity. Please log in again.", Severity.Warning);
-                NavigationManager.NavigateTo("/login");
+                NavigationManager.NavigateTo("login");
             });
         }
     }

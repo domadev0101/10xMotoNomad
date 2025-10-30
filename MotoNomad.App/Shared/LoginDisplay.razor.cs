@@ -53,7 +53,7 @@ public partial class LoginDisplay
             Snackbar.Add("Successfully logged out!", Severity.Success);
 
             // Normal SPA navigation (no full page reload)
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("login");
         }
         catch (Exception ex)
         {

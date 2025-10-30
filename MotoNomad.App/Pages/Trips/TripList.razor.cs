@@ -46,7 +46,7 @@ public partial class TripList
         catch (UnauthorizedException)
         {
             Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("login");
         }
         catch (DatabaseException)
         {
@@ -69,6 +69,6 @@ public partial class TripList
     /// <param name="tripId">Unique trip identifier</param>
     private void HandleTripClick(Guid tripId)
     {
-        NavigationManager.NavigateTo($"/trip/{tripId}");
+        NavigationManager.NavigateTo($"trip/{tripId}");
     }
 }

@@ -74,7 +74,7 @@ public partial class Home
     /// </summary>
     private void HandleCreateFirstTrip()
     {
-        NavigationManager.NavigateTo("/trip/create");
+        NavigationManager.NavigateTo("trip/create");
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public partial class Home
     /// </summary>
     private void HandleTripClick(Guid tripId)
     {
-   NavigationManager.NavigateTo($"/trip/{tripId}");
+   NavigationManager.NavigateTo($"trip/{tripId}");
     }
 
     /// <summary>

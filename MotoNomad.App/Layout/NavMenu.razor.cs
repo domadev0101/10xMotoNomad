@@ -23,7 +23,7 @@ public partial class NavMenu
     private void HandleLogoClick()
     {
         // Always redirect to home page (/) - dashboard for authenticated, marketing for non-authenticated
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("");
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public partial class NavMenu
             Snackbar.Add("Successfully logged out!", Severity.Success);
 
             // Normal SPA navigation (no full page reload)
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("login");
         }
         catch (Exception ex)
         {
