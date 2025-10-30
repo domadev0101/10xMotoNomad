@@ -3,14 +3,14 @@
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # allows for manual running
+  workflow_dispatch:
 
 jobs:
   deploy-to-github-pages:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     permissions:
-      contents: write  
+      contents: write
     
     steps:
     - name: Checkout code
@@ -26,16 +26,29 @@ jobs:
 
     - name: Run tests
       run: dotnet test MotoNomad.Tests/MotoNomad.Tests.csproj --configuration Release --verbosity normal
-      continue-on-error: false  # stop deployment if tests fail
+      continue-on-error: false
 
     - name: Publish Blazor WASM
       run: dotnet publish MotoNomad.App/MotoNomad.App.csproj -c Release -o release --nologo
 
     - name: Change base-tag in index.html
       run: sed -i 's/<base href="\/" \/>/<base href="\/10xMotoNomad\/" \/>/g' release/wwwroot/index.html
+      
+    - name: Replace secrets in appsettings.json
+      run: |
+        sed -i 's|https://YOUR_PROJECT_ID.supabase.co|${{ secrets.SUPABASE_URL }}|g' release/wwwroot/appsettings.json
+        sed -i 's|YOUR_ANON_KEY_HERE|${{ secrets.SUPABASE_ANON_KEY }}|g' release/wwwroot/appsettings.json
+        sed -i 's|sk-or-v1-YOUR-API-KEY-HERE|${{ secrets.OPENROUTER_API_KEY }}|g' release/wwwroot/appsettings.json
+        sed -i 's|http://localhost:5063|https://domadev0101.github.io/10xMotoNomad|g' release/wwwroot/appsettings.json
+        
+    - name: Add SPA routing fix to index.html
+      run: |
+        sed -i '/<\/head>/i \    <script type="text/javascript">\n      (function(){\n        var redirect = sessionStorage.redirect;\n        delete sessionStorage.redirect;\n        if (redirect && redirect != location.href) {\n          history.replaceState(null, null, redirect);\n        }\n      })();\n    </script>' release/wwwroot/index.html
 
     - name: Copy index.html to 404.html
-      run: cp release/wwwroot/index.html release/wwwroot/404.html
+      run: |
+        cp release/wwwroot/index.html release/wwwroot/404.html
+        sed -i 's|<script type="text/javascript">|<script type="text/javascript">\n      sessionStorage.redirect = location.href;|' release/wwwroot/404.html
 
     - name: Add .nojekyll file
       run: touch release/wwwroot/.nojekyll
@@ -45,4 +58,4 @@ jobs:
       with:
         folder: release/wwwroot
         branch: gh-pages
-        clean: true  # remove existing files before deploying
+        clean: true
