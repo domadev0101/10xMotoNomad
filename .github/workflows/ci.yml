@@ -1,0 +1,55 @@
+﻿name: CI - Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # manual trigger
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./
+
+    - name: Build (Release)
+      run: dotnet build --configuration Release --no-restore
+      working-directory: ./
+    
+    - name: Run unit tests
+      run: dotnet test MotoNomad.Tests/MotoNomad.Tests.csproj --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      working-directory: ./
+  
+    - name: Publish test results
+      uses: dorny/test-reporter@v1
+      if: always()  # always publish test results, even if tests fail
+      with:
+        name: Unit Test Results
+        path: '**/test-results.trx'
+        reporter: dotnet-trx
+        fail-on-error: true
+    
+    # Optional: build Blazor (WASM) without deployment
+    - name: Publish Blazor WASM (Release)
+      run: dotnet publish MotoNomad.App/MotoNomad.App.csproj -c Release -o ./publish --nologo
+      working-directory: ./
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: blazor-app
+        path: ./publish/wwwroot
+        retention-days: 7
