@@ -43,7 +43,7 @@ public partial class Register
       // Redirect if already logged in
      if (await AuthService.IsAuthenticatedAsync())
         {
-        NavigationManager.NavigateTo("/trips");
+        NavigationManager.NavigateTo("trips");
         }
     }
 
@@ -108,7 +108,7 @@ DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
     Snackbar.Add($"{welcomeMessage} Your account has been created.", Severity.Success);
             
       // Navigate without forceLoad to avoid triggering OnInitializedAsync again
-            NavigationManager.NavigateTo("/trips");
+            NavigationManager.NavigateTo("trips");
     }
         catch (AuthException ex)
         {

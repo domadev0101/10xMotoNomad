@@ -43,7 +43,7 @@ public partial class Login
         // Redirect if already logged in
      if (await AuthService.IsAuthenticatedAsync())
         {
-        NavigationManager.NavigateTo("/trips");
+        NavigationManager.NavigateTo("trips");
  }
  }
 
@@ -101,7 +101,7 @@ public partial class Login
     Snackbar.Add("Login successful!", Severity.Success);
        
             // Navigate without forceLoad to avoid triggering OnInitializedAsync again
-  NavigationManager.NavigateTo("/trips");
+  NavigationManager.NavigateTo("trips");
         }
         catch (AuthException ex)
         {

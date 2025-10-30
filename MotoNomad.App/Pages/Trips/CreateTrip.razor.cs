@@ -37,12 +37,12 @@ public partial class CreateTrip
         {
             var trip = await TripService.CreateTripAsync(command);
             Snackbar.Add($"Trip '{trip.Name}' has been created!", Severity.Success);
-            NavigationManager.NavigateTo("/trips");
+            NavigationManager.NavigateTo("trips");
         }
         catch (UnauthorizedException)
         {
             Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("login");
         }
         catch (ValidationException ex)
         {
@@ -68,6 +68,6 @@ public partial class CreateTrip
     /// </summary>
     private void HandleCancel()
     {
-        NavigationManager.NavigateTo("/trips");
+        NavigationManager.NavigateTo("trips");
     }
 }

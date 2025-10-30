@@ -109,13 +109,13 @@ trip = await tripTask;
         {
      // RLS security - user tried to access someone else's trip or trip doesn't exist
       Snackbar.Add("Trip not found.", Severity.Warning);
- NavigationManager.NavigateTo("/trips");
+ NavigationManager.NavigateTo("trips");
       }
    catch (UnauthorizedException)
         {
       // Session expired
           Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-        NavigationManager.NavigateTo("/login");
+        NavigationManager.NavigateTo("login");
         }
       catch (Exception ex)
         {
@@ -162,12 +162,12 @@ trip = await tripTask;
         catch (NotFoundException)
   {
        Snackbar.Add("Trip not found.", Severity.Warning);
-     NavigationManager.NavigateTo("/trips");
+     NavigationManager.NavigateTo("trips");
  }
         catch (UnauthorizedException)
     {
   Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("login");
   }
         catch (DatabaseException)
    {
@@ -237,17 +237,17 @@ trip = await tripTask;
     {
       await TripService.DeleteTripAsync(trip.Id);
             Snackbar.Add($"Trip '{trip.Name}' has been deleted.", Severity.Success);
-   NavigationManager.NavigateTo("/trips");
+   NavigationManager.NavigateTo("trips");
       }
  catch (NotFoundException)
         {
   Snackbar.Add("Trip not found.", Severity.Warning);
-        NavigationManager.NavigateTo("/trips");
+        NavigationManager.NavigateTo("trips");
         }
         catch (UnauthorizedException)
         {
         Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-  NavigationManager.NavigateTo("/login");
+  NavigationManager.NavigateTo("login");
   }
         catch (DatabaseException)
     {

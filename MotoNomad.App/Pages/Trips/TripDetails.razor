@@ -66,7 +66,7 @@ else if (trip != null)
    <TripForm @ref="tripFormRef"
 Trip="@trip"
       OnSubmit="HandleUpdateTripAsync"
-   OnCancel="@(() => NavigationManager.NavigateTo("/trips"))"
+   OnCancel="@(() => NavigationManager.NavigateTo("trips"))"
   IsLoading="@isUpdatingTrip"
     OnCanSubmitChanged="HandleCanSubmitChanged"
    ShowButtons="false" />
@@ -75,7 +75,7 @@ Trip="@trip"
         <MudCardActions>
          <MudButton Variant="Variant.Text"
      Color="Color.Default"
-             OnClick="@(() => NavigationManager.NavigateTo("/trips"))"
+             OnClick="@(() => NavigationManager.NavigateTo("trips"))"
    Disabled="@isUpdatingTrip">
   Cancel
       </MudButton>
@@ -159,7 +159,7 @@ else
       <MudButton Variant="Variant.Text" 
          Color="Color.Inherit" 
   StartIcon="@Icons.Material.Filled.ArrowBack"
-      OnClick="@(() => NavigationManager.NavigateTo("/trips"))"
+      OnClick="@(() => NavigationManager.NavigateTo("trips"))"
  Class="mt-2">
  Back to Trip List
    </MudButton>
