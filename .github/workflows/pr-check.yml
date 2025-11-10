@@ -57,9 +57,6 @@ jobs:
     # 🚀 START BLAZOR APP (Background)
     - name: Start Blazor App
       run: |
-        # 🔑 Inject OpenRouter API Key
-        sed -i 's/#{OPENROUTER_API_KEY}#/${{ secrets.OPENROUTER_API_KEY }}/g' MotoNomad.App/wwwroot/appsettings.json
-        
         cd MotoNomad.App
         dotnet run --configuration Release --no-build --urls "http://localhost:5000" &
         echo $! > blazor_app.pid
