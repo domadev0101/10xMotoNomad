@@ -38,7 +38,30 @@ public class TestConfiguration
     // Application Settings
     public string BaseUrl => _configuration["Application:BaseUrl"] ?? "http://localhost:5000";
     public int DefaultTimeout => int.Parse(_configuration["Playwright:DefaultTimeout"] ?? "30000");
-    public bool Headless => bool.Parse(_configuration["Playwright:Headless"] ?? "false");
+
+    /// <summary>
+    /// Determines if browser should run in headless mode.
+    /// Defaults to true (headless) in CI environments, false (headed) for local debugging.
+    /// </summary>
+    public bool Headless
+    {
+        get
+        {
+            // Check explicit configuration first
+            if (_configuration["Playwright:Headless"] != null)
+            {
+                return bool.Parse(_configuration["Playwright:Headless"]);
+            }
+
+            // Auto-detect CI environment (GitHub Actions, Azure Pipelines, etc.)
+            var isCI = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CI")) ||
+                       !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")) ||
+                       !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TF_BUILD"));
+
+            // Run headless in CI, headed locally for easier debugging
+            return isCI;
+        }
+    }
     public int SlowMo => int.Parse(_configuration["Playwright:SlowMo"] ?? "0");
 
     /// <summary>
