@@ -31,7 +31,7 @@ jobs:
     - name: Publish Blazor WASM
       run: dotnet publish MotoNomad.App/MotoNomad.App.csproj -c Release -o release --nologo
 
-    # 🔑 Inject OpenRouter API Key from GitHub Secret
+    # 🔑 Inject OpenRouter API Key from GitHub Secret (AFTER publish, into output)
     - name: Inject OpenRouter API Key
       run: |
         sed -i 's/#{OPENROUTER_API_KEY}#/${{ secrets.OPENROUTER_API_KEY }}/g' release/wwwroot/appsettings.json

@@ -57,9 +57,6 @@ jobs:
     # 🚀 START BLAZOR APP (Background)
     - name: Start Blazor App
       run: |
-        # 🔑 Inject OpenRouter API Key
-        sed -i 's/#{OPENROUTER_API_KEY}#/${{ secrets.OPENROUTER_API_KEY }}/g' MotoNomad.App/wwwroot/appsettings.json
-        
         cd MotoNomad.App
         dotnet run --configuration Release --no-build --urls "http://localhost:5000" &
         echo $! > blazor_app.pid
@@ -67,6 +64,8 @@ jobs:
         # Wait for app to be ready
         timeout 60 bash -c 'until curl -f http://localhost:5000 > /dev/null 2>&1; do sleep 2; done' || (echo "App failed to start" && exit 1)
         echo "Blazor app started successfully"
+      env:
+        OpenRouter__ApiKey: ${{ secrets.OPENROUTER_API_KEY }}
 
     # 🎭 INSTALL PLAYWRIGHT
     - name: Install Playwright Browsers
@@ -158,4 +157,4 @@ jobs:
         steps.e2e.outputs.status != '0'
       run: |
         echo "Some checks failed!"
-        exit 1
+        exit 1        exit 1
