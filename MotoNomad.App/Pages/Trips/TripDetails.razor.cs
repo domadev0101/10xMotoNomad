@@ -57,7 +57,7 @@ public partial class TripDetails : ComponentBase
     /// </summary>
     private List<BreadcrumbItem> breadcrumbItems => new()
     {
-        new BreadcrumbItem("My Trips", href: "/trips"),
+        new BreadcrumbItem("My Trips", href: "trips"),
         new BreadcrumbItem(trip?.Name ?? "Trip", href: null, disabled: true)
     };
 
