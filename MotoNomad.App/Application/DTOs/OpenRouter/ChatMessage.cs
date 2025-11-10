@@ -8,7 +8,7 @@ namespace MotoNomad.App.Application.DTOs.OpenRouter;
 public record ChatMessage
 {
     /// <summary>
-  /// Message role: "system", "user", or "assistant"
+    /// Message role: "system", "user", or "assistant"
     /// </summary>
     [JsonPropertyName("role")]
     public required string Role { get; init; }
@@ -16,7 +16,7 @@ public record ChatMessage
     /// <summary>
     /// Message content (text or structured content)
     /// </summary>
-  [JsonPropertyName("content")]
+    [JsonPropertyName("content")]
     public required string Content { get; init; }
 
     /// <summary>
@@ -27,7 +27,7 @@ public record ChatMessage
     public static ChatMessage System(string content) => new()
     {
         Role = "system",
-     Content = content
+        Content = content
     };
 
     /// <summary>
@@ -37,7 +37,7 @@ public record ChatMessage
     /// <returns>User message</returns>
     public static ChatMessage User(string content) => new()
     {
-   Role = "user",
+        Role = "user",
         Content = content
     };
 

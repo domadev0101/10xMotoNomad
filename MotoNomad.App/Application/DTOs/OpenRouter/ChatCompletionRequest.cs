@@ -17,12 +17,12 @@ public record ChatCompletionRequest
     /// List of messages in the conversation
     /// </summary>
     [JsonPropertyName("messages")]
-  public required List<ChatMessage> Messages { get; init; }
+    public required List<ChatMessage> Messages { get; init; }
 
-  /// <summary>
+    /// <summary>
     /// Optional response format for structured outputs
     /// </summary>
-  [JsonPropertyName("response_format")]
+    [JsonPropertyName("response_format")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ResponseFormat? ResponseFormat { get; init; }
 
@@ -52,21 +52,21 @@ public record ChatCompletionRequest
     /// </summary>
     [JsonPropertyName("frequency_penalty")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-  public double? FrequencyPenalty { get; init; }
+    public double? FrequencyPenalty { get; init; }
 
     /// <summary>
     /// Presence penalty (-2.0 to 2.0)
     /// </summary>
     [JsonPropertyName("presence_penalty")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-  public double? PresencePenalty { get; init; }
+    public double? PresencePenalty { get; init; }
 
     /// <summary>
     /// Enable streaming responses
     /// </summary>
     [JsonPropertyName("stream")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
- public bool? Stream { get; init; }
+    public bool? Stream { get; init; }
 
     /// <summary>
     /// OpenRouter-specific routing strategy

@@ -40,7 +40,7 @@ public abstract class BasePage
     {
         await locator.ClickAsync(); // Focus the input
         await locator.FillAsync(text);
-        
+
         if (delayMs > 0)
         {
             await Page.WaitForTimeoutAsync(delayMs);
@@ -107,7 +107,7 @@ public abstract class BasePage
     protected async Task WaitForNavigationToAsync(string expectedPath, int timeoutMs = 10000)
     {
         var deadline = DateTime.Now.AddMilliseconds(timeoutMs);
-        
+
         while (DateTime.Now < deadline)
         {
             if (IsOnPage(expectedPath))

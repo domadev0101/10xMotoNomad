@@ -25,11 +25,11 @@ public partial class Health
 
     protected override void OnInitialized()
     {
-        #if DEBUG
+#if DEBUG
         environment = "Development";
-        #else
+#else
         environment = "Production";
-        #endif
+#endif
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public partial class Health
         try
         {
             var client = SupabaseClient.GetClient();
-            
+
             // Simple connectivity test - just getting the client
             if (client != null)
             {
@@ -184,7 +184,7 @@ public partial class Health
         try
         {
             var client = SupabaseClient.GetClient();
-            
+
             // Try to query the trips table (just count, no actual data retrieval)
             var response = await client
                 .From<Trip>()
@@ -230,7 +230,7 @@ public partial class Health
         {
             var client = SupabaseClient.GetClient();
             var session = client.Auth.CurrentSession;
-            
+
             stopwatch.Stop();
 
             if (session != null)

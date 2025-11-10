@@ -16,7 +16,7 @@ public record ChatCompletionResponse
 
     /// <summary>
     /// Model used for this completion
-  /// </summary>
+    /// </summary>
     [JsonPropertyName("model")]
     public required string Model { get; init; }
 
@@ -27,7 +27,7 @@ public record ChatCompletionResponse
     public required List<ChatChoice> Choices { get; init; }
 
     /// <summary>
- /// Token usage information
+    /// Token usage information
     /// </summary>
     [JsonPropertyName("usage")]
     public UsageInfo? Usage { get; init; }
@@ -52,7 +52,7 @@ public record ChatCompletionResponse
     public T? GetStructuredContent<T>() where T : class
     {
         var content = GetContent();
- if (string.IsNullOrWhiteSpace(content))
+        if (string.IsNullOrWhiteSpace(content))
             return null;
 
         return JsonSerializer.Deserialize<T>(content);

@@ -44,6 +44,7 @@ public class AuthenticationTests : IAsyncLifetime
     /// 6. Verify successful login and redirect to /trips
     /// Expected: User is successfully registered, then logs in manually
     /// </summary>
+    [Fact]
     public async Task TC_AUTH_01_Successful_Registration_And_Login()
     {
         // Arrange

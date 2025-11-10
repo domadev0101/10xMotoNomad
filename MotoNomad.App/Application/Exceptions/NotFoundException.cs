@@ -19,12 +19,12 @@ public class NotFoundException : Exception
     {
     }
 
-    public NotFoundException(string message, Exception innerException) 
+    public NotFoundException(string message, Exception innerException)
         : base(message, innerException)
     {
     }
 
-    public NotFoundException(string entityName, object entityId) 
+    public NotFoundException(string entityName, object entityId)
         : base($"{entityName} with ID '{entityId}' was not found.")
     {
         EntityName = entityName;

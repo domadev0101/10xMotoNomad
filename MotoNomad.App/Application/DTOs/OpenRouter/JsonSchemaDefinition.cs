@@ -16,12 +16,12 @@ public record JsonSchemaDefinition
     /// <summary>
     /// Enable strict schema validation (recommended: true)
     /// </summary>
- [JsonPropertyName("strict")]
- public required bool Strict { get; init; }
+    [JsonPropertyName("strict")]
+    public required bool Strict { get; init; }
 
-  /// <summary>
+    /// <summary>
     /// The JSON Schema object
     /// </summary>
- [JsonPropertyName("schema")]
+    [JsonPropertyName("schema")]
     public required JsonSchemaObject Schema { get; init; }
 }

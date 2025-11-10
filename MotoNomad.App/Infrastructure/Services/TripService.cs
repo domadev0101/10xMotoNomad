@@ -31,7 +31,7 @@ public class TripService : ITripService
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             var trips = await client
                 .From<Trip>()
                 .Where(t => t.UserId == userId)
@@ -46,22 +46,22 @@ public class TripService : ITripService
             // Get companion counts for each trip (N+1 approach - simple and works)
             // For MVP this is fine, future optimization: batch query with IN operator
             var result = new List<TripListItemDto>();
-            
+
             foreach (var trip in trips.Models)
- {
-        // Count companions for this trip
+            {
+                // Count companions for this trip
                 var companions = await client
        .From<Companion>()
         .Where(c => c.TripId == trip.Id)
       .Get();
-      
-        var companionCount = companions?.Models?.Count ?? 0;
-result.Add(MapToListItemDto(trip, companionCount));
-  }
 
-     _logger.LogInformation("Retrieved {Count} trips for user {UserId}", result.Count, userId);
+                var companionCount = companions?.Models?.Count ?? 0;
+                result.Add(MapToListItemDto(trip, companionCount));
+            }
 
-       return result;
+            _logger.LogInformation("Retrieved {Count} trips for user {UserId}", result.Count, userId);
+
+            return result;
         }
         catch (Exception ex)
         {
@@ -77,7 +77,7 @@ result.Add(MapToListItemDto(trip, companionCount));
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             var trip = await client
                 .From<Trip>()
                 .Where(t => t.Id == tripId && t.UserId == userId)
@@ -114,7 +114,7 @@ result.Add(MapToListItemDto(trip, companionCount));
     }
 
     public async Task<TripDetailDto> CreateTripAsync(CreateTripCommand command)
-    {    
+    {
         // Validate command
         ValidateCreateTripCommand(command);
 
@@ -125,17 +125,17 @@ result.Add(MapToListItemDto(trip, companionCount));
             var client = _supabaseClient.GetClient();
 
             var trip = new Trip
-          {
-        Id = Guid.NewGuid(),
-       UserId = userId,
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
                 Name = command.Name.Trim(),
-         StartDate = command.StartDate,
-           EndDate = command.EndDate,
-   Description = command.Description?.Trim(),
-       TransportType = command.TransportType,
-            CreatedAt = DateTime.UtcNow,
+                StartDate = command.StartDate,
+                EndDate = command.EndDate,
+                Description = command.Description?.Trim(),
+                TransportType = command.TransportType,
+                CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
-       };
+            };
 
             var response = await client
                 .From<Trip>()
@@ -167,12 +167,12 @@ result.Add(MapToListItemDto(trip, companionCount));
         // Validate command
         ValidateUpdateTripCommand(command);
 
-        var userId = GetCurrentUserId();        
+        var userId = GetCurrentUserId();
 
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             // Fetch existing trip
             var existingTrip = await client
                 .From<Trip>()
@@ -232,7 +232,7 @@ result.Add(MapToListItemDto(trip, companionCount));
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             // Verify trip exists and belongs to user
             var existingTrip = await client
                 .From<Trip>()
@@ -266,51 +266,51 @@ result.Add(MapToListItemDto(trip, companionCount));
     public async Task<IEnumerable<TripListItemDto>> GetUpcomingTripsAsync()
     {
         var userId = GetCurrentUserId();
-     var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
         try
-    {
-        var client = _supabaseClient.GetClient();
-    
+        {
+            var client = _supabaseClient.GetClient();
+
             var trips = await client
      .From<Trip>()
          .Where(t => t.UserId == userId)
         .Order(t => t.StartDate, Postgrest.Constants.Ordering.Ascending)
       .Get();
 
-if (trips?.Models == null || !trips.Models.Any())
-   {
-           return Enumerable.Empty<TripListItemDto>();
-       }
+            if (trips?.Models == null || !trips.Models.Any())
+            {
+                return Enumerable.Empty<TripListItemDto>();
+            }
 
-    // Filter upcoming trips (start date >= today)
-        var upcomingTrips = trips.Models.Where(t => t.StartDate >= today).ToList();
+            // Filter upcoming trips (start date >= today)
+            var upcomingTrips = trips.Models.Where(t => t.StartDate >= today).ToList();
 
             if (!upcomingTrips.Any())
-   {
-    return Enumerable.Empty<TripListItemDto>();
-    }
+            {
+                return Enumerable.Empty<TripListItemDto>();
+            }
 
-      // Get companion counts for each trip
+            // Get companion counts for each trip
             var companionCounts = new Dictionary<Guid, int>();
             foreach (var trip in upcomingTrips)
-       {
-       var companions = await client
-         .From<Companion>()
-        .Where(c => c.TripId == trip.Id)
-          .Get();
-      
-      companionCounts[trip.Id] = companions?.Models?.Count ?? 0;
+            {
+                var companions = await client
+                  .From<Companion>()
+                 .Where(c => c.TripId == trip.Id)
+                   .Get();
+
+                companionCounts[trip.Id] = companions?.Models?.Count ?? 0;
             }
 
             _logger.LogInformation("Retrieved {Count} upcoming trips for user {UserId}", upcomingTrips.Count, userId);
 
-          return upcomingTrips.Select(trip => MapToListItemDto(trip, companionCounts.GetValueOrDefault(trip.Id, 0)));
+            return upcomingTrips.Select(trip => MapToListItemDto(trip, companionCounts.GetValueOrDefault(trip.Id, 0)));
         }
         catch (Exception ex)
         {
- _logger.LogError(ex, "Failed to retrieve upcoming trips for user {UserId}", userId);
-          throw new DatabaseException("GetUpcomingTrips", "Failed to retrieve upcoming trips from database.", ex);
+            _logger.LogError(ex, "Failed to retrieve upcoming trips for user {UserId}", userId);
+            throw new DatabaseException("GetUpcomingTrips", "Failed to retrieve upcoming trips from database.", ex);
         }
     }
 
@@ -320,48 +320,48 @@ if (trips?.Models == null || !trips.Models.Any())
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
         try
-  {
-      var client = _supabaseClient.GetClient();
-         
-       var trips = await client
-     .From<Trip>()
-   .Where(t => t.UserId == userId)
-      .Order(t => t.StartDate, Postgrest.Constants.Ordering.Descending)
-         .Get();
+        {
+            var client = _supabaseClient.GetClient();
 
-      if (trips?.Models == null || !trips.Models.Any())
+            var trips = await client
+          .From<Trip>()
+        .Where(t => t.UserId == userId)
+           .Order(t => t.StartDate, Postgrest.Constants.Ordering.Descending)
+              .Get();
+
+            if (trips?.Models == null || !trips.Models.Any())
             {
-    return Enumerable.Empty<TripListItemDto>();
- }
+                return Enumerable.Empty<TripListItemDto>();
+            }
 
             // Filter past trips (start date < today)
-          var pastTrips = trips.Models.Where(t => t.StartDate < today).ToList();
+            var pastTrips = trips.Models.Where(t => t.StartDate < today).ToList();
 
-    if (!pastTrips.Any())
-         {
-      return Enumerable.Empty<TripListItemDto>();
-        }
+            if (!pastTrips.Any())
+            {
+                return Enumerable.Empty<TripListItemDto>();
+            }
 
-    // Get companion counts for each trip
+            // Get companion counts for each trip
             var companionCounts = new Dictionary<Guid, int>();
-         foreach (var trip in pastTrips)
-    {
-             var companions = await client
- .From<Companion>()
-     .Where(c => c.TripId == trip.Id)
-    .Get();
-      
-       companionCounts[trip.Id] = companions?.Models?.Count ?? 0;
-         }
+            foreach (var trip in pastTrips)
+            {
+                var companions = await client
+    .From<Companion>()
+        .Where(c => c.TripId == trip.Id)
+       .Get();
+
+                companionCounts[trip.Id] = companions?.Models?.Count ?? 0;
+            }
 
             _logger.LogInformation("Retrieved {Count} past trips for user {UserId}", pastTrips.Count, userId);
 
             return pastTrips.Select(trip => MapToListItemDto(trip, companionCounts.GetValueOrDefault(trip.Id, 0)));
         }
         catch (Exception ex)
-     {
+        {
             _logger.LogError(ex, "Failed to retrieve past trips for user {UserId}", userId);
- throw new DatabaseException("GetPastTrips", "Failed to retrieve past trips from database.", ex);
+            throw new DatabaseException("GetPastTrips", "Failed to retrieve past trips from database.", ex);
         }
     }
 

@@ -48,11 +48,11 @@ if (mockAuthSettings.Enabled)
         var supabaseClient = sp.GetRequiredService<ISupabaseClientService>();
         return new MockAuthenticationStateProvider(
          supabaseClient,
-            mockAuthSettings.UserId, 
-          mockAuthSettings.Email, 
+            mockAuthSettings.UserId,
+          mockAuthSettings.Email,
    mockAuthSettings.DisplayName);
-});
-    
+    });
+
     Console.WriteLine("?? MOCK AUTHENTICATION ENABLED ??");
     Console.WriteLine($"Mock User: {mockAuthSettings.Email} (ID: {mockAuthSettings.UserId})");
     Console.WriteLine("?? This should NEVER be enabled in production!");

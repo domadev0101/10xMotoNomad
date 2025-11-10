@@ -20,7 +20,7 @@ public class TripFormPage : BasePage
     private ILocator DescriptionInput => Page.GetByTestId("trip-description");
     private ILocator SubmitButton => Page.GetByTestId("trip-submit");
     private ILocator ValidationError => Page.GetByTestId("trip-validation-error");
-    
+
     // AI Assistant (if present)
     private ILocator AiGenerateButton => Page.GetByTestId("ai-generate-btn");
     private ILocator AiApplyButton => Page.GetByTestId("ai-apply-btn");
@@ -87,16 +87,16 @@ public class TripFormPage : BasePage
     public async Task SelectTransportAsync(string transportType)
     {
         await TransportSelect.ClickAsync();
-        
+
         // MudSelect opens a dropdown - wait for it and click the option
         await Page.WaitForTimeoutAsync(300);
-        
+
         // Find and click the option in the dropdown
-        var option = Page.Locator($".mud-list-item").Filter(new LocatorFilterOptions 
-        { 
-            HasText = transportType 
+        var option = Page.Locator($".mud-list-item").Filter(new LocatorFilterOptions
+        {
+            HasText = transportType
         });
-        
+
         await option.ClickAsync();
     }
 
@@ -133,12 +133,12 @@ public class TripFormPage : BasePage
         await FillStartDateAsync(startDate);
         await FillEndDateAsync(endDate);
         await SelectTransportAsync(transportType);
-        
+
         if (!string.IsNullOrEmpty(description))
         {
             await FillDescriptionAsync(description);
         }
-        
+
         await ClickSubmitAsync();
     }
 
@@ -200,7 +200,7 @@ public class TripFormPage : BasePage
     public async Task WaitForSuccessfulSaveAsync(int timeoutMs = 10000)
     {
         var deadline = DateTime.Now.AddMilliseconds(timeoutMs);
-        
+
         while (DateTime.Now < deadline)
         {
             if (IsOnPage("/trips") || CurrentUrl.Contains("/trip/"))
@@ -222,7 +222,7 @@ public class TripFormPage : BasePage
     public async Task ClickGenerateAiSuggestionsAsync()
     {
         await AiGenerateButton.ClickAsync();
-        
+
         // Wait for suggestions to load
         await Page.WaitForTimeoutAsync(1000);
     }

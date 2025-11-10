@@ -10,7 +10,7 @@ public class UnauthorizedException : Exception
     /// </summary>
     public string? Resource { get; }
 
-    public UnauthorizedException() 
+    public UnauthorizedException()
         : base("You are not authorized to perform this action.")
     {
     }
@@ -19,12 +19,12 @@ public class UnauthorizedException : Exception
     {
     }
 
-    public UnauthorizedException(string message, Exception innerException) 
+    public UnauthorizedException(string message, Exception innerException)
         : base(message, innerException)
     {
     }
 
-    public UnauthorizedException(string resource, string message) 
+    public UnauthorizedException(string resource, string message)
         : base(message)
     {
         Resource = resource;

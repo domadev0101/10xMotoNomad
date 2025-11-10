@@ -22,6 +22,6 @@ public record UsageInfo
     /// <summary>
     /// Total number of tokens used (prompt + completion)
     /// </summary>
- [JsonPropertyName("total_tokens")]
-  public int TotalTokens { get; init; }
+    [JsonPropertyName("total_tokens")]
+    public int TotalTokens { get; init; }
 }

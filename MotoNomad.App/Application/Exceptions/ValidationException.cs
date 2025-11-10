@@ -14,18 +14,18 @@ public class ValidationException : Exception
     {
     }
 
-    public ValidationException(string message, Exception innerException) 
+    public ValidationException(string message, Exception innerException)
         : base(message, innerException)
     {
     }
 
-    public ValidationException(string message, Dictionary<string, string[]> validationErrors) 
+    public ValidationException(string message, Dictionary<string, string[]> validationErrors)
         : base(message)
     {
         ValidationErrors = validationErrors;
     }
 
-    public ValidationException(Dictionary<string, string[]> validationErrors) 
+    public ValidationException(Dictionary<string, string[]> validationErrors)
         : base("One or more validation errors occurred.")
     {
         ValidationErrors = validationErrors;

@@ -7,15 +7,15 @@ namespace MotoNomad.App.Application.DTOs.OpenRouter;
 /// </summary>
 public record ChatChoice
 {
-  /// <summary>
+    /// <summary>
     /// Index of this choice in the list
     /// </summary>
     [JsonPropertyName("index")]
-  public int Index { get; init; }
+    public int Index { get; init; }
 
     /// <summary>
     /// The generated message
-  /// </summary>
+    /// </summary>
     [JsonPropertyName("message")]
     public ChatMessage? Message { get; init; }
 

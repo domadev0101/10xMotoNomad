@@ -33,7 +33,7 @@ public class CompanionService : ICompanionService
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             var companions = await client
                 .From<Companion>()
                 .Where(c => c.TripId == tripId)
@@ -67,7 +67,7 @@ public class CompanionService : ICompanionService
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             var companion = await client
                 .From<Companion>()
                 .Where(c => c.Id == companionId)
@@ -164,7 +164,7 @@ public class CompanionService : ICompanionService
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             // Fetch existing companion
             var existingCompanion = await client
                 .From<Companion>()
@@ -218,7 +218,7 @@ public class CompanionService : ICompanionService
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             // Fetch existing companion
             var existingCompanion = await client
                 .From<Companion>()
@@ -266,7 +266,7 @@ public class CompanionService : ICompanionService
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             var companions = await client
                 .From<Companion>()
                 .Where(c => c.TripId == tripId)
@@ -415,7 +415,7 @@ public class CompanionService : ICompanionService
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             var trip = await client
                 .From<Trip>()
                 .Where(t => t.Id == tripId && t.UserId == userId)

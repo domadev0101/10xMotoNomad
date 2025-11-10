@@ -40,10 +40,10 @@ public partial class Register
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
-      // Redirect if already logged in
-     if (await AuthService.IsAuthenticatedAsync())
+        // Redirect if already logged in
+        if (await AuthService.IsAuthenticatedAsync())
         {
-        NavigationManager.NavigateTo("trips");
+            NavigationManager.NavigateTo("trips");
         }
     }
 
@@ -52,15 +52,15 @@ public partial class Register
     /// </summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-      if (firstRender && _emailField != null)
+        if (firstRender && _emailField != null)
         {
-        await _emailField.FocusAsync();
+            await _emailField.FocusAsync();
         }
     }
 
     #endregion
 
-#region Event Handlers
+    #region Event Handlers
 
     /// <summary>
     /// Handles registration form submission.
@@ -72,7 +72,7 @@ public partial class Register
         await _form.Validate();
         if (!_form.IsValid)
         {
-    return;
+            return;
         }
 
         // Start loading
@@ -80,57 +80,57 @@ public partial class Register
         _errorMessage = null;
 
         try
-   {
-    // Create command
-      var command = new RegisterCommand
-     {
-         Email = _model.Email.Trim(),
-       Password = _model.Password,
-DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
-                 ? null
-      : _model.DisplayName.Trim()
-  };
+        {
+            // Create command
+            var command = new RegisterCommand
+            {
+                Email = _model.Email.Trim(),
+                Password = _model.Password,
+                DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
+                       ? null
+            : _model.DisplayName.Trim()
+            };
 
             // Call AuthService - user is automatically logged in after registration
             var user = await AuthService.RegisterAsync(command);
 
-  // Notify authentication state changed
-      if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
+            // Notify authentication state changed
+            if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
             {
-      customProvider.NotifyAuthenticationStateChanged();
-   }
+                customProvider.NotifyAuthenticationStateChanged();
+            }
 
-         // Success
+            // Success
             var welcomeMessage = string.IsNullOrEmpty(user.DisplayName)
         ? $"Welcome, {user.Email}!"
     : $"Welcome, {user.DisplayName}!";
-            
-    Snackbar.Add($"{welcomeMessage} Your account has been created.", Severity.Success);
-            
-      // Navigate without forceLoad to avoid triggering OnInitializedAsync again
+
+            Snackbar.Add($"{welcomeMessage} Your account has been created.", Severity.Success);
+
+            // Navigate without forceLoad to avoid triggering OnInitializedAsync again
             NavigationManager.NavigateTo("trips");
-    }
+        }
         catch (AuthException ex)
         {
             _errorMessage = ex.Message;
-      Snackbar.Add(ex.Message, Severity.Error);
-      }
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
         catch (ValidationException ex)
-   {
+        {
             _errorMessage = ex.Message;
-        Snackbar.Add(ex.Message, Severity.Warning);
- }
-   catch (Exception ex)
+            Snackbar.Add(ex.Message, Severity.Warning);
+        }
+        catch (Exception ex)
         {
             _errorMessage = "An unexpected error occurred. Please try again.";
             Snackbar.Add(_errorMessage, Severity.Error);
-// TODO: Log exception
+            // TODO: Log exception
         }
-     finally
+        finally
         {
- _isLoading = false;
-        StateHasChanged();
-     }
+            _isLoading = false;
+            StateHasChanged();
+        }
     }
 
     #endregion
@@ -144,24 +144,24 @@ DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-    return "Email is required";
+            return "Email is required";
         }
 
         if (!IsValidEmail(value))
-     {
-       return "Invalid email format";
+        {
+            return "Invalid email format";
         }
 
         if (value.Length > 255)
-    {
-          return "Email cannot exceed 255 characters";
+        {
+            return "Email cannot exceed 255 characters";
         }
 
         return null;
     };
 
     /// <summary>
-  /// Validates password length requirements.
+    /// Validates password length requirements.
     /// </summary>
     private Func<string, string?> PasswordValidation => (value) =>
     {
@@ -172,10 +172,10 @@ DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
 
         if (value.Length < 8)
         {
-      return "Password must be at least 8 characters";
+            return "Password must be at least 8 characters";
         }
 
-    if (value.Length > 100)
+        if (value.Length > 100)
         {
             return "Password cannot exceed 100 characters";
         }
@@ -189,13 +189,13 @@ DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
     private Func<string, string?> MatchPasswordValidation => (value) =>
     {
         if (string.IsNullOrEmpty(value))
-     {
-     return "Password confirmation is required";
+        {
+            return "Password confirmation is required";
         }
 
-    if (value != _model.Password)
+        if (value != _model.Password)
         {
-         return "Passwords must match";
+            return "Passwords must match";
         }
 
         return null;
@@ -206,21 +206,21 @@ DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
     /// </summary>
     private Func<string, string?> DisplayNameValidation => (value) =>
     {
-     if (!string.IsNullOrWhiteSpace(value) && value.Length > 100)
+        if (!string.IsNullOrWhiteSpace(value) && value.Length > 100)
         {
-  return "Display name cannot exceed 100 characters";
+            return "Display name cannot exceed 100 characters";
         }
 
-  return null;
+        return null;
     };
 
- /// <summary>
+    /// <summary>
     /// Validates email format using MailAddress.
     /// </summary>
     private static bool IsValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-      return false;
+            return false;
 
         try
         {
@@ -229,7 +229,7 @@ DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
         }
         catch
         {
-   return false;
+            return false;
         }
     }
 
@@ -239,7 +239,7 @@ DisplayName = string.IsNullOrWhiteSpace(_model.DisplayName)
 
     /// <summary>
     /// View model for registration form data.
- /// </summary>
+    /// </summary>
     private class RegisterViewModel
     {
         public string Email { get; set; } = string.Empty;

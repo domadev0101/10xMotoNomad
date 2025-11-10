@@ -15,7 +15,7 @@ public record ModelInfo
 
     /// <summary>
     /// Human-readable model name
-  /// </summary>
+    /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; init; }
 
@@ -56,7 +56,7 @@ public record ModelPricing
     public string? Prompt { get; init; }
 
     /// <summary>
-  /// Cost per completion token (in USD)
+    /// Cost per completion token (in USD)
     /// </summary>
     [JsonPropertyName("completion")]
     public string? Completion { get; init; }
@@ -76,7 +76,7 @@ public record TopProvider
     /// <summary>
     /// Whether the model is currently available
     /// </summary>
- [JsonPropertyName("is_moderated")]
+    [JsonPropertyName("is_moderated")]
     public bool? IsModerated { get; init; }
 }
 
@@ -85,7 +85,7 @@ public record TopProvider
 /// </summary>
 public record ModelsResponse
 {
-/// <summary>
+    /// <summary>
     /// List of available models
     /// </summary>
     [JsonPropertyName("data")]

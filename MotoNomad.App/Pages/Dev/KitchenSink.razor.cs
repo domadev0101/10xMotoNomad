@@ -8,7 +8,7 @@ namespace MotoNomad.App.Pages.Dev;
 /// </summary>
 public partial class KitchenSink
 {
-    [Inject] 
+    [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
 
     /// <summary>

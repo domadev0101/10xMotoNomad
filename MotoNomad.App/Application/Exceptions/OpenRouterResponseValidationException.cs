@@ -11,7 +11,7 @@ public class OpenRouterResponseValidationException : OpenRouterException
     public string? ExpectedSchema { get; }
 
     /// <summary>
-  /// Actual response received
+    /// Actual response received
     /// </summary>
     public string? ActualResponse { get; }
 
@@ -27,7 +27,7 @@ public class OpenRouterResponseValidationException : OpenRouterException
         string? actualResponse = null)
         : base(message)
     {
-  ExpectedSchema = expectedSchema;
-     ActualResponse = actualResponse;
+        ExpectedSchema = expectedSchema;
+        ActualResponse = actualResponse;
     }
 }

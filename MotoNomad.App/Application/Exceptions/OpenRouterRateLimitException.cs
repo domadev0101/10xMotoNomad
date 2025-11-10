@@ -5,7 +5,7 @@ namespace MotoNomad.App.Application.Exceptions;
 /// </summary>
 public class OpenRouterRateLimitException : OpenRouterException
 {
- /// <summary>
+    /// <summary>
     /// Time to wait before retrying
     /// </summary>
     public TimeSpan? RetryAfter { get; }
@@ -18,6 +18,6 @@ public class OpenRouterRateLimitException : OpenRouterException
     public OpenRouterRateLimitException(string message, TimeSpan? retryAfter = null)
      : base(message)
     {
-     RetryAfter = retryAfter;
+        RetryAfter = retryAfter;
     }
 }
