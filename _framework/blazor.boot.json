@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "MotoNomad.App",
   "resources": {
-    "hash": "sha256-jcYMhmWAURa9UkIGkjaDAr44sAxTML6py4JvorzwdlQ=",
+    "hash": "sha256-c2cqQm+o1p2EU81rJhEVbWXz1weRW8zf7zjMbl17cOw=",
     "fingerprinting": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "Blazored.LocalStorage.wasm",
       "Supabase.Functions.w4gz1z4ill.wasm": "Supabase.Functions.wasm",
@@ -108,7 +108,7 @@
       "System.8rv0tdtrxz.wasm": "System.wasm",
       "netstandard.w93bc8urd9.wasm": "netstandard.wasm",
       "System.Private.CoreLib.tvrvjxodxo.wasm": "System.Private.CoreLib.wasm",
-      "MotoNomad.App.a0kh5i5l37.wasm": "MotoNomad.App.wasm",
+      "MotoNomad.App.lz4n0kiw9s.wasm": "MotoNomad.App.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.l4ptthxatg.js": "dotnet.native.js",
       "dotnet.native.d2w7colv7e.wasm": "dotnet.native.wasm",
@@ -239,7 +239,7 @@
       "System.Xml.XDocument.ocxzop4g63.wasm": "sha256-mO8Myb/YHsEXA9rrh5dZinveqXGkEbaG2JNi9ZpvjnY=",
       "System.8rv0tdtrxz.wasm": "sha256-xMF0eauQ5DkSzUozHLFFMQnL6DSJO09nJLtgag+Dzbw=",
       "netstandard.w93bc8urd9.wasm": "sha256-VDGWrrvBdUp4GioR1tqsGzA3s2fQcnWDmW+9Ec8tEJc=",
-      "MotoNomad.App.a0kh5i5l37.wasm": "sha256-dkNuS8EGQDuF0MZdC6vAYf8xiS7aUXmDtY/J4h+u84s="
+      "MotoNomad.App.lz4n0kiw9s.wasm": "sha256-AWlVyWPPy1gZ/aRcPlWmiQuWlaPVCX7MQDPXD9KrThc="
     }
   },
   "cacheBootResources": true,
