@@ -47,10 +47,10 @@ jobs:
       run: dotnet publish MotoNomad.App/MotoNomad.App.csproj -c Release -o ./publish --nologo
       working-directory: ./
     
-    # 🔑 Inject OpenRouter API Key for build artifact (AFTER publish, into output)
+    # 🔑 Inject OpenRouter API Key for build artifact
     - name: Inject OpenRouter API Key
       run: |
-        sed -i 's/#{OPENROUTER_API_KEY}#/${{ secrets.OPENROUTER_API_KEY }}/g' ./publish/wwwroot/appsettings.json
+          sed -i 's/#{OPENROUTER_API_KEY}#/${{ secrets.OPENROUTER_API_KEY }}/g' ./publish/wwwroot/appsettings.json
       shell: bash
     
     - name: Upload build artifacts
