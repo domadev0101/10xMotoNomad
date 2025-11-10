@@ -30,7 +30,7 @@ public partial class LoginDisplay
         var user = authState.User;
         var displayName = user.FindFirst("display_name")?.Value;
         var email = user.FindFirst("email")?.Value;
-        
+
         return displayName ?? email?.Split('@')[0] ?? "User";
     }
 

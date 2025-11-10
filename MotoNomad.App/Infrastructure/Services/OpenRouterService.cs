@@ -39,45 +39,45 @@ public class OpenRouterService : IOpenRouterService, IDisposable
         ILogger<OpenRouterService> logger)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-    _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
-   _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-      // Validate settings
-  if (string.IsNullOrWhiteSpace(_settings.ApiKey) || 
- _settings.ApiKey == "your-api-key-here" ||
-    _settings.ApiKey.StartsWith("your-"))
- {
+        // Validate settings
+        if (string.IsNullOrWhiteSpace(_settings.ApiKey) ||
+       _settings.ApiKey == "your-api-key-here" ||
+          _settings.ApiKey.StartsWith("your-"))
+        {
             _logger.LogWarning("OpenRouter API key is not configured properly. AI features will not work.");
             _logger.LogWarning("Please configure a valid API key in appsettings.json under OpenRouter:ApiKey");
-        // Don't throw - allow app to run but AI features won't work
-    }
+            // Don't throw - allow app to run but AI features won't work
+        }
 
- // Configure HTTP client
-    var baseUrl = _settings.BaseUrl.TrimEnd('/') + "/";
-    _httpClient.BaseAddress = new Uri(baseUrl);
-    
-        if (!string.IsNullOrWhiteSpace(_settings.ApiKey) && 
+        // Configure HTTP client
+        var baseUrl = _settings.BaseUrl.TrimEnd('/') + "/";
+        _httpClient.BaseAddress = new Uri(baseUrl);
+
+        if (!string.IsNullOrWhiteSpace(_settings.ApiKey) &&
             _settings.ApiKey != "your-api-key-here" &&
        !_settings.ApiKey.StartsWith("your-"))
         {
-_httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.ApiKey}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.ApiKey}");
         }
-        
-     _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", _settings.HttpReferer);
-    _httpClient.DefaultRequestHeaders.Add("X-Title", _settings.AppTitle);
-     _httpClient.Timeout = TimeSpan.FromSeconds(_settings.TimeoutSeconds);
+
+        _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", _settings.HttpReferer);
+        _httpClient.DefaultRequestHeaders.Add("X-Title", _settings.AppTitle);
+        _httpClient.Timeout = TimeSpan.FromSeconds(_settings.TimeoutSeconds);
 
         // Configure JSON options
         _jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-   DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-     WriteIndented = false
-      };
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = false
+        };
 
-      // Initialize rate limiting
+        // Initialize rate limiting
         _rateLimitSemaphore = new SemaphoreSlim(_settings.MaxConcurrentRequests);
-     _lastRequestTime = DateTime.MinValue;
+        _lastRequestTime = DateTime.MinValue;
         _consecutiveErrors = 0;
     }
 
@@ -95,77 +95,77 @@ _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.ApiKe
     _settings.ApiKey == "your-api-key-here" ||
       _settings.ApiKey.StartsWith("your-"))
         {
-          throw new OpenRouterAuthException(
-     "OpenRouter API key is not configured. Please add your API key to appsettings.json under OpenRouter:ApiKey. " +
-       "Get your free API key at: https://openrouter.ai/keys");
+            throw new OpenRouterAuthException(
+       "OpenRouter API key is not configured. Please add your API key to appsettings.json under OpenRouter:ApiKey. " +
+         "Get your free API key at: https://openrouter.ai/keys");
         }
 
         try
-      {
-        ValidateRequest(request);
-      await ApplyRateLimitAsync(cancellationToken);
-
-          return await RetryWithExponentialBackoffAsync(
-   async () =>
-       {
-     _logger.LogInformation(
-              "Sending chat completion request to model {Model}",
-     request.Model);
-
-        var response = await _httpClient.PostAsJsonAsync(
-    "chat/completions",
-        request,
-      _jsonOptions,
-    cancellationToken);
-
- if (!response.IsSuccessStatusCode)
         {
-    await HandleHttpErrorAsync(response);
-     }
+            ValidateRequest(request);
+            await ApplyRateLimitAsync(cancellationToken);
 
-        // Log response content type for debugging
-      var contentType = response.Content.Headers.ContentType?.MediaType;
-           _logger.LogDebug("Response Content-Type: {ContentType}", contentType);
+            return await RetryWithExponentialBackoffAsync(
+     async () =>
+         {
+             _logger.LogInformation(
+                    "Sending chat completion request to model {Model}",
+           request.Model);
 
-        // Check if response is JSON
-       if (contentType != null && !contentType.Contains("application/json"))
-                {
-            var rawContent = await response.Content.ReadAsStringAsync(cancellationToken);
-         _logger.LogError("Received non-JSON response: {Content}", rawContent.Substring(0, Math.Min(500, rawContent.Length)));
-        throw new OpenRouterException($"Received non-JSON response (Content-Type: {contentType}). This usually indicates an authentication or configuration error.");
-              }
+             var response = await _httpClient.PostAsJsonAsync(
+       "chat/completions",
+           request,
+         _jsonOptions,
+       cancellationToken);
 
-            var result = await response.Content
-  .ReadFromJsonAsync<ChatCompletionResponse>(_jsonOptions, cancellationToken);
+             if (!response.IsSuccessStatusCode)
+             {
+                 await HandleHttpErrorAsync(response);
+             }
 
-        if (result == null)
-    {
-   throw new OpenRouterException("Received null response from API");
-     }
+             // Log response content type for debugging
+             var contentType = response.Content.Headers.ContentType?.MediaType;
+             _logger.LogDebug("Response Content-Type: {ContentType}", contentType);
 
-        _logger.LogInformation(
-  "Successfully received response: Tokens={TotalTokens}",
-    result.Usage?.TotalTokens ?? 0);
+             // Check if response is JSON
+             if (contentType != null && !contentType.Contains("application/json"))
+             {
+                 var rawContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                 _logger.LogError("Received non-JSON response: {Content}", rawContent.Substring(0, Math.Min(500, rawContent.Length)));
+                 throw new OpenRouterException($"Received non-JSON response (Content-Type: {contentType}). This usually indicates an authentication or configuration error.");
+             }
 
-return result;
-            },
-     maxRetries: _settings.MaxRetries,
-    cancellationToken);
+             var result = await response.Content
+ .ReadFromJsonAsync<ChatCompletionResponse>(_jsonOptions, cancellationToken);
+
+             if (result == null)
+             {
+                 throw new OpenRouterException("Received null response from API");
+             }
+
+             _logger.LogInformation(
+     "Successfully received response: Tokens={TotalTokens}",
+       result.Usage?.TotalTokens ?? 0);
+
+             return result;
+         },
+       maxRetries: _settings.MaxRetries,
+      cancellationToken);
         }
         catch (OperationCanceledException)
         {
-  _logger.LogInformation("Request cancelled by user");
-      throw;
+            _logger.LogInformation("Request cancelled by user");
+            throw;
         }
-    catch (OpenRouterException)
+        catch (OpenRouterException)
         {
-        throw;
-   }
+            throw;
+        }
         catch (Exception ex)
-      {
-  _logger.LogError(ex, "Unexpected error in SendChatCompletionAsync");
-      throw new OpenRouterException("An unexpected error occurred", ex);
-     }
+        {
+            _logger.LogError(ex, "Unexpected error in SendChatCompletionAsync");
+            throw new OpenRouterException("An unexpected error occurred", ex);
+        }
     }
 
     /// <summary>
@@ -176,38 +176,38 @@ return result;
         CancellationToken cancellationToken = default) where T : class
     {
         if (request.ResponseFormat == null)
-    {
-      throw new ValidationException("ResponseFormat is required for structured completions");
+        {
+            throw new ValidationException("ResponseFormat is required for structured completions");
         }
 
         var response = await SendChatCompletionAsync(request, cancellationToken);
         var content = response.GetContent();
 
-if (string.IsNullOrWhiteSpace(content))
-  {
+        if (string.IsNullOrWhiteSpace(content))
+        {
             throw new OpenRouterResponseValidationException(
              "Received empty response content");
         }
 
         try
-   {
-      var result = JsonSerializer.Deserialize<T>(content, _jsonOptions);
+        {
+            var result = JsonSerializer.Deserialize<T>(content, _jsonOptions);
 
-    if (result == null)
-  {
-          throw new OpenRouterResponseValidationException(
- "Failed to deserialize response to requested type");
+            if (result == null)
+            {
+                throw new OpenRouterResponseValidationException(
+       "Failed to deserialize response to requested type");
             }
 
-         return result;
+            return result;
         }
         catch (JsonException ex)
-     {
-         _logger.LogError(ex, "Failed to deserialize structured response");
-     throw new OpenRouterResponseValidationException(
-         "Response does not match expected JSON schema",
-      request.ResponseFormat.JsonSchema.Schema.ToString(),
-       content);
+        {
+            _logger.LogError(ex, "Failed to deserialize structured response");
+            throw new OpenRouterResponseValidationException(
+                "Response does not match expected JSON schema",
+             request.ResponseFormat.JsonSchema.Schema.ToString(),
+              content);
         }
     }
 
@@ -225,7 +225,7 @@ if (string.IsNullOrWhiteSpace(content))
 
         await ApplyRateLimitAsync(cancellationToken);
 
-      using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "chat/completions")
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "chat/completions")
         {
             Content = JsonContent.Create(streamingRequest, options: _jsonOptions)
         };
@@ -241,20 +241,20 @@ if (string.IsNullOrWhiteSpace(content))
         }
 
         using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-     using var reader = new StreamReader(stream);
+        using var reader = new StreamReader(stream);
 
-     while (!reader.EndOfStream)
-      {
-  cancellationToken.ThrowIfCancellationRequested();
+        while (!reader.EndOfStream)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
 
             var line = await reader.ReadLineAsync();
-   var chunk = ParseStreamingChunk(line);
+            var chunk = ParseStreamingChunk(line);
 
-   if (chunk != null)
+            if (chunk != null)
             {
-      yield return chunk;
+                yield return chunk;
             }
-}
+        }
     }
 
     /// <summary>
@@ -265,7 +265,7 @@ if (string.IsNullOrWhiteSpace(content))
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(apiKey))
-      return false;
+            return false;
 
         try
         {
@@ -274,27 +274,27 @@ if (string.IsNullOrWhiteSpace(content))
             testClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
             testClient.Timeout = TimeSpan.FromSeconds(10);
 
-          var testRequest = new ChatCompletionRequest
-          {
-    Model = "openai/gpt-3.5-turbo",
- Messages = new List<ChatMessage>
+            var testRequest = new ChatCompletionRequest
+            {
+                Model = "openai/gpt-3.5-turbo",
+                Messages = new List<ChatMessage>
      {
         ChatMessage.User("test")
                 },
-   MaxTokens = 1
+                MaxTokens = 1
             };
 
- var response = await testClient.PostAsJsonAsync(
-                "chat/completions",
-         testRequest,
-                _jsonOptions,
-           cancellationToken);
+            var response = await testClient.PostAsJsonAsync(
+                           "chat/completions",
+                    testRequest,
+                           _jsonOptions,
+                      cancellationToken);
 
             return response.IsSuccessStatusCode;
         }
         catch
         {
-      return false;
+            return false;
         }
     }
 
@@ -306,27 +306,27 @@ if (string.IsNullOrWhiteSpace(content))
     {
         try
         {
-    var response = await _httpClient.GetAsync("models", cancellationToken);
+            var response = await _httpClient.GetAsync("models", cancellationToken);
 
             if (!response.IsSuccessStatusCode)
-       {
-        await HandleHttpErrorAsync(response);
-        }
+            {
+                await HandleHttpErrorAsync(response);
+            }
 
-       var result = await response.Content
-      .ReadFromJsonAsync<ModelsResponse>(_jsonOptions, cancellationToken);
+            var result = await response.Content
+           .ReadFromJsonAsync<ModelsResponse>(_jsonOptions, cancellationToken);
 
             return result?.Data ?? Enumerable.Empty<ModelInfo>();
         }
-      catch (OpenRouterException)
+        catch (OpenRouterException)
         {
-        throw;
-    }
+            throw;
+        }
         catch (Exception ex)
-    {
+        {
             _logger.LogError(ex, "Error fetching available models");
-    throw new OpenRouterException("Failed to fetch available models", ex);
-   }
+            throw new OpenRouterException("Failed to fetch available models", ex);
+        }
     }
 
     #endregion
@@ -338,40 +338,40 @@ if (string.IsNullOrWhiteSpace(content))
     /// </summary>
     private void ValidateRequest(ChatCompletionRequest request)
     {
-    if (request == null)
-     throw new ArgumentNullException(nameof(request));
+        if (request == null)
+            throw new ArgumentNullException(nameof(request));
 
-      if (string.IsNullOrWhiteSpace(request.Model))
-       throw new ValidationException("Model name is required");
+        if (string.IsNullOrWhiteSpace(request.Model))
+            throw new ValidationException("Model name is required");
 
-   if (request.Messages == null || !request.Messages.Any())
-    throw new ValidationException("At least one message is required");
+        if (request.Messages == null || !request.Messages.Any())
+            throw new ValidationException("At least one message is required");
 
         // Validate message roles
         var validRoles = new[] { "system", "user", "assistant" };
         foreach (var message in request.Messages)
         {
-      if (!validRoles.Contains(message.Role))
-         throw new ValidationException($"Invalid message role: {message.Role}");
+            if (!validRoles.Contains(message.Role))
+                throw new ValidationException($"Invalid message role: {message.Role}");
 
-       if (string.IsNullOrWhiteSpace(message.Content))
-        throw new ValidationException("Message content cannot be empty");
-      }
+            if (string.IsNullOrWhiteSpace(message.Content))
+                throw new ValidationException("Message content cannot be empty");
+        }
 
-    // Validate parameters
+        // Validate parameters
         if (request.Temperature.HasValue && (request.Temperature < 0 || request.Temperature > 2))
-          throw new ValidationException("Temperature must be between 0 and 2");
+            throw new ValidationException("Temperature must be between 0 and 2");
 
         if (request.MaxTokens.HasValue && request.MaxTokens <= 0)
             throw new ValidationException("MaxTokens must be positive");
 
         if (request.TopP.HasValue && (request.TopP < 0 || request.TopP > 1))
-    throw new ValidationException("TopP must be between 0 and 1");
+            throw new ValidationException("TopP must be between 0 and 1");
 
         // Validate JSON schema if provided
         if (request.ResponseFormat != null)
         {
-   ValidateJsonSchema(request.ResponseFormat);
+            ValidateJsonSchema(request.ResponseFormat);
         }
     }
 
@@ -380,27 +380,27 @@ if (string.IsNullOrWhiteSpace(content))
     /// </summary>
     private void ValidateJsonSchema(ResponseFormat responseFormat)
     {
-   if (responseFormat.Type != "json_schema")
+        if (responseFormat.Type != "json_schema")
             throw new ValidationException("Response format type must be 'json_schema'");
 
         if (responseFormat.JsonSchema == null)
-     throw new ValidationException("JsonSchema definition is required");
+            throw new ValidationException("JsonSchema definition is required");
 
         if (string.IsNullOrWhiteSpace(responseFormat.JsonSchema.Name))
-         throw new ValidationException("Schema name is required");
+            throw new ValidationException("Schema name is required");
 
         // Validate schema name format
         if (!Regex.IsMatch(responseFormat.JsonSchema.Name, @"^[a-zA-Z0-9_-]+$"))
-{
+        {
             throw new ValidationException(
         "Schema name must contain only letters, numbers, underscores, and dashes");
         }
 
-if (responseFormat.JsonSchema.Schema == null)
-     throw new ValidationException("Schema object is required");
+        if (responseFormat.JsonSchema.Schema == null)
+            throw new ValidationException("Schema object is required");
 
         if (responseFormat.JsonSchema.Schema.Type != "object")
-     throw new ValidationException("Root schema type must be 'object'");
+            throw new ValidationException("Root schema type must be 'object'");
     }
 
     /// <summary>
@@ -411,21 +411,21 @@ if (responseFormat.JsonSchema.Schema == null)
         await _rateLimitSemaphore.WaitAsync(cancellationToken);
 
         try
-      {
-     var timeSinceLastRequest = DateTime.UtcNow - _lastRequestTime;
-         var minimumDelay = TimeSpan.FromMilliseconds(_settings.MinRequestDelayMs);
+        {
+            var timeSinceLastRequest = DateTime.UtcNow - _lastRequestTime;
+            var minimumDelay = TimeSpan.FromMilliseconds(_settings.MinRequestDelayMs);
 
             if (timeSinceLastRequest < minimumDelay)
             {
-   var delayNeeded = minimumDelay - timeSinceLastRequest;
-      await Task.Delay(delayNeeded, cancellationToken);
+                var delayNeeded = minimumDelay - timeSinceLastRequest;
+                await Task.Delay(delayNeeded, cancellationToken);
             }
 
-    _lastRequestTime = DateTime.UtcNow;
-    }
+            _lastRequestTime = DateTime.UtcNow;
+        }
         finally
         {
-   _rateLimitSemaphore.Release();
+            _rateLimitSemaphore.Release();
         }
     }
 
@@ -434,7 +434,7 @@ if (responseFormat.JsonSchema.Schema == null)
     /// </summary>
     private async Task HandleHttpErrorAsync(HttpResponseMessage response)
     {
-     var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync();
         var statusCode = (int)response.StatusCode;
 
         _logger.LogError(
@@ -442,38 +442,38 @@ if (responseFormat.JsonSchema.Schema == null)
        statusCode,
             content);
 
-    switch (statusCode)
+        switch (statusCode)
         {
-    case 401:
-  throw new OpenRouterAuthException(
-              "Invalid API key. Please check your OpenRouter configuration.");
+            case 401:
+                throw new OpenRouterAuthException(
+                            "Invalid API key. Please check your OpenRouter configuration.");
 
-     case 429:
+            case 429:
                 var retryAfter = response.Headers.RetryAfter?.Delta;
                 throw new OpenRouterRateLimitException(
                "Rate limit exceeded. Please wait before making more requests.",
      retryAfter);
 
             case 400:
-           throw new ValidationException($"Invalid request: {content}");
+                throw new ValidationException($"Invalid request: {content}");
 
-          case 404:
-          throw new OpenRouterModelNotFoundException(
-           "Model not found. Please check the model name and try again.");
+            case 404:
+                throw new OpenRouterModelNotFoundException(
+                 "Model not found. Please check the model name and try again.");
 
-        case 402:
-   throw new OpenRouterInsufficientCreditsException(
-         "Insufficient credits in OpenRouter account. Please add credits to continue.");
+            case 402:
+                throw new OpenRouterInsufficientCreditsException(
+                      "Insufficient credits in OpenRouter account. Please add credits to continue.");
 
-  case 500:
+            case 500:
             case 502:
-       case 503:
-     throw new OpenRouterServerException(
-   "OpenRouter server error. Please try again later.");
+            case 503:
+                throw new OpenRouterServerException(
+              "OpenRouter server error. Please try again later.");
 
             default:
-    throw new OpenRouterException(
-       $"Unexpected error from OpenRouter: {statusCode} - {content}");
+                throw new OpenRouterException(
+                   $"Unexpected error from OpenRouter: {statusCode} - {content}");
         }
     }
 
@@ -488,35 +488,35 @@ if (responseFormat.JsonSchema.Schema == null)
         var attempt = 0;
         while (true)
         {
-      try
+            try
             {
-      var result = await operation();
-   _consecutiveErrors = 0; // Reset error counter on success
-   return result;
-         }
-     catch (Exception ex) when (
-    ex is OpenRouterServerException ||
-     ex is HttpRequestException ||
- ex is TaskCanceledException)
-       {
-              attempt++;
-      _consecutiveErrors++;
+                var result = await operation();
+                _consecutiveErrors = 0; // Reset error counter on success
+                return result;
+            }
+            catch (Exception ex) when (
+           ex is OpenRouterServerException ||
+            ex is HttpRequestException ||
+        ex is TaskCanceledException)
+            {
+                attempt++;
+                _consecutiveErrors++;
 
-    if (attempt >= maxRetries)
-          {
-      _logger.LogError(
-         ex,
- "Operation failed after {Attempts} attempts",
-  attempt);
-    throw;
-    }
+                if (attempt >= maxRetries)
+                {
+                    _logger.LogError(
+                       ex,
+               "Operation failed after {Attempts} attempts",
+                attempt);
+                    throw;
+                }
 
-        var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
-      _logger.LogWarning(
-         "Attempt {Attempt} failed, retrying in {Delay}s: {Error}",
-         attempt,
-         delay.TotalSeconds,
-    ex.Message);
+                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+                _logger.LogWarning(
+                   "Attempt {Attempt} failed, retrying in {Delay}s: {Error}",
+                   attempt,
+                   delay.TotalSeconds,
+              ex.Message);
 
                 await Task.Delay(delay, cancellationToken);
             }
@@ -527,40 +527,40 @@ if (responseFormat.JsonSchema.Schema == null)
     /// Parses a single chunk from streaming response
     /// </summary>
     private ChatCompletionChunk? ParseStreamingChunk(string? line)
-  {
-     if (string.IsNullOrWhiteSpace(line))
- return null;
-
-if (!line.StartsWith("data: "))
+    {
+        if (string.IsNullOrWhiteSpace(line))
             return null;
 
-     var data = line.Substring(6).Trim();
+        if (!line.StartsWith("data: "))
+            return null;
+
+        var data = line.Substring(6).Trim();
 
         if (data == "[DONE]")
-  return null;
+            return null;
 
         try
         {
-    return JsonSerializer.Deserialize<ChatCompletionChunk>(data, _jsonOptions);
-   }
+            return JsonSerializer.Deserialize<ChatCompletionChunk>(data, _jsonOptions);
+        }
         catch (JsonException ex)
         {
-       _logger.LogWarning(ex, "Failed to parse streaming chunk: {Data}", data);
-  return null;
-    }
+            _logger.LogWarning(ex, "Failed to parse streaming chunk: {Data}", data);
+            return null;
+        }
     }
 
-  #endregion
+    #endregion
 
     /// <summary>
     /// Disposes resources used by the service
     /// </summary>
     public void Dispose()
     {
-     if (!_disposed)
- {
-      _rateLimitSemaphore?.Dispose();
- _disposed = true;
-  }
+        if (!_disposed)
+        {
+            _rateLimitSemaphore?.Dispose();
+            _disposed = true;
+        }
     }
 }

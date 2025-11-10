@@ -14,18 +14,18 @@ public class DatabaseException : Exception
     {
     }
 
-    public DatabaseException(string message, Exception innerException) 
+    public DatabaseException(string message, Exception innerException)
         : base(message, innerException)
     {
     }
 
-    public DatabaseException(string operation, string message) 
+    public DatabaseException(string operation, string message)
         : base(message)
     {
         Operation = operation;
     }
 
-    public DatabaseException(string operation, string message, Exception innerException) 
+    public DatabaseException(string operation, string message, Exception innerException)
         : base(message, innerException)
     {
         Operation = operation;

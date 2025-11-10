@@ -41,11 +41,11 @@ public partial class Login
     protected override async Task OnInitializedAsync()
     {
         // Redirect if already logged in
-     if (await AuthService.IsAuthenticatedAsync())
+        if (await AuthService.IsAuthenticatedAsync())
         {
-        NavigationManager.NavigateTo("trips");
- }
- }
+            NavigationManager.NavigateTo("trips");
+        }
+    }
 
     /// <summary>
     /// Sets focus on email field after first render.
@@ -54,77 +54,77 @@ public partial class Login
     {
         if (firstRender && _emailField != null)
         {
-     await _emailField.FocusAsync();
+            await _emailField.FocusAsync();
         }
     }
 
     #endregion
 
-  #region Event Handlers
+    #region Event Handlers
 
- /// <summary>
+    /// <summary>
     /// Handles login form submission.
- /// Validates credentials, calls AuthService, and redirects on success.
+    /// Validates credentials, calls AuthService, and redirects on success.
     /// </summary>
     private async Task HandleLoginAsync()
     {
-     // Validate form
+        // Validate form
         await _form.Validate();
-      if (!_form.IsValid)
+        if (!_form.IsValid)
         {
             return;
         }
 
         // Start loading
         _isLoading = true;
-     _errorMessage = null;
+        _errorMessage = null;
 
         try
         {
             // Create command
-     var command = new LoginCommand
- {
- Email = _model.Email.Trim(),
-    Password = _model.Password
+            var command = new LoginCommand
+            {
+                Email = _model.Email.Trim(),
+                Password = _model.Password
             };
 
-      // Call AuthService
+            // Call AuthService
             var user = await AuthService.LoginAsync(command);
 
-       // Notify authentication state changed
+            // Notify authentication state changed
             if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
             {
-    customProvider.NotifyAuthenticationStateChanged();
-  }
+                customProvider.NotifyAuthenticationStateChanged();
+            }
 
-          // Success
-    Snackbar.Add("Login successful!", Severity.Success);
-       
+            // Success
+            Snackbar.Add("Login successful!", Severity.Success);
+
             // Navigate without forceLoad to avoid triggering OnInitializedAsync again
-  NavigationManager.NavigateTo("trips");
+            NavigationManager.NavigateTo("trips");
         }
         catch (AuthException ex)
         {
             _errorMessage = ex.Message;
-     Snackbar.Add(ex.Message, Severity.Error);
-      }
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
         catch (ValidationException ex)
         {
-        _errorMessage = ex.Message;
-     Snackbar.Add(ex.Message, Severity.Warning);
+            _errorMessage = ex.Message;
+            Snackbar.Add(ex.Message, Severity.Warning);
         }
         catch (Exception ex)
         {
-_errorMessage = "An unexpected error occurred. Please try again.";
-      Snackbar.Add(_errorMessage, Severity.Error);
- // TODO: Log exception
+            _errorMessage = "An unexpected error occurred. Please try again.";
+            Snackbar.Add(_errorMessage, Severity.Error);
+            // TODO: Log exception
         }
         finally
         {
-   _isLoading = false;
-       StateHasChanged();
+            _isLoading = false;
+            StateHasChanged();
         }
-  }
+    }
 
     #endregion
 
@@ -137,44 +137,44 @@ _errorMessage = "An unexpected error occurred. Please try again.";
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-         return "Email is required";
+            return "Email is required";
         }
 
         if (!IsValidEmail(value))
         {
-   return "Invalid email format";
-      }
-
-      if (value.Length > 255)
-  {
-         return "Email cannot exceed 255 characters";
+            return "Invalid email format";
         }
 
-  return null;
+        if (value.Length > 255)
+        {
+            return "Email cannot exceed 255 characters";
+        }
+
+        return null;
     };
 
     /// <summary>
     /// Validates password length requirements.
     /// </summary>
- private Func<string, string?> PasswordValidation => (value) =>
-    {
-      if (string.IsNullOrWhiteSpace(value))
-        {
-        return "Password is required";
-        }
+    private Func<string, string?> PasswordValidation => (value) =>
+       {
+           if (string.IsNullOrWhiteSpace(value))
+           {
+               return "Password is required";
+           }
 
-        if (value.Length < 8)
-        {
-      return "Password must be at least 8 characters";
-        }
+           if (value.Length < 8)
+           {
+               return "Password must be at least 8 characters";
+           }
 
-   if (value.Length > 100)
-      {
-            return "Password cannot exceed 100 characters";
-        }
+           if (value.Length > 100)
+           {
+               return "Password cannot exceed 100 characters";
+           }
 
-        return null;
-    };
+           return null;
+       };
 
     /// <summary>
     /// Validates email format using MailAddress.
@@ -186,20 +186,20 @@ _errorMessage = "An unexpected error occurred. Please try again.";
 
         try
         {
-   var addr = new System.Net.Mail.MailAddress(email);
+            var addr = new System.Net.Mail.MailAddress(email);
             return addr.Address == email;
-     }
+        }
         catch
         {
-     return false;
+            return false;
         }
     }
 
-  #endregion
+    #endregion
 
-  #region View Models
+    #region View Models
 
- /// <summary>
+    /// <summary>
     /// View model for login form data.
     /// </summary>
     private class LoginViewModel

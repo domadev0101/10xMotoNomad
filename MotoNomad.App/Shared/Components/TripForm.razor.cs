@@ -75,33 +75,33 @@ public partial class TripForm
     private void UpdateCanSubmit()
     {
         var previousCanSubmit = canSubmit;
- 
+
         // Check all required fields
         if (string.IsNullOrWhiteSpace(model.Name) || model.Name.Length > 200)
         {
-          canSubmit = false;
+            canSubmit = false;
         }
         else if (!model.StartDate.HasValue || !model.EndDate.HasValue)
         {
-     canSubmit = false;
-}
+            canSubmit = false;
+        }
         else if (model.EndDate.Value <= model.StartDate.Value)
         {
-  canSubmit = false;
+            canSubmit = false;
         }
-     else if (!string.IsNullOrEmpty(model.Description) && model.Description.Length > 2000)
+        else if (!string.IsNullOrEmpty(model.Description) && model.Description.Length > 2000)
         {
-    canSubmit = false;
+            canSubmit = false;
         }
-      else
+        else
         {
-       canSubmit = true;
-     }
+            canSubmit = true;
+        }
 
         // Notify parent if CanSubmit state changed
-  if (previousCanSubmit != canSubmit && OnCanSubmitChanged.HasDelegate)
+        if (previousCanSubmit != canSubmit && OnCanSubmitChanged.HasDelegate)
         {
-   _ = OnCanSubmitChanged.InvokeAsync(canSubmit);
+            _ = OnCanSubmitChanged.InvokeAsync(canSubmit);
         }
     }
 
@@ -208,7 +208,7 @@ public partial class TripForm
             _nameTouched = true;
             _startDateTouched = true;
             _endDateTouched = true;
-       _descriptionTouched = true;
+            _descriptionTouched = true;
         }
         // Create mode - fields remain empty (default values)
 
@@ -246,13 +246,13 @@ public partial class TripForm
     {
         // Don't show errors until user has interacted with the field (create mode only)
         if (!_nameTouched)
-return null;
+            return null;
 
-  if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(name))
             return "Trip name is required";
 
-    if (name.Length > 200)
-       return "Trip name must not exceed 200 characters";
+        if (name.Length > 200)
+            return "Trip name must not exceed 200 characters";
 
         return null;
     };
@@ -264,12 +264,12 @@ return null;
     /// </summary>
     private Func<DateTime?, string?> ValidateStartDate => (startDate) =>
     {
-     // Don't show errors until user has interacted with the field (create mode only)
+        // Don't show errors until user has interacted with the field (create mode only)
         if (!_startDateTouched)
             return null;
 
         if (!startDate.HasValue)
- return "Start date is required";
+            return "Start date is required";
 
         return null;
     };
@@ -283,13 +283,13 @@ return null;
     {
         // Don't show errors until user has interacted with the field (create mode only)
         if (!_endDateTouched)
-     return null;
+            return null;
 
         if (!endDate.HasValue)
- return "End date is required";
+            return "End date is required";
 
         if (!model.StartDate.HasValue)
-   return null; // Don't validate if start date not selected yet
+            return null; // Don't validate if start date not selected yet
 
         if (endDate.Value <= model.StartDate.Value)
             return "End date must be after start date";
@@ -306,12 +306,12 @@ return null;
     {
         // Don't show errors until user has interacted with the field (create mode only)
         if (!_descriptionTouched)
-    return null;
+            return null;
 
-      if (!string.IsNullOrEmpty(description) && description.Length > 2000)
- return "Description must not exceed 2000 characters";
+        if (!string.IsNullOrEmpty(description) && description.Length > 2000)
+            return "Description must not exceed 2000 characters";
 
-    return null;
+        return null;
     };
 
     /// <summary>
@@ -321,7 +321,7 @@ return null;
     private async Task HandleSubmit()
     {
         // Mark all fields as touched before validation
-     _nameTouched = true;
+        _nameTouched = true;
         _startDateTouched = true;
         _endDateTouched = true;
         _descriptionTouched = true;
@@ -333,32 +333,32 @@ return null;
 
         if (Trip == null)
         {
-     // Create mode - CreateTripCommand
+            // Create mode - CreateTripCommand
             command = new CreateTripCommand
-     {
-    Name = model.Name.Trim(),
-  StartDate = DateOnly.FromDateTime(model.StartDate!.Value),
+            {
+                Name = model.Name.Trim(),
+                StartDate = DateOnly.FromDateTime(model.StartDate!.Value),
                 EndDate = DateOnly.FromDateTime(model.EndDate!.Value),
-    Description = string.IsNullOrWhiteSpace(model.Description)
+                Description = string.IsNullOrWhiteSpace(model.Description)
      ? null
          : model.Description.Trim(),
-        TransportType = model.TransportType
-    };
+                TransportType = model.TransportType
+            };
         }
         else
         {
-   // Edit mode - UpdateTripCommand
-command = new UpdateTripCommand
+            // Edit mode - UpdateTripCommand
+            command = new UpdateTripCommand
             {
-     Id = Trip.Id,
-           Name = model.Name.Trim(),
+                Id = Trip.Id,
+                Name = model.Name.Trim(),
                 StartDate = DateOnly.FromDateTime(model.StartDate!.Value),
-     EndDate = DateOnly.FromDateTime(model.EndDate!.Value),
+                EndDate = DateOnly.FromDateTime(model.EndDate!.Value),
                 Description = string.IsNullOrWhiteSpace(model.Description)
-        ? null
-        : model.Description.Trim(),
-      TransportType = model.TransportType
-    };
+                    ? null
+                    : model.Description.Trim(),
+                TransportType = model.TransportType
+            };
         }
 
         await OnSubmit.InvokeAsync(command);
@@ -376,14 +376,14 @@ command = new UpdateTripCommand
     /// <summary>
     /// Callback triggered when Name changes. Re-validates the form.
     /// </summary>
- private async Task OnNameChanged(string value)
+    private async Task OnNameChanged(string value)
     {
         _nameTouched = true;
-      model.Name = value;
+        model.Name = value;
         UpdateCanSubmit();
-    if (form != null)
+        if (form != null)
         {
-     await form.Validate();
+            await form.Validate();
         }
         StateHasChanged();
     }
@@ -396,24 +396,24 @@ command = new UpdateTripCommand
         _startDateTouched = true;
         model.StartDate = value;
         UpdateCanSubmit();
-    if (form != null)
-      {
+        if (form != null)
+        {
             await form.Validate();
         }
-      StateHasChanged();
+        StateHasChanged();
     }
 
     /// <summary>
     /// Callback triggered when EndDate changes. Re-validates the form.
     /// </summary>
- private async Task OnEndDateChanged(DateTime? value)
+    private async Task OnEndDateChanged(DateTime? value)
     {
- _endDateTouched = true;
- model.EndDate = value;
+        _endDateTouched = true;
+        model.EndDate = value;
         UpdateCanSubmit();
-     if (form != null)
+        if (form != null)
         {
-     await form.Validate();
+            await form.Validate();
         }
         StateHasChanged();
     }
@@ -423,12 +423,12 @@ command = new UpdateTripCommand
     /// </summary>
     private async Task OnTransportTypeChanged(TransportType value)
     {
-   model.TransportType = value;
+        model.TransportType = value;
         UpdateCanSubmit();
         if (form != null)
         {
             await form.Validate();
- }
+        }
         StateHasChanged();
     }
 
@@ -438,31 +438,31 @@ command = new UpdateTripCommand
     private async Task OnDescriptionChanged(string? value)
     {
         _descriptionTouched = true;
-  model.Description = value;
+        model.Description = value;
         UpdateCanSubmit();
-  if (form != null)
+        if (form != null)
         {
-     await form.Validate();
-   }
-    StateHasChanged();
+            await form.Validate();
+        }
+        StateHasChanged();
     }
 
     /// <summary>
     /// Handles AI-generated trip suggestions and formats them for the description field.
     /// </summary>
     /// <param name="suggestion">The AI-generated trip suggestion.</param>
-  private async Task HandleAiSuggestion(TripSuggestionDto suggestion)
+    private async Task HandleAiSuggestion(TripSuggestionDto suggestion)
     {
-     var formattedDescription = suggestion.SuggestedDescription;
+        var formattedDescription = suggestion.SuggestedDescription;
 
         // Add highlights if available
         if (suggestion.Highlights.Any())
         {
- formattedDescription += "\n\nMiejsca warte odwiedzenia:";
-      foreach (var highlight in suggestion.Highlights)
-       {
-   formattedDescription += $"\n- {highlight}";
-    }
+            formattedDescription += "\n\nMiejsca warte odwiedzenia:";
+            foreach (var highlight in suggestion.Highlights)
+            {
+                formattedDescription += $"\n- {highlight}";
+            }
         }
 
         // Update description field
@@ -471,13 +471,13 @@ command = new UpdateTripCommand
 
     /// <summary>
     /// Gets the display label for a transport type.
- /// </summary>
+    /// </summary>
     /// <param name="transportType">The transport type.</param>
     /// <returns>The display label.</returns>
     private string GetTransportTypeLabel(TransportType transportType) => transportType switch
     {
         TransportType.Motorcycle => "Motorcycle",
-     TransportType.Airplane => "Airplane",
+        TransportType.Airplane => "Airplane",
         TransportType.Train => "Train",
         TransportType.Car => "Car",
         TransportType.Other => "Other",

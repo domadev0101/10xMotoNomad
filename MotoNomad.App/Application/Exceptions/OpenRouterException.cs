@@ -21,5 +21,5 @@ public class OpenRouterException : Exception
     public OpenRouterException(string message, Exception innerException)
         : base(message, innerException)
     {
-}
+    }
 }

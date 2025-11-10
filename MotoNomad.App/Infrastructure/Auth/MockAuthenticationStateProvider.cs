@@ -34,7 +34,7 @@ public class MockAuthenticationStateProvider : AuthenticationStateProvider
         _mockEmail = email;
         _mockDisplayName = displayName;
         _supabaseClient = supabaseClient;
-        
+
         // Set mock session in Supabase client
         SetMockSupabaseSession();
     }
@@ -77,7 +77,7 @@ public class MockAuthenticationStateProvider : AuthenticationStateProvider
         try
         {
             var client = _supabaseClient.GetClient();
-            
+
             // Create mock Supabase user
             var mockUser = new User
             {

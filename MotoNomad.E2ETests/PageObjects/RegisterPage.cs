@@ -94,12 +94,12 @@ public class RegisterPage : BasePage
         await FillEmailAsync(email);
         await FillPasswordAsync(password);
         await FillConfirmPasswordAsync(confirmPassword);
-        
+
         if (!string.IsNullOrEmpty(displayName))
         {
             await FillDisplayNameAsync(displayName);
         }
-        
+
         await ClickRegisterAsync();
         await WaitForSuccessfulRegistrationAsync();
     }
@@ -171,7 +171,7 @@ public class RegisterPage : BasePage
     {
         // After registration, might redirect to /trips or /login
         var deadline = DateTime.Now.AddMilliseconds(timeoutMs);
-        
+
         while (DateTime.Now < deadline)
         {
             if (IsOnPage("/trips") || IsOnPage("/login"))

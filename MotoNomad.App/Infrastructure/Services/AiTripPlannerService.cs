@@ -27,9 +27,9 @@ public class AiTripPlannerService : IAiTripPlannerService
     /// <param name="tripName">The name of the trip.</param>
     /// <param name="startDate">The start date of the trip.</param>
     /// <param name="endDate">The end date of the trip.</param>
-  /// <param name="transportType">The type of transport (e.g., motorcycle, airplane, train).</param>
- /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
- /// <returns>A task that represents the asynchronous operation, containing trip suggestions.</returns>
+    /// <param name="transportType">The type of transport (e.g., motorcycle, airplane, train).</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation, containing trip suggestions.</returns>
     /// <exception cref="OpenRouterException">Thrown when the AI service fails to generate suggestions.</exception>
     public async Task<TripSuggestionDto> GenerateTripSuggestionAsync(
         string tripName,
@@ -43,7 +43,7 @@ public class AiTripPlannerService : IAiTripPlannerService
 
         // Build prompt messages
         var systemMessage = "You are a travel assistant. Respond in Polish.";
-        
+
         var userMessage = $@"Planuję wycieczkę {transportType} '{tripName}' od {startDate:dd.MM.yyyy} do {endDate:dd.MM.yyyy} ({duration} dni).
 Zasugeruj:
 1) Krótki opis trasy (3-5 zdań)
@@ -63,7 +63,7 @@ ATRAKCJE:
         _logger.LogInformation("Generating trip suggestions for trip: {TripName}, Duration: {Duration} days", tripName, duration);
 
         try
-    {
+        {
             // Create chat completion request
             var request = new ChatCompletionRequest
             {
@@ -77,22 +77,22 @@ ATRAKCJE:
                 MaxTokens = 500
             };
 
-      // Call OpenRouter API
-         var response = await _openRouterService.SendChatCompletionAsync(request, cancellationToken);
+            // Call OpenRouter API
+            var response = await _openRouterService.SendChatCompletionAsync(request, cancellationToken);
 
-         // Extract response text
-    var responseText = response.Choices.FirstOrDefault()?.Message.Content ?? string.Empty;
+            // Extract response text
+            var responseText = response.Choices.FirstOrDefault()?.Message.Content ?? string.Empty;
 
-     // Parse response into TripSuggestionDto
-   var suggestion = ParseResponse(responseText);
+            // Parse response into TripSuggestionDto
+            var suggestion = ParseResponse(responseText);
 
             _logger.LogInformation("Successfully generated trip suggestions for: {TripName}", tripName);
 
-       return suggestion;
+            return suggestion;
         }
-    catch (Exception ex)
+        catch (Exception ex)
         {
-    _logger.LogError(ex, "Failed to generate trip suggestions for: {TripName}", tripName);
+            _logger.LogError(ex, "Failed to generate trip suggestions for: {TripName}", tripName);
             throw;
         }
     }
@@ -108,7 +108,7 @@ ATRAKCJE:
 
         if (string.IsNullOrWhiteSpace(responseText))
         {
-         return suggestion;
+            return suggestion;
         }
 
         var lines = responseText.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -118,39 +118,39 @@ ATRAKCJE:
         var descriptionLines = new List<string>();
 
         foreach (var line in lines)
-     {
-       if (line.StartsWith("OPIS:", StringComparison.OrdinalIgnoreCase))
-            {
-         parsingDescription = true;
-    parsingHighlights = false;
-         continue;
-       }
-     
-            if (line.StartsWith("ATRAKCJE:", StringComparison.OrdinalIgnoreCase))
         {
-          parsingDescription = false;
-    parsingHighlights = true;
-           continue;
-       }
+            if (line.StartsWith("OPIS:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsingDescription = true;
+                parsingHighlights = false;
+                continue;
+            }
 
-   if (parsingDescription)
-   {
- descriptionLines.Add(line);
-  }
- else if (parsingHighlights && line.StartsWith("-"))
-          {
-  var highlight = line.TrimStart('-').Trim();
-        if (!string.IsNullOrWhiteSpace(highlight))
-      {
-          suggestion.Highlights.Add(highlight);
-    }
+            if (line.StartsWith("ATRAKCJE:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsingDescription = false;
+                parsingHighlights = true;
+                continue;
+            }
+
+            if (parsingDescription)
+            {
+                descriptionLines.Add(line);
+            }
+            else if (parsingHighlights && line.StartsWith("-"))
+            {
+                var highlight = line.TrimStart('-').Trim();
+                if (!string.IsNullOrWhiteSpace(highlight))
+                {
+                    suggestion.Highlights.Add(highlight);
+                }
             }
         }
 
-    // Combine description lines
+        // Combine description lines
         suggestion.SuggestedDescription = string.Join(" ", descriptionLines);
 
-     // Limit highlights to top 5
+        // Limit highlights to top 5
         suggestion.Highlights = suggestion.Highlights.Take(5).ToList();
 
         return suggestion;

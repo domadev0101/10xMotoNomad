@@ -18,7 +18,7 @@ public partial class CompanionForm
 
     /// <summary>
     /// Event callback triggered when form is submitted.
-/// Returns AddCompanionCommand with form data.
+    /// Returns AddCompanionCommand with form data.
     /// </summary>
     [Parameter]
     public EventCallback<AddCompanionCommand> OnSubmit { get; set; }
@@ -33,14 +33,14 @@ public partial class CompanionForm
     /// Indicates whether the form is in loading state (during API call).
     /// </summary>
     [Parameter]
-  public bool IsLoading { get; set; }
+    public bool IsLoading { get; set; }
 
     private MudForm form = null!;
     private CompanionFormViewModel model = new();
     private bool formValid;
     private bool _firstNameTouched = false;
     private bool _lastNameTouched = false;
-private bool _contactTouched = false;
+    private bool _contactTouched = false;
 
     /// <summary>
     /// Internal view model for form data binding.
@@ -48,26 +48,26 @@ private bool _contactTouched = false;
     private class CompanionFormViewModel
     {
         public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
         public string? Contact { get; set; }
- }
+    }
 
     /// <summary>
     /// Custom validation function for first name field.
     /// Ensures first name is not empty and not longer than 100 characters.
     /// Only shows errors after user interaction.
- /// </summary>
+    /// </summary>
     private Func<string, string?> ValidateFirstName => (firstName) =>
     {
         // Don't show errors until user has interacted with the field
-  if (!_firstNameTouched)
- return null;
+        if (!_firstNameTouched)
+            return null;
 
         if (string.IsNullOrWhiteSpace(firstName))
-     return "First name is required";
+            return "First name is required";
 
-   if (firstName.Length > 100)
-       return "First name cannot exceed 100 characters";
+        if (firstName.Length > 100)
+            return "First name cannot exceed 100 characters";
 
         return null;
     };
@@ -83,27 +83,27 @@ private bool _contactTouched = false;
         if (!_lastNameTouched)
             return null;
 
-   if (string.IsNullOrWhiteSpace(lastName))
+        if (string.IsNullOrWhiteSpace(lastName))
             return "Last name is required";
 
         if (lastName.Length > 100)
-     return "Last name cannot exceed 100 characters";
+            return "Last name cannot exceed 100 characters";
 
-      return null;
+        return null;
     };
 
     /// <summary>
     /// Custom validation function for contact field (optional).
     /// Ensures contact does not exceed 255 characters.
     /// Only shows errors after user interaction.
-/// </summary>
+    /// </summary>
     private Func<string?, string?> ValidateContact => (contact) =>
     {
         // Don't show errors until user has interacted with the field
         if (!_contactTouched)
             return null;
 
-   if (!string.IsNullOrEmpty(contact) && contact.Length > 255)
+        if (!string.IsNullOrEmpty(contact) && contact.Length > 255)
             return "Contact cannot exceed 255 characters";
 
         return null;
@@ -114,26 +114,26 @@ private bool _contactTouched = false;
     /// </summary>
     private async Task OnFirstNameChanged(string value)
     {
-  _firstNameTouched = true;
-     model.FirstName = value;
- if (form != null)
+        _firstNameTouched = true;
+        model.FirstName = value;
+        if (form != null)
         {
-      await form.Validate();
-}
-   StateHasChanged();
+            await form.Validate();
+        }
+        StateHasChanged();
     }
 
     /// <summary>
     /// Callback triggered when LastName changes. Re-validates the form.
     /// </summary>
     private async Task OnLastNameChanged(string value)
-  {
+    {
         _lastNameTouched = true;
-model.LastName = value;
-     if (form != null)
+        model.LastName = value;
+        if (form != null)
         {
             await form.Validate();
-      }
+        }
         StateHasChanged();
     }
 
@@ -143,12 +143,12 @@ model.LastName = value;
     private async Task OnContactChanged(string? value)
     {
         _contactTouched = true;
-     model.Contact = value;
+        model.Contact = value;
         if (form != null)
         {
- await form.Validate();
+            await form.Validate();
         }
-      StateHasChanged();
+        StateHasChanged();
     }
 
     /// <summary>
@@ -160,26 +160,26 @@ model.LastName = value;
         // Mark all fields as touched before validation
         _firstNameTouched = true;
         _lastNameTouched = true;
-  _contactTouched = true;
+        _contactTouched = true;
 
         await form.Validate();
         if (!form.IsValid) return;
 
         var command = new AddCompanionCommand
-     {
-  TripId = TripId,
+        {
+            TripId = TripId,
             FirstName = model.FirstName.Trim(),
-    LastName = model.LastName.Trim(),
-            Contact = string.IsNullOrWhiteSpace(model.Contact) 
-     ? null 
+            LastName = model.LastName.Trim(),
+            Contact = string.IsNullOrWhiteSpace(model.Contact)
+     ? null
          : model.Contact.Trim()
-      };
+        };
 
         await OnSubmit.InvokeAsync(command);
-        
+
         // Reset form after successful submit
         model = new CompanionFormViewModel();
-  _firstNameTouched = false;
+        _firstNameTouched = false;
         _lastNameTouched = false;
         _contactTouched = false;
         await form.ResetAsync();

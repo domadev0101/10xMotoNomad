@@ -14,18 +14,18 @@ public class AuthException : Exception
     {
     }
 
-    public AuthException(string message, Exception innerException) 
+    public AuthException(string message, Exception innerException)
         : base(message, innerException)
     {
     }
 
-    public AuthException(string message, string errorCode) 
+    public AuthException(string message, string errorCode)
         : base(message)
     {
         ErrorCode = errorCode;
     }
 
-    public AuthException(string message, string errorCode, Exception innerException) 
+    public AuthException(string message, string errorCode, Exception innerException)
         : base(message, innerException)
     {
         ErrorCode = errorCode;

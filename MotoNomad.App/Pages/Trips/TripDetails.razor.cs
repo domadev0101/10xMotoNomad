@@ -70,13 +70,13 @@ public partial class TripDetails : ComponentBase
     /// Handles RLS security - redirects to /trips if trip not found or access denied.
     /// </summary>
     protected override async Task OnInitializedAsync()
- {
+    {
         await LoadTripDataAsync();
     }
 
     /// <summary>
     /// Handles route parameter changes (when navigating between different trips).
-/// </summary>
+    /// </summary>
     protected override async Task OnParametersSetAsync()
     {
         await LoadTripDataAsync();
@@ -91,41 +91,41 @@ public partial class TripDetails : ComponentBase
     /// </summary>
     private async Task LoadTripDataAsync()
     {
-   isLoading = true;
+        isLoading = true;
         errorMessage = null;
 
         try
         {
-// Parallel loading for better performance
- var tripTask = TripService.GetTripByIdAsync(Id);
-var companionsTask = CompanionService.GetCompanionsByTripIdAsync(Id);
+            // Parallel loading for better performance
+            var tripTask = TripService.GetTripByIdAsync(Id);
+            var companionsTask = CompanionService.GetCompanionsByTripIdAsync(Id);
 
-         await Task.WhenAll(tripTask, companionsTask);
+            await Task.WhenAll(tripTask, companionsTask);
 
-trip = await tripTask;
-    companions = (await companionsTask).ToList();
+            trip = await tripTask;
+            companions = (await companionsTask).ToList();
         }
         catch (NotFoundException)
         {
-     // RLS security - user tried to access someone else's trip or trip doesn't exist
-      Snackbar.Add("Trip not found.", Severity.Warning);
- NavigationManager.NavigateTo("trips");
-      }
-   catch (UnauthorizedException)
-        {
-      // Session expired
-          Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-        NavigationManager.NavigateTo("login");
+            // RLS security - user tried to access someone else's trip or trip doesn't exist
+            Snackbar.Add("Trip not found.", Severity.Warning);
+            NavigationManager.NavigateTo("trips");
         }
-      catch (Exception ex)
+        catch (UnauthorizedException)
+        {
+            // Session expired
+            Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
+            NavigationManager.NavigateTo("login");
+        }
+        catch (Exception ex)
         {
             Snackbar.Add("An error occurred while loading the trip.", Severity.Error);
-     // TODO: Log error with ILogger
-      errorMessage = "Failed to load trip.";
-     }
+            // TODO: Log error with ILogger
+            errorMessage = "Failed to load trip.";
+        }
         finally
         {
-    isLoading = false;
+            isLoading = false;
             StateHasChanged();
         }
     }
@@ -141,50 +141,50 @@ trip = await tripTask;
     private async Task HandleUpdateTripAsync(object command)
     {
         if (command is not MotoNomad.Application.Commands.Trips.UpdateTripCommand updateCommand)
-    {
+        {
             Snackbar.Add("Invalid form data.", Severity.Error);
-     return;
+            return;
         }
 
         isUpdatingTrip = true;
-     errorMessage = null;
+        errorMessage = null;
 
         try
         {
-        trip = await TripService.UpdateTripAsync(updateCommand);
-      Snackbar.Add("Changes saved successfully!", Severity.Success);
+            trip = await TripService.UpdateTripAsync(updateCommand);
+            Snackbar.Add("Changes saved successfully!", Severity.Success);
         }
- catch (ValidationException ex)
+        catch (ValidationException ex)
         {
-          errorMessage = ex.Message;
+            errorMessage = ex.Message;
             Snackbar.Add("Please check your input.", Severity.Warning);
         }
         catch (NotFoundException)
-  {
-       Snackbar.Add("Trip not found.", Severity.Warning);
-     NavigationManager.NavigateTo("trips");
- }
+        {
+            Snackbar.Add("Trip not found.", Severity.Warning);
+            NavigationManager.NavigateTo("trips");
+        }
         catch (UnauthorizedException)
-    {
-  Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
+        {
+            Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
             NavigationManager.NavigateTo("login");
-  }
+        }
         catch (DatabaseException)
-   {
-     errorMessage = "Failed to save changes. Please try again.";
- Snackbar.Add(errorMessage, Severity.Error);
-      }
+        {
+            errorMessage = "Failed to save changes. Please try again.";
+            Snackbar.Add(errorMessage, Severity.Error);
+        }
         catch (Exception ex)
-     {
-  errorMessage = "An unexpected error occurred.";
-   Snackbar.Add(errorMessage, Severity.Error);
-     // TODO: Log error with ILogger
+        {
+            errorMessage = "An unexpected error occurred.";
+            Snackbar.Add(errorMessage, Severity.Error);
+            // TODO: Log error with ILogger
         }
         finally
         {
             isUpdatingTrip = false;
             StateHasChanged();
- }
+        }
     }
 
     /// <summary>
@@ -194,17 +194,17 @@ trip = await tripTask;
     {
         if (tripFormRef != null)
         {
- await tripFormRef.SubmitAsync();
+            await tripFormRef.SubmitAsync();
         }
- else
- {
-    Snackbar.Add("Form is not ready. Please try again.", Severity.Warning);
-  }
+        else
+        {
+            Snackbar.Add("Form is not ready. Please try again.", Severity.Warning);
+        }
     }
 
     /// <summary>
     /// Handles CanSubmit state changes from TripForm.
-  /// </summary>
+    /// </summary>
     private void HandleCanSubmitChanged(bool canSubmit)
     {
         canSubmitTrip = canSubmit;
@@ -217,46 +217,46 @@ trip = await tripTask;
     /// </summary>
     private async Task HandleDeleteTrip()
     {
-      if (trip == null) return;
+        if (trip == null) return;
 
         var parameters = new DialogParameters<DeleteTripConfirmationDialog>
         {
  { x => x.TripName, trip.Name }
         };
 
-  var dialog = await DialogService.ShowAsync<DeleteTripConfirmationDialog>(
-      "Confirm Deletion",
-    parameters,
-      new DialogOptions { MaxWidth = MaxWidth.Small, CloseButton = true });
+        var dialog = await DialogService.ShowAsync<DeleteTripConfirmationDialog>(
+            "Confirm Deletion",
+          parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Small, CloseButton = true });
 
- var result = await dialog.Result;
+        var result = await dialog.Result;
 
         if (result.Canceled) return;
 
         try
-    {
-      await TripService.DeleteTripAsync(trip.Id);
-            Snackbar.Add($"Trip '{trip.Name}' has been deleted.", Severity.Success);
-   NavigationManager.NavigateTo("trips");
-      }
- catch (NotFoundException)
         {
-  Snackbar.Add("Trip not found.", Severity.Warning);
-        NavigationManager.NavigateTo("trips");
+            await TripService.DeleteTripAsync(trip.Id);
+            Snackbar.Add($"Trip '{trip.Name}' has been deleted.", Severity.Success);
+            NavigationManager.NavigateTo("trips");
+        }
+        catch (NotFoundException)
+        {
+            Snackbar.Add("Trip not found.", Severity.Warning);
+            NavigationManager.NavigateTo("trips");
         }
         catch (UnauthorizedException)
         {
-        Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
-  NavigationManager.NavigateTo("login");
-  }
+            Snackbar.Add("Session expired. Please log in again.", Severity.Warning);
+            NavigationManager.NavigateTo("login");
+        }
         catch (DatabaseException)
-    {
- Snackbar.Add("Failed to delete trip. Please try again.", Severity.Error);
-  }
+        {
+            Snackbar.Add("Failed to delete trip. Please try again.", Severity.Error);
+        }
         catch (Exception ex)
-    {
-   Snackbar.Add("An unexpected error occurred.", Severity.Error);
-   // TODO: Log error with ILogger
+        {
+            Snackbar.Add("An unexpected error occurred.", Severity.Error);
+            // TODO: Log error with ILogger
         }
     }
 
@@ -274,34 +274,34 @@ trip = await tripTask;
         showCompanionForm = false;
 
         try
-   {
-var companion = await CompanionService.AddCompanionAsync(command);
-  
-      // Refresh companion list
-companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
-      
-     Snackbar.Add($"Added companion: {companion.FirstName} {companion.LastName}", Severity.Success);
+        {
+            var companion = await CompanionService.AddCompanionAsync(command);
+
+            // Refresh companion list
+            companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
+
+            Snackbar.Add($"Added companion: {companion.FirstName} {companion.LastName}", Severity.Success);
         }
         catch (ValidationException ex)
         {
- Snackbar.Add(ex.Message, Severity.Warning);
-       showCompanionForm = true; // Show form again for correction
+            Snackbar.Add(ex.Message, Severity.Warning);
+            showCompanionForm = true; // Show form again for correction
         }
         catch (DatabaseException)
         {
-   Snackbar.Add("Failed to add companion. Please try again.", Severity.Error);
-      showCompanionForm = true;
+            Snackbar.Add("Failed to add companion. Please try again.", Severity.Error);
+            showCompanionForm = true;
         }
         catch (Exception ex)
-      {
-       Snackbar.Add("An unexpected error occurred.", Severity.Error);
+        {
+            Snackbar.Add("An unexpected error occurred.", Severity.Error);
             // TODO: Log error with ILogger
         }
-   finally
+        finally
         {
-    isAddingCompanion = false;
-  StateHasChanged();
-  }
+            isAddingCompanion = false;
+            StateHasChanged();
+        }
     }
 
     /// <summary>
@@ -324,38 +324,38 @@ companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
      parameters,
             new DialogOptions { MaxWidth = MaxWidth.Small, CloseButton = true });
 
-   var result = await dialog.Result;
+        var result = await dialog.Result;
 
         if (result.Canceled) return;
 
         try
         {
- await CompanionService.RemoveCompanionAsync(companionId);
-            
- // Refresh companion list
-  companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
-       
-   Snackbar.Add("Companion has been removed.", Severity.Success);
+            await CompanionService.RemoveCompanionAsync(companionId);
+
+            // Refresh companion list
+            companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
+
+            Snackbar.Add("Companion has been removed.", Severity.Success);
         }
-      catch (NotFoundException)
+        catch (NotFoundException)
         {
-  Snackbar.Add("Companion not found.", Severity.Warning);
+            Snackbar.Add("Companion not found.", Severity.Warning);
             // Refresh list (may have been already deleted)
-     companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
+            companions = (await CompanionService.GetCompanionsByTripIdAsync(Id)).ToList();
         }
         catch (DatabaseException)
-     {
-  Snackbar.Add("Failed to remove companion. Please try again.", Severity.Error);
+        {
+            Snackbar.Add("Failed to remove companion. Please try again.", Severity.Error);
         }
         catch (Exception ex)
         {
-Snackbar.Add("An unexpected error occurred.", Severity.Error);
+            Snackbar.Add("An unexpected error occurred.", Severity.Error);
             // TODO: Log error with ILogger
-  }
+        }
         finally
-    {
+        {
             StateHasChanged();
-      }
+        }
     }
 
     #endregion

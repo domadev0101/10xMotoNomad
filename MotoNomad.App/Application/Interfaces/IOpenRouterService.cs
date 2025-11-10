@@ -44,10 +44,10 @@ public interface IOpenRouterService
     /// </summary>
     /// <param name="request">The chat completion request configuration</param>
     /// <param name="cancellationToken">Cancellation token for the operation</param>
- /// <returns>Async enumerable of response chunks</returns>
+    /// <returns>Async enumerable of response chunks</returns>
     /// <exception cref="OpenRouterAuthException">Invalid API key</exception>
     /// <exception cref="OpenRouterRateLimitException">Rate limit exceeded</exception>
-  /// <exception cref="ValidationException">Invalid request parameters</exception>
+    /// <exception cref="ValidationException">Invalid request parameters</exception>
     IAsyncEnumerable<ChatCompletionChunk> StreamChatCompletionAsync(
         ChatCompletionRequest request,
   CancellationToken cancellationToken = default);
@@ -55,8 +55,8 @@ public interface IOpenRouterService
     /// <summary>
     /// Validates an API key by making a test request
     /// </summary>
- /// <param name="apiKey">The API key to validate</param>
-  /// <param name="cancellationToken">Cancellation token</param>
+    /// <param name="apiKey">The API key to validate</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if valid, false otherwise</returns>
     Task<bool> ValidateApiKeyAsync(
         string apiKey,

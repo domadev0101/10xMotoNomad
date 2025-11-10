@@ -65,11 +65,11 @@ public record DeltaMessage
     /// Role (only present in first chunk)
     /// </summary>
     [JsonPropertyName("role")]
-  public string? Role { get; init; }
+    public string? Role { get; init; }
 
     /// <summary>
     /// Content delta for this chunk
- /// </summary>
+    /// </summary>
     [JsonPropertyName("content")]
     public string? Content { get; init; }
 }

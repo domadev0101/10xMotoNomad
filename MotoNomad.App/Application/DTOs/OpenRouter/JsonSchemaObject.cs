@@ -14,7 +14,7 @@ public record JsonSchemaObject
     public required string Type { get; init; }
 
     /// <summary>
-  /// Object properties (for type: "object")
+    /// Object properties (for type: "object")
     /// </summary>
     [JsonPropertyName("properties")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -29,7 +29,7 @@ public record JsonSchemaObject
 
     /// <summary>
     /// Allow additional properties beyond defined ones
-/// </summary>
+    /// </summary>
     [JsonPropertyName("additionalProperties")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? AdditionalProperties { get; init; }

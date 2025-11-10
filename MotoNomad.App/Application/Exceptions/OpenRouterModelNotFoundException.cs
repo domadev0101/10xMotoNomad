@@ -5,7 +5,7 @@ namespace MotoNomad.App.Application.Exceptions;
 /// </summary>
 public class OpenRouterModelNotFoundException : OpenRouterException
 {
-  /// <summary>
+    /// <summary>
     /// Initializes a new instance of OpenRouterModelNotFoundException
     /// </summary>
     /// <param name="message">Error message</param>

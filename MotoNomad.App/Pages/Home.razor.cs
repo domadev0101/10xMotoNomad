@@ -26,7 +26,7 @@ public partial class Home
     protected override async Task OnInitializedAsync()
     {
         var isAuthenticated = await AuthService.IsAuthenticatedAsync();
-        
+
         if (isAuthenticated)
         {
             await LoadDashboardData();
@@ -45,27 +45,27 @@ public partial class Home
         try
         {
             isLoading = true;
-          StateHasChanged(); // Force UI update to show loading spinner
+            StateHasChanged(); // Force UI update to show loading spinner
 
-     // Load all trips
-      var allTrips = await TripService.GetAllTripsAsync();
+            // Load all trips
+            var allTrips = await TripService.GetAllTripsAsync();
             recentTrips = allTrips.OrderByDescending(t => t.CreatedAt).ToList();
 
             // Calculate stats
-   var upcomingTrips = await TripService.GetUpcomingTripsAsync();
-   upcomingTripsCount = upcomingTrips.Count();
-        
+            var upcomingTrips = await TripService.GetUpcomingTripsAsync();
+            upcomingTripsCount = upcomingTrips.Count();
+
             totalTripsCount = recentTrips.Count;
             totalCompanionsCount = recentTrips.Sum(t => t.CompanionCount);
         }
         catch
-    {
-     // Silently fail - user will see empty state
+        {
+            // Silently fail - user will see empty state
         }
         finally
         {
             isLoading = false;
-    StateHasChanged(); // Force UI update with loaded data
+            StateHasChanged(); // Force UI update with loaded data
         }
     }
 
@@ -82,34 +82,34 @@ public partial class Home
     /// </summary>
     private void HandleTripClick(Guid tripId)
     {
-   NavigationManager.NavigateTo($"trip/{tripId}");
+        NavigationManager.NavigateTo($"trip/{tripId}");
     }
 
     /// <summary>
- /// Gets the display name from the authentication context.
+    /// Gets the display name from the authentication context.
     /// Falls back to email if display name is not available.
     /// </summary>
     private string GetUserDisplayName(AuthenticationState context)
     {
         var user = context.User;
-    
+
         // Try to get display name from user metadata
-    var displayName = user.FindFirst("user_metadata_display_name")?.Value;
-    
+        var displayName = user.FindFirst("user_metadata_display_name")?.Value;
+
         if (!string.IsNullOrEmpty(displayName))
         {
             return displayName;
         }
-        
-     // Fallback to email
+
+        // Fallback to email
         var email = user.Identity?.Name ?? user.FindFirst(ClaimTypes.Email)?.Value;
-        
+
         if (!string.IsNullOrEmpty(email))
         {
             // Return first part of email (before @)
-         return email.Split('@')[0];
+            return email.Split('@')[0];
         }
-     
+
         return "Traveler";
     }
 }

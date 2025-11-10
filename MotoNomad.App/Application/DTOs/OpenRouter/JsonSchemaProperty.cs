@@ -25,7 +25,7 @@ public record JsonSchemaProperty
     /// </summary>
     [JsonPropertyName("items")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-  public JsonSchemaProperty? Items { get; init; }
+    public JsonSchemaProperty? Items { get; init; }
 
     /// <summary>
     /// Enum values for restricted choices

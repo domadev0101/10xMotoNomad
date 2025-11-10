@@ -11,5 +11,5 @@ public class OpenRouterAuthException : OpenRouterException
     /// <param name="message">Error message</param>
     public OpenRouterAuthException(string message) : base(message)
     {
-}
+    }
 }
