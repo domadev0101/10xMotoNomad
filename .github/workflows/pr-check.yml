@@ -64,8 +64,6 @@ jobs:
         # Wait for app to be ready
         timeout 60 bash -c 'until curl -f http://localhost:5000 > /dev/null 2>&1; do sleep 2; done' || (echo "App failed to start" && exit 1)
         echo "Blazor app started successfully"
-      env:
-        OpenRouter__ApiKey: ${{ secrets.OPENROUTER_API_KEY }}
 
     # 🎭 INSTALL PLAYWRIGHT
     - name: Install Playwright Browsers
@@ -157,4 +155,4 @@ jobs:
         steps.e2e.outputs.status != '0'
       run: |
         echo "Some checks failed!"
-        exit 1        exit 1
+        exit 1
