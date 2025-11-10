@@ -57,6 +57,13 @@ jobs:
     # 🌐 E2E TESTS
     - name: E2E Tests
       id: e2e
+      env:
+        Supabase__TestUrl: ${{ secrets.SUPABASE_URL }}
+        Supabase__TestPublicKey: ${{ secrets.SUPABASE_PUBLIC_KEY }}
+        E2E__UserA__Email: ${{ secrets.USER_A_EMAIL }}
+        E2E__UserA__Password: ${{ secrets.USER_A_PASSWORD }}
+        E2E__UserB__Email: ${{ secrets.USER_B_EMAIL }}
+        E2E__UserB__Password: ${{ secrets.USER_B_PASSWORD }}
       run: |
         dotnet test MotoNomad.E2ETests/MotoNomad.E2ETests.csproj \
           --configuration Release \
