@@ -54,6 +54,12 @@ jobs:
         echo "status=$?" >> $GITHUB_OUTPUT
       continue-on-error: true
 
+    # 🎭 INSTALL PLAYWRIGHT
+    - name: Install Playwright Browsers
+      run: |
+        dotnet build MotoNomad.E2ETests/MotoNomad.E2ETests.csproj
+        pwsh MotoNomad.E2ETests/bin/Release/net9.0/playwright.ps1 install --with-deps chromium
+
     # 🌐 E2E TESTS
     - name: E2E Tests
       id: e2e
