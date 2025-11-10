@@ -1,291 +1,290 @@
-﻿# Status implementacji - Faza 1: Fundament (Layout i Nawigacja)
-
-**Data:** 2025-01-XX  
-**Status:** ✅ W trakcie implementacji  
-**Postęp:** 70% (6/8 głównych komponentów)
+﻿# Implementation Status - Phase 1: Foundation (Layout and Navigation)
+ 
+**Status:** ✅ In Progress  
+**Progress:** 70% (6/8 main components)
 
 ---
 
-## ✅ Zrealizowane kroki
+## ✅ Completed Steps
 
 ### 1. Setup Authentication Infrastructure
 
 #### 1.1 CustomAuthenticationStateProvider
-- ✅ **Plik:** `MotoNomad.App/Infrastructure/Auth/CustomAuthenticationStateProvider.cs`
-- ✅ **Funkcjonalności:**
-  - Integracja z Supabase Auth Client
-  - Pobieranie `CurrentUser` z Supabase
-  - Tworzenie Claims: `NameIdentifier`, `email`, `display_name`
-  - Metoda `NotifyAuthenticationStateChanged()` do odświeżania UI
-  - Obsługa błędów z logowaniem
-  - Zwracanie anonymous user gdy brak sesji
+- ✅ **File:** `MotoNomad.App/Infrastructure/Auth/CustomAuthenticationStateProvider.cs`
+- ✅ **Features:**
+  - Integration with Supabase Auth Client
+  - Fetching `CurrentUser` from Supabase
+  - Creating Claims: `NameIdentifier`, `email`, `display_name`
+  - `NotifyAuthenticationStateChanged()` method to refresh UI
+  - Error handling with logging
+  - Returning anonymous user when no session exists
 
-#### 1.2 Aktualizacja Program.cs
-- ✅ **Plik:** `MotoNomad.App/Program.cs`
-- ✅ **Zmiany:**
+#### 1.2 Program.cs Update
+- ✅ **File:** `MotoNomad.App/Program.cs`
+- ✅ **Changes:**
   - Import `Microsoft.AspNetCore.Components.Authorization`
   - Import `MotoNomad.App.Infrastructure.Auth`
-  - Rejestracja `AuthenticationStateProvider` jako `CustomAuthenticationStateProvider` (Scoped)
-  - Dodanie `builder.Services.AddAuthorizationCore()`
+  - Register `AuthenticationStateProvider` as `CustomAuthenticationStateProvider` (Scoped)
+  - Add `builder.Services.AddAuthorizationCore()`
 
-### 2. App.razor - Routing i Autoryzacja
+### 2. App.razor - Routing and Authorization
 
-#### 2.1 Główny komponent aplikacji
-- ✅ **Plik:** `MotoNomad.App/App.razor`
-- ✅ **Implementacje:**
-  - Wrapper `<CascadingAuthenticationState>` dla całej aplikacji
-  - Zamiana `RouteView` na `AuthorizeRouteView`
-  - `NotAuthorized` section z logiką:
-    - Przekierowanie niezalogowanych na `/login` (`<RedirectToLogin />`)
-    - MudAlert dla zalogowanych bez uprawnień
-    - Przycisk powrotu do `/trips`
+#### 2.1 Main Application Component
+- ✅ **File:** `MotoNomad.App/App.razor`
+- ✅ **Implementation:**
+  - `<CascadingAuthenticationState>` wrapper for entire app
+  - Changed `RouteView` to `AuthorizeRouteView`
+  - `NotAuthorized` section with logic:
+    - Redirect unauthenticated users to `/login` (`<RedirectToLogin />`)
+    - MudAlert for authenticated users without permissions
+    - Return button to `/trips`
   - Custom 404 (NotFound) page:
-    - MudContainer z wycentrowanym contentem
+    - MudContainer with centered content
     - MudIcon (SearchOff)
-    - MudText z komunikatem "404 - Strona nie znaleziona"
-    - MudButton powrotu na stronę główną
+    - MudText with message "404 - Page not found"
+    - MudButton to return to home page
 
-### 3. Komponenty pomocnicze
+### 3. Helper Components
 
 #### 3.1 RedirectToLogin
-- ✅ **Plik:** `MotoNomad.App/Shared/RedirectToLogin.razor`
-- ✅ **Funkcjonalność:**
-  - Prosty helper do przekierowania
-  - Wykorzystuje `NavigationManager.NavigateTo("/login")`
-  - Wywołanie w `OnInitialized()`
+- ✅ **File:** `MotoNomad.App/Shared/RedirectToLogin.razor`
+- ✅ **Functionality:**
+  - Simple redirect helper
+  - Uses `NavigationManager.NavigateTo("/login")`
+  - Called in `OnInitialized()`
 
-#### 3.2 EmptyState (Komponent reużywalny)
-- ✅ **Pliki:** 
+#### 3.2 EmptyState (Reusable Component)
+- ✅ **Files:** 
   - `MotoNomad.App/Shared/Components/EmptyState.razor`
   - `MotoNomad.App/Shared/Components/EmptyState.razor.cs` (code-behind)
-- ✅ **Parametry:**
-  - `Title` (string) - Tytuł komunikatu
-  - `Message` (string) - Treść komunikatu
-  - `IconName` (string) - Ikona MudBlazor (default: Info)
-  - `ButtonText` (string?) - Opcjonalny tekst przycisku
-  - `OnButtonClick` (EventCallback) - Akcja przycisku
+- ✅ **Parameters:**
+  - `Title` (string) - Message title
+  - `Message` (string) - Message content
+  - `IconName` (string) - MudBlazor icon (default: Info)
+  - `ButtonText` (string?) - Optional button text
+  - `OnButtonClick` (EventCallback) - Button action
 - ✅ **UI:**
   - MudPaper (Elevation=0, padding 8)
   - MudIcon (Large, Secondary)
-  - MudText dla tytułu (h5) i wiadomości (body1, Secondary)
-  - MudButton (Filled, Primary) - jeśli ButtonText podany
-- ✅ **XML Documentation:** Pełna dokumentacja parametrów
+  - MudText for title (h5) and message (body1, Secondary)
+  - MudButton (Filled, Primary) - if ButtonText provided
+- ✅ **XML Documentation:** Complete parameter documentation
 
-#### 3.3 LoadingSpinner (Komponent reużywalny)
-- ✅ **Pliki:** 
+#### 3.3 LoadingSpinner (Reusable Component)
+- ✅ **Files:** 
   - `MotoNomad.App/Shared/Components/LoadingSpinner.razor`
   - `MotoNomad.App/Shared/Components/LoadingSpinner.razor.cs` (code-behind)
-- ✅ **Parametry:**
-  - `Message` (string?) - Opcjonalny komunikat pod spinnerem
-  - `Size` (Size) - Rozmiar spinnera (default: Large)
+- ✅ **Parameters:**
+  - `Message` (string?) - Optional message below spinner
+  - `Size` (Size) - Spinner size (default: Large)
 - ✅ **UI:**
-  - Div z flexbox (center, column, padding 3rem)
+  - Div with flexbox (center, column, padding 3rem)
   - MudProgressCircular (Indeterminate, Primary)
-  - MudText dla wiadomości (body2) - jeśli Message podane
-- ✅ **XML Documentation:** Pełna dokumentacja parametrów
+  - MudText for message (body2) - if Message provided
+- ✅ **XML Documentation:** Complete parameter documentation
 
-### 4. MainLayout.razor - Główny layout aplikacji ✅
+### 4. MainLayout.razor - Main Application Layout ✅
 
-#### 4.1 Implementacja MainLayout
-- ✅ **Plik:** `MotoNomad.App/Layout/MainLayout.razor`
-- ✅ **Struktura MudLayout:**
+#### 4.1 MainLayout Implementation
+- ✅ **File:** `MotoNomad.App/Layout/MainLayout.razor`
+- ✅ **MudLayout Structure:**
   - MudAppBar (Fixed, Dense, Elevation=1)
-    - MudIconButton (DrawerToggle) - tylko mobile
+    - MudIconButton (DrawerToggle) - mobile only
     - MudText ("🏍️ MotoNomad" - logo)
   - MudSpacer
-    - `<LoginDisplay />` komponent
+    - `<LoginDisplay />` component
   - MudDrawer (@bind-Open, Breakpoint.Md, Variant conditional)
-    - `<NavMenu />` komponent
+    - `<NavMenu />` component
   - MudMainContent
     - MudContainer (MaxWidth.ExtraLarge, padding top/bottom 4)
     - @Body
-- ✅ **Timer bezczynności:**
-  - System.Timers.Timer (15 minut)
-  - `InitializeInactivityTimer()` w `OnInitialized()`
-  - `ResetInactivityTimer()` przy interakcjach
-  - `HandleInactivityTimeout()` - wylogowanie + Snackbar + redirect
-  - Implementacja `IDisposable` - cleanup timera
-- ✅ **State management:**
-  - `_drawerOpen` (bool) - stan drawera
-  - `ToggleDrawer()` - metoda przełączania
+- ✅ **Inactivity Timer:**
+  - System.Timers.Timer (15 minutes)
+  - `InitializeInactivityTimer()` in `OnInitialized()`
+  - `ResetInactivityTimer()` on interactions
+  - `HandleInactivityTimeout()` - logout + Snackbar + redirect
+  - `IDisposable` implementation - timer cleanup
+- ✅ **State Management:**
+  - `_drawerOpen` (bool) - drawer state
+  - `ToggleDrawer()` - toggle method
 - ✅ **Dependency Injection:**
-  - `IAuthService` - dla wylogowania
-  - `NavigationManager` - dla przekierowania
-  - `ISnackbar` - dla komunikatów
+  - `IAuthService` - for logout
+  - `NavigationManager` - for redirect
+  - `ISnackbar` - for messages
 
-### 5. NavMenu.razor - Menu nawigacyjne ✅
+### 5. NavMenu.razor - Navigation Menu ✅
 
-#### 5.1 Implementacja NavMenu
-- ✅ **Plik:** `MotoNomad.App/Layout/NavMenu.razor`
-- ✅ **Struktura:**
+#### 5.1 NavMenu Implementation
+- ✅ **File:** `MotoNomad.App/Layout/NavMenu.razor`
+- ✅ **Structure:**
   - Div wrapper (padding 4)
   - MudText (h6) - Logo "🏍️ MotoNomad"
   - MudDivider
   - MudNavMenu
 - ✅ **AuthorizeView - Authorized section:**
-  - MudNavLink ("/trips", Icon: Map) - "Moje wycieczki"
-  - MudNavLink ("/trip/create", Icon: Add) - "Nowa wycieczka"
+  - MudNavLink ("/trips", Icon: Map) - "My Trips"
+  - MudNavLink ("/trip/create", Icon: Add) - "New Trip"
   - MudDivider
-  - MudNavLink (OnClick: HandleLogout, Icon: Logout) - "Wyloguj"
+  - MudNavLink (OnClick: HandleLogout, Icon: Logout) - "Logout"
 - ✅ **AuthorizeView - NotAuthorized section:**
-  - MudNavLink ("/login", Icon: Login) - "Zaloguj"
-  - MudNavLink ("/register", Icon: PersonAdd) - "Zarejestruj"
-- ✅ **Metody:**
+  - MudNavLink ("/login", Icon: Login) - "Login"
+  - MudNavLink ("/register", Icon: PersonAdd) - "Register"
+- ✅ **Methods:**
   - `HandleLogout()` - async Task
-    - Wywołanie `AuthService.LogoutAsync()`
-    - Snackbar z komunikatem sukcesu
-    - Przekierowanie na `/login`
-    - Try-catch z obsługą błędów
+    - Call `AuthService.LogoutAsync()`
+    - Snackbar with success message
+    - Redirect to `/login`
+  - Try-catch with error handling
 - ✅ **Dependency Injection:**
   - `IAuthService`
   - `NavigationManager`
   - `ISnackbar`
 
-### 6. LoginDisplay.razor - Status logowania w AppBar ✅
+### 6. LoginDisplay.razor - Login Status in AppBar ✅
 
-#### 6.1 Implementacja LoginDisplay
-- ✅ **Plik:** `MotoNomad.App/Shared/LoginDisplay.razor`
+#### 6.1 LoginDisplay Implementation
+- ✅ **File:** `MotoNomad.App/Shared/LoginDisplay.razor`
 - ✅ **AuthorizeView - Authorized section:**
   - Div wrapper (flex, align-items: center, gap: 10px)
-  - MudText (body2) - "Cześć, {DisplayName}!" + metoda `GetDisplayName()`
+  - MudText (body2) - "Hello, {DisplayName}!" + `GetDisplayName()` method
   - MudIconButton (Icon: Logout, OnClick: HandleLogout)
 - ✅ **AuthorizeView - NotAuthorized section:**
-  - Div wrapper (flex, gap: 10px)
+- Div wrapper (flex, gap: 10px)
   - **Desktop (≥600px):**
-    - MudButton (Text, Inherit) - "Zaloguj" (href: /login)
-    - MudButton (Filled, Primary) - "Zarejestruj" (href: /register)
+    - MudButton (Text, Inherit) - "Login" (href: /login)
+    - MudButton (Filled, Primary) - "Register" (href: /register)
   - **Mobile (<600px):**
-    - MudIconButton (Icon: Login) - Zaloguj
-    - MudIconButton (Icon: PersonAdd) - Zarejestruj
-- ✅ **Metody:**
-  - `GetDisplayName(AuthenticationState)` - zwraca display_name lub email prefix lub "Użytkownik"
-  - `HandleLogout()` - identyczne jak w NavMenu
+    - MudIconButton (Icon: Login) - Login
+    - MudIconButton (Icon: PersonAdd) - Register
+- ✅ **Methods:**
+  - `GetDisplayName(AuthenticationState)` - returns display_name or email prefix or "User"
+  - `HandleLogout()` - identical to NavMenu
 - ✅ **Dependency Injection:**
   - `IAuthService`
   - `NavigationManager`
   - `ISnackbar`
 
-### 7. Stylizacja CSS (wwwroot/css/app.css) ✅
+### 7. CSS Styling (wwwroot/css/app.css) ✅
 
-#### 7.1 Style responsywne
-- ✅ **Responsywność drawera:**
+#### 7.1 Responsive Styles
+- ✅ **Drawer Responsiveness:**
   - Media query @media (min-width: 960px)
     - `.drawer-toggle { display: none; }`
-  - Padding dla `.mud-main-content`
-    - Desktop: 64px (wysokość AppBar)
-    - Mobile: 56px (mniejszy AppBar)
-- ✅ **Responsywność LoginDisplay:**
+  - Padding for `.mud-main-content`
+    - Desktop: 64px (AppBar height)
+    - Mobile: 56px (smaller AppBar)
+- ✅ **LoginDisplay Responsiveness:**
   - Media query @media (min-width: 600px)
     - `.login-display-button { display: inline-flex; }`
     - `.login-display-icon { display: none; }`
   - Media query @media (max-width: 599px)
     - `.login-display-button { display: none; }`
     - `.login-display-icon { display: inline-flex; }`
-    - `.login-display-text { display: none; }` (ukrycie powitania na mobile)
+    - `.login-display-text { display: none; }` (hide greeting on mobile)
 
-### 8. Aktualizacja _Imports.razor ✅
+### 8. _Imports.razor Update ✅
 
-- ✅ **Plik:** `MotoNomad.App/_Imports.razor`
-- ✅ **Dodane importy:**
+- ✅ **File:** `MotoNomad.App/_Imports.razor`
+- ✅ **Added Imports:**
   - `Microsoft.AspNetCore.Components.Authorization`
   - `MotoNomad.App.Shared`
   - `MotoNomad.Application.Interfaces`
 
-### 9. Weryfikacja kompilacji ✅
-- ✅ Brak błędów kompilacji w `App.razor`
-- ✅ Brak błędów kompilacji w `Program.cs`
-- ✅ Brak błędów kompilacji w `MainLayout.razor`
-- ✅ Brak błędów kompilacji w `NavMenu.razor`
-- ✅ Brak błędów kompilacji w `LoginDisplay.razor`
-- ✅ Brak błędów kompilacji w `EmptyState.razor`
-- ✅ Brak błędów kompilacji w `LoadingSpinner.razor`
-- ✅ Brak błędów kompilacji w `_Imports.razor`
+### 9. Build Verification ✅
+- ✅ No compilation errors in `App.razor`
+- ✅ No compilation errors in `Program.cs`
+- ✅ No compilation errors in `MainLayout.razor`
+- ✅ No compilation errors in `NavMenu.razor`
+- ✅ No compilation errors in `LoginDisplay.razor`
+- ✅ No compilation errors in `EmptyState.razor`
+- ✅ No compilation errors in `LoadingSpinner.razor`
+- ✅ No compilation errors in `_Imports.razor`
 
 ---
 
-## 🔄 Kolejne kroki (zgodne z planem implementacji)
+## 🔄 Next Steps (according to implementation plan)
 
-### Krok 8: Testy Layout i Nawigacji
-**Priorytet:** 🟡 Średni
+### Step 8: Layout and Navigation Testing
+**Priority:** 🟡 Medium
 
-**Plan testowania:**
+**Test Plan:**
 - [ ] **Routing:**
-  - Nawigacja między istniejącymi stronami
-  - Test 404 (nieistniejąca strona)
-  - Test przekierowania niezalogowanego na `/login`
-- [ ] **Layout responsywność:**
-  - Test na desktop (≥960px)
-  - Test na tablet (600px-959px)
-  - Test na mobile (<600px)
-  - Toggle drawer na mobile
-  - Drawer persistent na desktop
-- [ ] **Timer bezczynności:**
-  - Test auto-wylogowania po 15 minutach
-  - Test resetu timera przy interakcjach
-  - Weryfikacja Snackbar po wylogowaniu
-  - Weryfikacja przekierowania na `/login`
+  - Navigation between existing pages
+  - Test 404 (non-existent page)
+  - Test redirect to `/login` for unauthenticated users
+- [ ] **Layout Responsiveness:**
+  - Test on desktop (≥960px)
+  - Test on tablet (600px-959px)
+  - Test on mobile (<600px)
+  - Toggle drawer on mobile
+  - Persistent drawer on desktop
+- [ ] **Inactivity Timer:**
+  - Test auto-logout after 15 minutes
+  - Test timer reset on interactions
+  - Verify Snackbar after logout
+  - Verify redirect to `/login`
 - [ ] **AuthorizeView:**
-  - Wyświetlanie linków dla zalogowanych
-  - Wyświetlanie linków dla niezalogowanych
-  - Automatyczne odświeżenie po login/logout
-- [ ] **Dokumentacja testów**
+  - Display links for authenticated users
+  - Display links for unauthenticated users
+  - Automatic refresh after login/logout
+- [ ] **Test Documentation**
 
-### Krok 9: Implementacja stron Login i Register
-**Priorytet:** 🔴 Wysoki (Kolejna faza)
+### Step 9: Login and Register Page Implementation
+**Priority:** 🔴 High (Next Phase)
 
-**Plan implementacji:**
-- [ ] **Login.razor** - zgodnie z `login-view-implementation-plan.md`
-  - Formularz logowania (email, password)
-  - Walidacja pól
-  - Obsługa błędów AuthException
-  - Przekierowanie po sukcesie
-- [ ] **Register.razor** - zgodnie z `register-view-implementation-plan.md`
-  - Formularz rejestracji (email, password, confirmPassword, displayName)
-  - Walidacja pól (min 8 znaków dla hasła, email format)
-  - Obsługa błędów (email zajęty, hasło za słabe)
-  - Przekierowanie na login po sukcesie
+**Implementation Plan:**
+- [ ] **Login.razor** - according to `login-view-implementation-plan.md`
+  - Login form (email, password)
+  - Field validation
+  - AuthException error handling
+  - Redirect on success
+- [ ] **Register.razor** - according to `register-view-implementation-plan.md`
+  - Registration form (email, password, confirmPassword, displayName)
+  - Field validation (min 8 characters for password, email format)
+  - Error handling (email taken, password too weak)
+  - Redirect to login on success
 
-### Krok 10: Implementacja widoków Trips
-**Priorytet:** 🔴 Wysoki (Core functionality)
+### Step 10: Trips View Implementation
+**Priority:** 🔴 High (Core functionality)
 
-**Plan implementacji:**
-- [ ] **TripList.razor** - zgodnie z `triplist-view-implementation-plan.md`
-  - Zakładki: Upcoming, Archive
-  - Równoległe ładowanie (Task.WhenAll)
-  - EmptyState dla pustych list
+**Implementation Plan:**
+- [ ] **TripList.razor** - according to `triplist-view-implementation-plan.md`
+  - Tabs: Upcoming, Archive
+  - Parallel loading (Task.WhenAll)
+  - EmptyState for empty lists
   - Floating Action Button (+)
-- [ ] **CreateTrip.razor** - zgodnie z `createtrip-view-implementation-plan.md`
-  - TripForm.razor (reużywalny formularz)
-  - Walidacja (nazwa, daty, transport)
+- [ ] **CreateTrip.razor** - according to `createtrip-view-implementation-plan.md`
+  - TripForm.razor (reusable form)
+  - Validation (name, dates, transport)
   - Custom validation (EndDate > StartDate)
-- [ ] **TripDetails.razor** - zgodnie z `tripdetails-view-implementation-plan.md`
-  - Zakładka "Details" - edycja wycieczki
-  - Zakładka "Companions" - zarządzanie towarzyszami
+- [ ] **TripDetails.razor** - according to `tripdetails-view-implementation-plan.md`
+  - "Details" tab - trip editing
+  - "Companions" tab - companion management
   - RLS security handling
 
 ---
 
-## 🏆 Kamienie milowe
+## 🏆 Milestones
 
-### ✅ Milestone 1: Struktura aplikacji (70% - W TRAKCIE)
-**Kryteria sukcesu:**
-- ✅ Projekt Blazor WASM utworzony i skonfigurowany
-- ✅ MudBlazor i Supabase packages zainstalowane
-- ✅ Layout aplikacji działa (AppBar, Drawer, Main Content)
-- ✅ Nawigacja działa (routing między stronami)
-- ✅ Podstawowe komponenty (EmptyState, LoadingSpinner) gotowe
-- 🔄 Testy manualne layoutu - **DO ZROBIENIA**
+### ✅ Milestone 1: Application Structure (70% - IN PROGRESS)
+**Success Criteria:**
+- ✅ Blazor WASM project created and configured
+- ✅ MudBlazor and Supabase packages installed
+- ✅ Application layout works (AppBar, Drawer, Main Content)
+- ✅ Navigation works (routing between pages)
+- ✅ Basic components (EmptyState, LoadingSpinner) ready
+- 🔄 Manual layout testing - **TO DO**
 
-**Pozostało:**
-- Testy manualne routing/navigation
-- Testy responsywności (mobile/desktop)
-- Testy timer bezczynności
+**Remaining:**
+- Manual routing/navigation testing
+- Responsiveness testing (mobile/desktop)
+- Inactivity timer testing
 
 ---
 
-## 📊 Statystyki implementacji
+## 📊 Implementation Statistics
 
-### Pliki utworzone: 13
+### Files Created: 13
 1. ✅ `Infrastructure/Auth/CustomAuthenticationStateProvider.cs`
 2. ✅ `Shared/RedirectToLogin.razor`
 3. ✅ `Shared/Components/EmptyState.razor`
@@ -297,64 +296,59 @@
 9. ✅ `Layout/MainLayout.razor.cs`
 10. ✅ `Layout/NavMenu.razor.cs`
 
-### Pliki zmodyfikowane: 6
+### Files Modified: 6
 1. ✅ `Program.cs` (Authorization + AuthenticationStateProvider)
 2. ✅ `App.razor` (CascadingAuthenticationState + AuthorizeRouteView)
-3. ✅ `Layout/MainLayout.razor` (MudLayout + Timer - refaktoryzacja na code-behind)
-4. ✅ `Layout/NavMenu.razor` (AuthorizeView + MudNavMenu - refaktoryzacja na code-behind)
+3. ✅ `Layout/MainLayout.razor` (MudLayout + Timer - refactored to code-behind)
+4. ✅ `Layout/NavMenu.razor` (AuthorizeView + MudNavMenu - refactored to code-behind)
 5. ✅ `wwwroot/css/app.css` (Responsive styles)
-6. ✅ `_Imports.razor` (Dodane importy)
+6. ✅ `_Imports.razor` (Added imports)
 
-### Kod coverage: 0% (Brak testów)
-**TODO:** Dodać testy jednostkowe dla komponentów (bUnit)
-
----
-
-## ⚠️ Znane problemy i TODO
-
-### Wymagane przed dalszą pracą:
-- 🔄 **Brak stron (Login, Register, Trips)** - Brak tras do testowania routingu
-- 🔄 **Brak testów manualnych** - Trzeba przetestować layout w przeglądarce
-
-### Nice to have (po MVP):
-- Dodać animacje dla drawer toggle
-- Dodać keyboard shortcuts (Alt+M dla menu)
-- Dodać breadcrumbs w AppBar
-- Dodać dark mode toggle
+### Code Coverage: 0% (No tests yet)
+**TODO:** Add unit tests for components (bUnit)
 
 ---
 
-## 📝 Notatki implementacyjne
+## ⚠️ Known Issues and TODO
 
-### Best Practices zastosowane:
-- ✅ **Code-behind pattern** - Wszystkie komponenty z osobnymi `.razor.cs` (MainLayout, NavMenu, LoginDisplay, EmptyState, LoadingSpinner)
-- ✅ **XML Documentation** - Pełna dokumentacja publicznych API we wszystkich code-behind
-- ✅ **Immutable DTOs** - (będzie w kolejnych krokach)
-- ✅ **Dependency Injection** - Prawidłowe użycie DI z [Inject] w code-behind
-- ✅ **Error Handling** - Try-catch z logowaniem w HandleLogout
+### Required Before Further Work:
+- 🔄 **Missing Pages (Login, Register, Trips)** - No routes to test routing
+- 🔄 **No Manual Tests** - Need to test layout in browser
 
-### Wzorce architektoniczne:
-- ✅ **Layered Architecture** - Separacja Infrastructure/Application/Presentation
-- ✅ **Service Layer Pattern** - Interfaces w Application, implementacje w Infrastructure
-- ✅ **Code-Behind Pattern** - Wszystkie komponenty zgodne z zasadami (bez @code blocks)
+### Nice to Have (Post-MVP):
+- Add animations for drawer toggle
+- Add keyboard shortcuts (Alt+M for menu)
+- Add breadcrumbs in AppBar
+- Add dark mode toggle
 
-### Zgodno  ść z PRD:
+---
+
+## 📝 Implementation Notes
+
+### Best Practices Applied:
+- ✅ **Code-behind pattern** - All components with separate `.razor.cs` (MainLayout, NavMenu, LoginDisplay, EmptyState, LoadingSpinner)
+- ✅ **XML Documentation** - Complete documentation of all public APIs in code-behind
+- ✅ **Immutable DTOs** - (will be in next steps)
+- ✅ **Dependency Injection** - Proper DI usage with [Inject] in code-behind
+- ✅ **Error Handling** - Try-catch with logging in HandleLogout
+
+### Architectural Patterns:
+- ✅ **Layered Architecture** - Separation of Infrastructure/Application/Presentation
+- ✅ **Service Layer Pattern** - Interfaces in Application, implementations in Infrastructure
+- ✅ **Code-Behind Pattern** - All components follow rules (no @code blocks)
+
+### PRD Compliance:
 - ✅ Blazor WebAssembly (standalone)
 - ✅ .NET 9.0 + C# 13
-- ✅ MudBlazor dla UI
+- ✅ MudBlazor for UI
 - ✅ Supabase Auth integration
-- ✅ Responsywny design (mobile-first)
-- ✅ Timer bezczynności (15 minut)
+- ✅ Responsive design (mobile-first)
+- ✅ Inactivity timer (15 minutes)
 
-### Komunikaty użytkownika:
-- ✅ **Wszystkie komunikaty w języku angielskim**
+### User Messages:
+- ✅ **All messages in English**
 - "Session expired due to inactivity. Please log in again."
 - "Successfully logged out!"
 - "An error occurred during logout."
 - "Hello, [DisplayName]!"
 
----
-
-**Ostatnia aktualizacja:** 2025-01-XX  
-**Autor:** AI Assistant (10xDevs Program)  
-**Status dokumentu:** ✅ Aktualny

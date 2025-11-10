@@ -1,5 +1,12 @@
 ﻿# Database Entities - Documentation
 
+**Project:** MotoNomad MVP  
+**Program:** 10xDevs  
+**Date:** October 2025  
+**Status:** Ready for Implementation
+
+---
+
 ## 📋 Overview
 
 All entities inherit from `Postgrest.Models.BaseModel` and are properly mapped to Supabase tables using attributes.
@@ -218,6 +225,8 @@ await client
 
 ---
 
-**Status:** ✅ Ready to use  
-**Last Updated:** 2025-01-18  
-**Version:** 1.0
+**Document ready for implementation** ✅  
+**Project**: MotoNomad MVP  
+**Program**: 10xDevs  
+**Date**: October 2025  
+**Certification deadline**: November 2025

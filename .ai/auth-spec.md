@@ -1,76 +1,83 @@
-# Specyfikacja Techniczna: Modu? Autentykacji U?ytkowników (MotoNomad)
+ï»¿# Technical Specification: User Authentication Module (MotoNomad)
 
-## 1. Wprowadzenie
+**Project:** MotoNomad MVP  
+**Program:** 10xDevs  
+**Date:** October 2025  
+**Status:** Ready for Implementation
 
-Niniejszy dokument opisuje architektur? i implementacj? modu?u rejestracji, logowania, wylogowywania i odzyskiwania has?a w aplikacji MotoNomad. Specyfikacja bazuje na wymaganiach zdefiniowanych w PRD oraz na przyj?tym stosie technologicznym (Blazor WASM + Supabase).
+---
 
-## 2. Architektura Interfejsu U?ytkownika (Frontend)
+## 1. Introduction
 
-### 2.1. Zmiany w Strukturze Aplikacji
+This document describes the architecture and implementation of the registration, login, logout, and password recovery modules in the MotoNomad application. The specification is based on the requirements defined in the PRD and the adopted technology stack (Blazor WASM + Supabase).
 
-#### Nowe Strony (Pages)
-- **`Pages/Auth/Register.razor`**: Strona z formularzem rejestracji nowego u?ytkownika. Dost?pna publicznie.
-- **`Pages/Auth/Login.razor`**: Strona z formularzem logowania. Dost?pna publicznie.
-- **`Pages/Auth/ForgotPassword.razor`**: Strona z formularzem do wys?ania linku resetuj?cego has?o.
-- **`Pages/Auth/ResetPassword.razor`**: Strona umo?liwiaj?ca ustawienie nowego has?a po klikni?ciu w link z maila. B?dzie odczytywa? token z adresu URL.
+## 2. User Interface Architecture (Frontend)
 
-#### Modyfikacja Layoutów i Komponentów
+### 2.1. Changes to Application Structure
+
+#### New Pages (Pages)
+- **`Pages/Auth/Register.razor`**: Page with registration form for new users. Publicly accessible.
+- **`Pages/Auth/Login.razor`**: Page with login form. Publicly accessible.
+- **`Pages/Auth/ForgotPassword.razor`**: Page with form to send password reset link.
+- **`Pages/Auth/ResetPassword.razor`**: Page allowing setting a new password after clicking the link from email. Will read token from URL address.
+
+#### Layout and Component Modifications
 - **`Layout/MainLayout.razor`**:
-  - Zostanie owini?ty w komponent `CascadingAuthenticationState`, aby stan uwierzytelnienia by? dost?pny w ca?ej aplikacji.
-  - B?dzie warunkowo renderowa? `NavMenu` w zale?no?ci od stanu zalogowania.
+  - Will be wrapped in `CascadingAuthenticationState` component so authentication state is available throughout the application.
+  - Will conditionally render `NavMenu` depending on login state.
 - **`Layout/NavMenu.razor`**:
-  - Wykorzysta `AuthorizeView` do dynamicznego wy?wietlania linków.
-  - **Dla niezalogowanych (`<NotAuthorized>`)**: Wy?wietli linki "Zaloguj" i "Zarejestruj".
-  - **Dla zalogowanych (`<Authorized>`)**: Wy?wietli linki "Moje Podró?e", "Profil" oraz przycisk "Wyloguj".
+  - Will use `AuthorizeView` to dynamically display links.
+  - **For unauthenticated (`<NotAuthorized>`)**: Will display "Login" and "Register" links.
+  - **For authenticated (`<Authorized>`)**: Will display "My Trips", "Profile" links and "Logout" button.
 - **`Shared/RedirectToLogin.razor`**:
-  - Komponent pomocniczy, który b?dzie u?ywany na stronach wymagaj?cych autoryzacji. Je?li u?ytkownik nie jest zalogowany, automatycznie przekieruje go na stron? `/login`.
+  - Helper component to be used on pages requiring authorization. If user is not logged in, will automatically redirect to `/login` page.
 - **`App.razor`**:
-  - Zostanie zmodyfikowany, aby u?ywa? `AuthorizeRouteView` dla stron wymagaj?cych autoryzacji. Umo?liwi to zabezpieczenie dost?pu do np. `/trips` i automatyczne przekierowanie na stron? logowania zdefiniowan? w `RedirectToLogin`.
-- **Strony chronione (np. `Trips/TripList.razor`)**:
-  - Dodany zostanie atrybut `@attribute [Authorize]` na górze pliku, aby uniemo?liwi? dost?p niezalogowanym u?ytkownikom.
+  - Will be modified to use `AuthorizeRouteView` for pages requiring authorization. This will enable access protection for e.g. `/trips` and automatic redirect to login page defined in `RedirectToLogin`.
+- **Protected Pages (e.g. `Trips/TripList.razor`)**:
+  - `@attribute [Authorize]` attribute will be added at top of file to prevent access by unauthenticated users.
 
-### 2.2. Formularze i Komponenty
+### 2.2. Forms and Components
 
-- **Formularz Rejestracji (`Register.razor`)**:
-  - Pola: `Email`, `Password`, `ConfirmPassword`.
-  - Walidacja:
-    - Wszystkie pola wymagane.
-    - Email musi mie? poprawny format.
-    - Has?o musi mie? min. 8 znaków (zgodnie z PRD).
-    - `ConfirmPassword` musi by? identyczne z `Password`.
-  - Logika: Po pomy?lnej walidacji wywo?uje `IAuthService.RegisterAsync()`. Po sukcesie przekierowuje na list? podró?y (`/trips`). W razie b??du (np. u?ytkownik ju? istnieje) wy?wietla komunikat z `MudSnackbar`.
+- **Registration Form (`Register.razor`)**:
+  - Fields: `Email`, `Password`, `ConfirmPassword`.
+  - Validation:
+    - All fields required.
+    - Email must have valid format.
+    - Password must be min. 8 characters (according to PRD).
+    - `ConfirmPassword` must be identical to `Password`.
+  - Logic: After successful validation calls `IAuthService.RegisterAsync()`. On success redirects to trip list (`/trips`). On error (e.g. user already exists) displays message with `MudSnackbar`.
 
-- **Formularz Logowania (`Login.razor`)**:
-  - Pola: `Email`, `Password`.
-  - Walidacja: Pola wymagane.
-  - Logika: Wywo?uje `IAuthService.LoginAsync()`. Po sukcesie zapisuje sesj? i przekierowuje na `/trips`. W razie b??du ("Nieprawid?owe dane logowania") wy?wietla komunikat.
+- **Login Form (`Login.razor`)**:
+  - Fields: `Email`, `Password`.
+  - Validation: Required fields.
+  - Logic: Calls `IAuthService.LoginAsync()`. On success saves session and redirects to `/trips`. On error ("Invalid credentials") displays message.
 
-- **Formularz Odzyskiwania Has?a (`ForgotPassword.razor`)**:
-  - Pole: `Email`.
-  - Logika: Wywo?uje `IAuthService.SendPasswordResetEmailAsync()`. Po wywo?aniu zawsze wy?wietla komunikat o powodzeniu (ze wzgl?dów bezpiecze?stwa, aby nie ujawnia?, czy dany email istnieje w bazie).
+- **Password Recovery Form (`ForgotPassword.razor`)**:
+  - Field: `Email`.
+  - Logic: Calls `IAuthService.SendPasswordResetEmailAsync()`. After call always displays success message (for security reasons, to not reveal whether given email exists in database).
 
-### 2.3. Scenariusze U?ytkownika i Obs?uga B??dów
+### 2.3. User Scenarios and Error Handling
 
-- **Rejestracja**:
-  - **Sukces**: U?ytkownik jest tworzony w Supabase, automatycznie logowany, a sesja zapisywana w `LocalStorage`. Nast?puje przekierowanie do `/trips`.
-  - **B??d**: Komunikat "U?ytkownik o tym adresie email ju? istnieje." lub "Has?o jest zbyt s?abe.".
-- **Logowanie**:
-  - **Sukces**: Sesja jest pobierana z Supabase i zapisywana w `LocalStorage`. Nast?puje od?wie?enie stanu autentykacji i przekierowanie.
-  - **B??d**: Komunikat "Nieprawid?owy adres email lub has?o.".
-- **Dost?p do chronionej strony**: Niezalogowany u?ytkownik próbuj?cy wej?? na `/trips` jest przekierowywany na `/login`.
-- **Wylogowanie**: Sesja jest usuwana z `LocalStorage` i Supabase. U?ytkownik jest przekierowywany na stron? g?ówn?.
+- **Registration**:
+  - **Success**: User is created in Supabase, automatically logged in, and session saved in `LocalStorage`. Redirect to `/trips`.
+  - **Error**: Message "User with this email address already exists." or "Password is too weak.".
+- **Login**:
+  - **Success**: Session is retrieved from Supabase and saved in `LocalStorage`. Authentication state refresh and redirect.
+  - **Error**: Message "Invalid email or password.".
+- **Protected Page Access**: Unauthenticated user trying to access `/trips` is redirected to `/login`.
+- **Logout**: Session is removed from `LocalStorage` and Supabase. User is redirected to home page.
 
-## 3. Logika Warstwy Aplikacji i Infrastruktury
+## 3. Application and Infrastructure Layer Logic
 
-Poniewa? aplikacja dzia?a w modelu Blazor WASM Standalone, ca?a logika znajduje si? po stronie klienta. Komunikacja z "backendem" odbywa si? poprzez API Supabase.
+Since the application operates in Blazor WASM Standalone model, all logic resides on client side. Communication with "backend" occurs through Supabase API.
 
-### 3.1. Kontrakty (Interfejsy)
+### 3.1. Contracts (Interfaces)
 
 - **`Application/Interfaces/IAuthService.cs`**:
   ```csharp
   public interface IAuthService
   {
-      Task<User?> GetCurrentUser();
+  Task<User?> GetCurrentUser();
       Task LoginAsync(string email, string password);
       Task RegisterAsync(string email, string password, string confirmPassword);
       Task LogoutAsync();
@@ -79,48 +86,56 @@ Poniewa? aplikacja dzia?a w modelu Blazor WASM Standalone, ca?a logika znajduje 
   }
   ```
 
-### 3.2. Serwisy (Implementacje)
+### 3.2. Services (Implementations)
 
 - **`Infrastructure/Services/AuthService.cs`**:
-  - Implementuje `IAuthService`.
-  - Wstrzykuje klienta Supabase (`Supabase.Client`) oraz `Blazored.LocalStorage.ILocalStorageService`.
-  - Metody serwisu b?d? opakowywa? wywo?ania `supabase.Auth`, np. `supabase.Auth.SignUp()`, `supabase.Auth.SignInWithPassword()`.
-  - B?dzie zarz?dza? sesj? u?ytkownika, zapisuj?c j? w `LocalStorage` po udanym logowaniu/rejestracji i usuwaj?c po wylogowaniu.
-  - B?dzie obs?ugiwa? wyj?tki zwracane przez Supabase (np. `Gotrue.Exceptions.BadRequestException`) i mapowa? je na zrozumia?e dla u?ytkownika b??dy.
+  - Implements `IAuthService`.
+  - Injects Supabase client (`Supabase.Client`) and `Blazored.LocalStorage.ILocalStorageService`.
+  - Service methods will wrap calls to `supabase.Auth`, e.g. `supabase.Auth.SignUp()`, `supabase.Auth.SignInWithPassword()`.
+  - Will manage user session by saving it in `LocalStorage` after successful login/registration and removing after logout.
+  - Will handle exceptions returned by Supabase (e.g. `Gotrue.Exceptions.BadRequestException`) and map them to user-friendly errors.
 
-### 3.3. Modele Danych (DTOs)
+### 3.3. Data Models (DTOs)
 
-- **`Application/DTOs/Auth/RegisterRequest.cs`**: Model dla formularza rejestracji z adnotacjami walidacyjnymi.
-- **`Application/DTOs/Auth/LoginRequest.cs`**: Model dla formularza logowania z adnotacjami.
+- **`Application/DTOs/Auth/RegisterRequest.cs`**: Model for registration form with validation annotations.
+- **`Application/DTOs/Auth/LoginRequest.cs`**: Model for login form with annotations.
 
-## 4. System Autentykacji (Integracja z Supabase)
+## 4. Authentication System (Supabase Integration)
 
-### 4.1. Konfiguracja
+### 4.1. Configuration
 - **`Program.cs`**:
-  - Zostanie zarejestrowany klient Supabase jako Singleton, pobieraj?c `Url` i `AnonKey` z `appsettings.json`.
-  - Zostan? zarejestrowane serwisy: `IAuthService` i `AuthService`.
-  - Zostanie dodana obs?uga autoryzacji Blazora: `AddAuthorizationCore()`.
-  - `SupabaseAuthenticationStateProvider` zostanie zarejestrowany jako implementacja `AuthenticationStateProvider`.
+  - Supabase client will be registered as Singleton, retrieving `Url` and `AnonKey` from `appsettings.json`.
+  - Services will be registered: `IAuthService` and `AuthService`.
+  - Blazor authorization support will be added: `AddAuthorizationCore()`.
+  - `SupabaseAuthenticationStateProvider` will be registered as implementation of `AuthenticationStateProvider`.
 - **`Infrastructure/Auth/SupabaseAuthenticationStateProvider.cs`**:
-  - Nowa klasa dziedzicz?ca po `AuthenticationStateProvider`.
-  - W konstruktorze wstrzyknie `ILocalStorageService` i klienta Supabase.
-  - Metoda `GetAuthenticationStateAsync` b?dzie sprawdza?, czy w `LocalStorage` istnieje zapisana sesja.
-    - Je?li tak, odtworzy sesj? w kliencie Supabase i zwróci `ClaimsPrincipal` z danymi u?ytkownika (ID, email).
-    - Je?li nie, zwróci pusty `ClaimsPrincipal` dla anonimowego u?ytkownika.
-  - B?dzie zawiera? metody `MarkUserAsAuthenticated()` i `MarkUserAsLoggedOut()`, które zaktualizuj? stan i powiadomi? Blazora o zmianie (`NotifyAuthenticationStateChanged`).
+  - New class inheriting from `AuthenticationStateProvider`.
+  - Will inject `ILocalStorageService` and Supabase client in constructor.
+  - Method `GetAuthenticationStateAsync` will check if saved session exists in `LocalStorage`.
+    - If yes, will restore session in Supabase client and return `ClaimsPrincipal` with user data (ID, email).
+    - If no, will return empty `ClaimsPrincipal` for anonymous user.
+  - Will contain methods `MarkUserAsAuthenticated()` and `MarkUserAsLoggedOut()` which will update state and notify Blazor of change (`NotifyAuthenticationStateChanged`).
 
-### 4.2. Zabezpieczenia (Supabase)
-- **Row Level Security (RLS)**: Kluczowy element bezpiecze?stwa.
-  - Dla tabeli `Trips` zostanie w??czona polityka RLS, która pozwoli na odczyt/zapis/modyfikacj? rekordu tylko wtedy, gdy `user_id` w rekordzie jest równe `auth.uid()`. To gwarantuje, ?e u?ytkownicy widz? tylko swoje dane, nawet je?li u?ywaj? tego samego klucza `AnonKey`.
-- **Szablony E-mail**: W panelu Supabase zostan? skonfigurowane szablony wiadomo?ci email dla potwierdzenia rejestracji (je?li w??czone) i resetowania has?a.
+### 4.2. Security (Supabase)
+- **Row Level Security (RLS)**: Key security element.
+  - For `Trips` table, RLS policy will be enabled allowing read/write/modify of record only when `user_id` in record equals `auth.uid()`. This guarantees users see only their data, even if using the same `AnonKey`.
+- **Email Templates**: Email message templates will be configured in Supabase panel for registration confirmation (if enabled) and password reset.
 
-## 5. Podsumowanie Kluczowych Kroków Implementacji
+## 5. Summary of Key Implementation Steps
 
-1.  **Struktura**: Utworzenie nowych plików dla stron, serwisów i DTOs w odpowiednich katalogach.
-2.  **Konfiguracja DI**: Rejestracja `Supabase.Client`, `IAuthService`, `AuthenticationStateProvider` i `ILocalStorageService` w `Program.cs`.
-3.  **UI**: Implementacja formularzy w `Register.razor` i `Login.razor` z u?yciem `MudForm` i walidacji.
-4.  **Layout**: Modyfikacja `MainLayout.razor` i `NavMenu.razor` w celu dynamicznego renderowania UI w zale?no?ci od stanu autoryzacji.
-5.  **Logika**: Implementacja `AuthService` z logik? opakowuj?c? klienta Supabase.
-6.  **Stan Aplikacji**: Stworzenie `SupabaseAuthenticationStateProvider` do zarz?dzania stanem uwierzytelnienia w ca?ej aplikacji.
-7.  **Routing**: Zabezpieczenie stron (np. `/trips`) za pomoc? atrybutu `[Authorize]` i `AuthorizeRouteView`.
-8.  **Supabase**: W??czenie i skonfigurowanie polityk RLS dla tabel w bazie danych.
+1.  **Structure**: Create new files for pages, services and DTOs in appropriate directories.
+2.  **DI Configuration**: Register `Supabase.Client`, `IAuthService`, `AuthenticationStateProvider` and `ILocalStorageService` in `Program.cs`.
+3.  **UI**: Implement forms in `Register.razor` and `Login.razor` using `MudForm` and validation.
+4.  **Layout**: Modify `MainLayout.razor` and `NavMenu.razor` to dynamically render UI depending on authorization state.
+5.  **Logic**: Implement `AuthService` with logic wrapping Supabase client.
+6.  **Application State**: Create `SupabaseAuthenticationStateProvider` to manage authentication state throughout application.
+7.  **Routing**: Protect pages (e.g. `/trips`) using `[Authorize]` attribute and `AuthorizeRouteView`.
+8.  **Supabase**: Enable and configure RLS policies for tables in database.
+
+---
+
+**Document ready for implementation** âœ…  
+**Project**: MotoNomad MVP  
+**Program**: 10xDevs  
+**Date**: October 2025  
+**Certification deadline**: November 2025
