@@ -1,5 +1,12 @@
 # Product Requirements Document (PRD) – MotoNomad
 
+**Project:** MotoNomad MVP  
+**Program:** 10xDevs  
+**Date:** October 2025  
+**Status:** Ready for Implementation
+
+---
+
 ## 1. Product Overview
 MotoNomad is a web application for planning individual and group trips (motorcycle, airplane, train). It enables users to centrally manage all trip details: dates, routes, companions, and transportation type in one place. The application solves the information chaos problem that arises when using multiple tools (notes, calendars, Excel, messengers).
 
@@ -332,7 +339,8 @@ These features are valuable but not essential to solving the main problem: "info
 
 ---
 
-**Document Status:** ✅ Ready for Certification  
-**Project:** MotoNomad  
-**Program:** 10xDevs  
-**Date:** October 2025
+**Document ready for implementation** ✅  
+**Project**: MotoNomad MVP  
+**Program**: 10xDevs  
+**Date**: October 2025  
+**Certification deadline**: November 2025

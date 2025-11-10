@@ -1,5 +1,12 @@
 # UI Architecture for MotoNomad
 
+**Project:** MotoNomad MVP  
+**Program:** 10xDevs  
+**Date:** October 2025  
+**Status:** Ready for Implementation
+
+---
+
 ## 1. UI Structure Overview
 
 MotoNomad is a Blazor WebAssembly application with a full interface based on MudBlazor components. The UI architecture adopts a **mobile-first** approach, ensuring responsiveness and full functionality on mobile devices, tablets, and desktops.
