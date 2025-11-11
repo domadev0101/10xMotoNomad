@@ -1,4 +1,4 @@
-namespace MotoNomad.App.Infrastructure.Configuration;
+﻿namespace MotoNomad.App.Infrastructure.Configuration;
 
 /// <summary>
 /// Configuration settings for OpenRouter API integration
@@ -11,14 +11,24 @@ public class OpenRouterSettings
     public const string SectionName = "OpenRouter";
 
     /// <summary>
-    /// OpenRouter API key (required)
+    /// OpenRouter API key (required) - używany tylko jeśli UseEdgeFunctionProxy = false
     /// </summary>
     public required string ApiKey { get; set; }
 
     /// <summary>
-    /// OpenRouter API base URL
+    /// OpenRouter API base URL - używany tylko jeśli UseEdgeFunctionProxy = false
     /// </summary>
     public string BaseUrl { get; set; } = "https://openrouter.ai/api/v1";
+
+    /// <summary>
+    /// URL Supabase Edge Function proxy (jeśli UseEdgeFunctionProxy = true)
+    /// </summary>
+    public string? EdgeFunctionUrl { get; set; }
+
+    /// <summary>
+    /// Czy używać Supabase Edge Function jako proxy (zalecane dla produkcji)
+    /// </summary>
+    public bool UseEdgeFunctionProxy { get; set; } = false;
 
     /// <summary>
     /// HTTP Referer header for OpenRouter API requests

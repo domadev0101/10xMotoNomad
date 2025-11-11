@@ -1,4 +1,4 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -33,7 +33,7 @@ public class OpenRouterService : IOpenRouterService, IDisposable
     /// <param name="httpClient">HTTP client for API requests (injected via IHttpClientFactory)</param>
     /// <param name="settings">OpenRouter configuration settings</param>
     /// <param name="logger">Logger for diagnostics</param>
-    public OpenRouterService(
+  public OpenRouterService(
    HttpClient httpClient,
         IOptions<OpenRouterSettings> settings,
         ILogger<OpenRouterService> logger)
@@ -42,42 +42,69 @@ public class OpenRouterService : IOpenRouterService, IDisposable
         _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        // Validate settings
-        if (string.IsNullOrWhiteSpace(_settings.ApiKey) ||
-       _settings.ApiKey == "your-api-key-here" ||
-          _settings.ApiKey.StartsWith("your-"))
+   // Sprawdź tryb działania: Edge Function proxy vs Direct API
+        if (_settings.UseEdgeFunctionProxy)
+      {
+            // Tryb Edge Function Proxy (zalecany dla produkcji)
+            if (string.IsNullOrWhiteSpace(_settings.EdgeFunctionUrl))
+            {
+      throw new InvalidOperationException(
+          "EdgeFunctionUrl is required when UseEdgeFunctionProxy is true");
+   }
+
+     _logger.LogInformation(
+        "OpenRouter configured to use Edge Function proxy at: {EdgeFunctionUrl}",
+         _settings.EdgeFunctionUrl);
+
+ // Ustaw URL Edge Function jako BaseAddress
+  _httpClient.BaseAddress = new Uri(_settings.EdgeFunctionUrl.TrimEnd('/') + "/");
+            
+// Edge Function nie potrzebuje API key w nagłówkach (jest po stronie serwera)
+            // Dodaj tylko dodatkowe nagłówki dla identyfikacji
+            _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", _settings.HttpReferer);
+            _httpClient.DefaultRequestHeaders.Add("X-Title", _settings.AppTitle);
+        }
+  else
         {
-            _logger.LogWarning("OpenRouter API key is not configured properly. AI features will not work.");
-            _logger.LogWarning("Please configure a valid API key in appsettings.json under OpenRouter:ApiKey");
-            // Don't throw - allow app to run but AI features won't work
+            // Tryb Direct API (dla developmentu/testów)
+            // Validate settings
+    if (string.IsNullOrWhiteSpace(_settings.ApiKey) ||
+        _settings.ApiKey == "your-api-key-here" ||
+                _settings.ApiKey.StartsWith("your-"))
+     {
+         _logger.LogWarning("OpenRouter API key is not configured properly. AI features will not work.");
+     _logger.LogWarning("Please configure a valid API key in appsettings.json under OpenRouter:ApiKey");
+              // Don't throw - allow app to run but AI features won't work
+     }
+
+      // Configure HTTP client
+       var baseUrl = _settings.BaseUrl.TrimEnd('/') + "/";
+            _httpClient.BaseAddress = new Uri(baseUrl);
+
+            if (!string.IsNullOrWhiteSpace(_settings.ApiKey) &&
+         _settings.ApiKey != "your-api-key-here" &&
+        !_settings.ApiKey.StartsWith("your-"))
+        {
+          _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.ApiKey}");
+      }
+
+ _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", _settings.HttpReferer);
+   _httpClient.DefaultRequestHeaders.Add("X-Title", _settings.AppTitle);
         }
 
-        // Configure HTTP client
-        var baseUrl = _settings.BaseUrl.TrimEnd('/') + "/";
-        _httpClient.BaseAddress = new Uri(baseUrl);
-
-        if (!string.IsNullOrWhiteSpace(_settings.ApiKey) &&
-            _settings.ApiKey != "your-api-key-here" &&
-       !_settings.ApiKey.StartsWith("your-"))
-        {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.ApiKey}");
-        }
-
-        _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", _settings.HttpReferer);
-        _httpClient.DefaultRequestHeaders.Add("X-Title", _settings.AppTitle);
         _httpClient.Timeout = TimeSpan.FromSeconds(_settings.TimeoutSeconds);
 
         // Configure JSON options
         _jsonOptions = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+          DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = false
-        };
+   };
 
-        // Initialize rate limiting
-        _rateLimitSemaphore = new SemaphoreSlim(_settings.MaxConcurrentRequests);
-        _lastRequestTime = DateTime.MinValue;
+   // Initialize rate limiting
+_rateLimitSemaphore = new SemaphoreSlim(_settings.MaxConcurrentRequests);
+    _lastRequestTime = DateTime.MinValue;
         _consecutiveErrors = 0;
     }
 
@@ -90,82 +117,110 @@ public class OpenRouterService : IOpenRouterService, IDisposable
   ChatCompletionRequest request,
         CancellationToken cancellationToken = default)
     {
-        // Check if API key is configured
-        if (string.IsNullOrWhiteSpace(_settings.ApiKey) ||
-    _settings.ApiKey == "your-api-key-here" ||
+   // Check if API is configured (both modes)
+        if (_settings.UseEdgeFunctionProxy)
+   {
+ if (string.IsNullOrWhiteSpace(_settings.EdgeFunctionUrl))
+   {
+    throw new OpenRouterAuthException(
+     "Edge Function proxy URL not configured. Please set EdgeFunctionUrl in appsettings.json");
+    }
+        }
+else
+     {
+ // Check if API key is configured for Direct API mode
+    if (string.IsNullOrWhiteSpace(_settings.ApiKey) ||
+_settings.ApiKey == "your-api-key-here" ||
       _settings.ApiKey.StartsWith("your-"))
-        {
-            throw new OpenRouterAuthException(
+    {
+  throw new OpenRouterAuthException(
        "OpenRouter API key is not configured. Please add your API key to appsettings.json under OpenRouter:ApiKey. " +
          "Get your free API key at: https://openrouter.ai/keys");
-        }
+    }
+ }
 
         try
         {
-            ValidateRequest(request);
-            await ApplyRateLimitAsync(cancellationToken);
+  ValidateRequest(request);
+      await ApplyRateLimitAsync(cancellationToken);
 
             return await RetryWithExponentialBackoffAsync(
      async () =>
-         {
-             _logger.LogInformation(
-                    "Sending chat completion request to model {Model}",
-           request.Model);
+  {
+   _logger.LogInformation(
+  "Sending chat completion request to model {Model} (via {Mode})",
+      request.Model,
+    _settings.UseEdgeFunctionProxy ? "Edge Function Proxy" : "Direct API");
 
-             var response = await _httpClient.PostAsJsonAsync(
-       "chat/completions",
-           request,
-         _jsonOptions,
-       cancellationToken);
+  // Endpoint różni się w zależności od trybu
+     var endpoint = _settings.UseEdgeFunctionProxy 
+           ? "" // Edge Function oczekuje POST na root path
+        : "chat/completions";
 
-             if (!response.IsSuccessStatusCode)
-             {
-                 await HandleHttpErrorAsync(response);
-             }
+            // Edge Function mode: Add Supabase Anon Key as Authorization header (per request)
+      HttpRequestMessage? httpRequest = null;
+            if (_settings.UseEdgeFunctionProxy)
+ {
+             httpRequest = new HttpRequestMessage(HttpMethod.Post, endpoint);
+       
+                // Get Supabase Anon Key from configuration (hardcoded for now - later from ISupabaseClientService)
+      var supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzY2dyd2ZrdWlpY3FsZW1xemVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1ODI2MjEsImV4cCI6MjA3NzE1ODYyMX0.GZ1NA1DRqA-HSeB1ApXkxWoI9hHMBHOEW-Ak2EjaTHw";
+httpRequest.Headers.Add("Authorization", $"Bearer {supabaseAnonKey}");
+      httpRequest.Content = JsonContent.Create(request, options: _jsonOptions);
+            }
 
-             // Log response content type for debugging
-             var contentType = response.Content.Headers.ContentType?.MediaType;
-             _logger.LogDebug("Response Content-Type: {ContentType}", contentType);
+  var response = httpRequest != null 
+          ? await _httpClient.SendAsync(httpRequest, cancellationToken)
+: await _httpClient.PostAsJsonAsync(endpoint, request, _jsonOptions, cancellationToken);
 
-             // Check if response is JSON
-             if (contentType != null && !contentType.Contains("application/json"))
-             {
-                 var rawContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                 _logger.LogError("Received non-JSON response: {Content}", rawContent.Substring(0, Math.Min(500, rawContent.Length)));
-                 throw new OpenRouterException($"Received non-JSON response (Content-Type: {contentType}). This usually indicates an authentication or configuration error.");
-             }
+  if (!response.IsSuccessStatusCode)
+      {
+         await HandleHttpErrorAsync(response);
+         }
 
-             var result = await response.Content
+ // Log response content type for debugging
+    var contentType = response.Content.Headers.ContentType?.MediaType;
+        _logger.LogDebug("Response Content-Type: {ContentType}", contentType);
+
+          // Check if response is JSON
+         if (contentType != null && !contentType.Contains("application/json"))
+           {
+  var rawContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogError("Received non-JSON response: {Content}", rawContent.Substring(0, Math.Min(500, rawContent.Length)));
+  throw new OpenRouterException($"Received non-JSON response (Content-Type: {contentType}). This usually indicates an authentication or configuration error.");
+      }
+
+        var result = await response.Content
  .ReadFromJsonAsync<ChatCompletionResponse>(_jsonOptions, cancellationToken);
 
              if (result == null)
-             {
-                 throw new OpenRouterException("Received null response from API");
-             }
+  {
+       throw new OpenRouterException("Received null response from API");
+      }
 
-             _logger.LogInformation(
+      _logger.LogInformation(
      "Successfully received response: Tokens={TotalTokens}",
        result.Usage?.TotalTokens ?? 0);
 
-             return result;
+  return result;
          },
-       maxRetries: _settings.MaxRetries,
+     maxRetries: _settings.MaxRetries,
       cancellationToken);
+ }
+    catch (OperationCanceledException)
+     {
+      _logger.LogInformation("Request cancelled by user");
+      throw;
         }
-        catch (OperationCanceledException)
-        {
-            _logger.LogInformation("Request cancelled by user");
-            throw;
-        }
-        catch (OpenRouterException)
-        {
-            throw;
-        }
+      catch (OpenRouterException)
+   {
+      throw;
+}
         catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error in SendChatCompletionAsync");
-            throw new OpenRouterException("An unexpected error occurred", ex);
-        }
+      {
+    _logger.LogError(ex, "Unexpected error in SendChatCompletionAsync");
+      throw new OpenRouterException("An unexpected error occurred", ex);
+      }
     }
 
     /// <summary>

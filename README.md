@@ -58,6 +58,12 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
   - View participant count per trip
   - Remove companions as needed
 
+- **🤖 AI-Powered Trip Planning**
+  - AI-generated trip suggestions using OpenRouter API
+  - Secure proxy via Supabase Edge Functions
+  - Multiple AI models support (Claude, GPT-4, Gemma, etc.)
+  - Smart itinerary recommendations
+
 - **📱 Responsive Design**
   - Mobile-first approach using MudBlazor
   - Fully functional on phones, tablets, and desktops
@@ -83,7 +89,13 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
 - **supabase-csharp** (v0.16.2) - Official C# client library
 - **postgrest-csharp** - REST API client for database operations
 - **Supabase Auth** - Authentication and authorization
+- **Supabase Edge Functions** - Serverless functions (OpenRouter proxy)
 - **Blazored.LocalStorage** (v4.5.0) - Client-side token storage
+
+### AI Integration
+- **OpenRouter API** - Unified gateway to multiple AI models
+- **Supabase Edge Functions** - Secure proxy for API key protection
+- **Supported Models**: Claude 3.5 Sonnet, GPT-4, Gemma 3, and more
 
 ### Hosting & CI/CD
 - **GitHub Pages** - Free static site hosting with automatic HTTPS
@@ -242,6 +254,8 @@ dotnet build /p:TreatWarningsAsErrors=true
 
 - **[Health Check Guide](docs/health-check-guide.md)** - How to use the health check feature
 - **[Supabase Client Summary](docs/supabase-client-summary.md)** - Implementation details and examples
+- **[OpenRouter Edge Function Deployment](docs/openrouter-edge-function-deployment.md)** - How to deploy AI proxy to Supabase
+- **[OpenRouter Setup](docs/openrouter-setup.md)** - OpenRouter API configuration guide
 
 ### Planning Documents
 
