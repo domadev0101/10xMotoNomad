@@ -254,8 +254,10 @@ dotnet build /p:TreatWarningsAsErrors=true
 
 - **[Health Check Guide](docs/health-check-guide.md)** - How to use the health check feature
 - **[Supabase Client Summary](docs/supabase-client-summary.md)** - Implementation details and examples
-- **[OpenRouter Edge Function Deployment](docs/openrouter-edge-function-deployment.md)** - How to deploy AI proxy to Supabase
+- **[Mock Auth Setup](docs/mock_auth-setup.md)** - Development testing without login ⚠️ (Never enable in production!)
 - **[OpenRouter Setup](docs/openrouter-setup.md)** - OpenRouter API configuration guide
+- **[OpenRouter Edge Function Deployment](docs/openrouter-edge-function-deployment.md)** - How to deploy AI proxy to Supabase
+- **[Kitchen Sink Guide](docs/kitchen-sink-readme.md)** - Usage and maintenance guide
 
 ### Planning Documents
 
@@ -267,6 +269,10 @@ Located in `.ai/` directory:
 - **[Services Plan](.ai/services-plan.md)** - Service layer design
 - **[API Contracts](.ai/api-contracts.md)** - API interface definitions
 - **[Entities Plan](.ai/entities-plan.md)** - Database entities documentation
+- **[Test Plan](.ai/test-plan.md)** - Testing strategy and implementation
+- **[UI Plan](.ai/ui-plan.md)** - User interface specifications
+- **[Auth Specification](.ai/auth-spec.md)** - Authentication and authorization
+- **[MudBlazor Components List](.ai/mudblazor-components-list.md)** - Complete component inventory
 
 ### Coding Standards
 
@@ -465,15 +471,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **MudBlazor Community** - For beautiful UI components
 - **Microsoft** - For Blazor WebAssembly framework
 
----
-
-**Project:** MotoNomad  
-**Program:** 10xDevs  
-**Date:** October 2025  
-**Status:** Ready for Certification ✅
-
-Made with ❤️ for travelers who love organized adventures
-
 ## Kitchen Sink - Component Showcase
 
 The project includes a **Kitchen Sink** page that showcases all MudBlazor components used in the application. This serves as:
@@ -499,8 +496,12 @@ After running the application (`dotnet run`), navigate to `/kitchen-sink` in you
 6. **Cards** - MudCard with complete example
 7. **Tabs** - MudTabs with panels
 
-### Documentation
+---
 
-- **Component List**: [.ai/mudblazor-components-list.md](.ai/mudblazor-components-list.md) - Complete inventory of 35+ components
-- **Kitchen Sink Guide**: [.ai/kitchen-sink-readme.md](.ai/kitchen-sink-readme.md) - Usage and maintenance guide
+**Project:** MotoNomad  
+**Program:** 10xDevs  
+**Date:** October 2025  
+**Status:** Ready for Certification ✅
+
+Made with ❤️ for travelers who love organized adventures
 
