@@ -98,12 +98,10 @@ public class MockAuthenticationStateProvider : AuthenticationStateProvider
 
             // Set current session and user in Supabase client
             client.Auth.SetSession(mockSession.AccessToken, mockSession.RefreshToken);
-
-            Console.WriteLine($"? Mock Supabase session set for user: {_mockEmail} (ID: {_mockUserId})");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"?? Failed to set mock Supabase session: {ex.Message}");
+            // Silently fail - mock auth is for testing only
         }
     }
 }
