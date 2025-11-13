@@ -2,26 +2,26 @@
     <div class="empty-state-icon" style="animation: bounce 2s infinite;">
         <MudIcon 
             Icon="@IconName" 
-   Style="font-size: 80px; color: #667eea; opacity: 0.6;" />
- </div>
+            Style="font-size: 80px; color: #5a9367; opacity: 0.7;" />
+    </div>
     
-    <MudText Typo="Typo.h4" Class="mb-2" Style="font-weight: 600; color: #2D3748;">
+    <MudText Typo="Typo.h4" Class="mb-2" Style="font-weight: 600; color: #e8f0ed;">
         @Title
     </MudText>
     
-    <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-4" Style="max-width: 400px; margin: 0 auto;">
+    <MudText Typo="Typo.body1" Class="mb-4" Style="color: #a8b9af; max-width: 400px; margin: 0 auto;">
         @Message
     </MudText>
     
     @if (!string.IsNullOrEmpty(ButtonText))
     {
-    <MudButton 
+        <MudButton 
             Variant="Variant.Filled" 
             Class="empty-state-button"
-  Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 12px 32px; text-transform: none; font-weight: 600;"
-   OnClick="@OnButtonClick">
-  @ButtonText
-      </MudButton>
+            Style="background: linear-gradient(135deg, #1a3a2e 0%, #2d5016 100%); color: white; border-radius: 12px; padding: 12px 32px; text-transform: none; font-weight: 600; box-shadow: 0 4px 12px rgba(26, 58, 46, 0.4);"
+            OnClick="@OnButtonClick">
+            @ButtonText
+        </MudButton>
     }
 </MudPaper>
 
@@ -33,29 +33,29 @@
 
     /* Bounce animation for icon */
     @@keyframes bounce {
-   0%, 100% { 
-   transform: translateY(0); 
-   }
- 50% { 
-      transform: translateY(-10px); 
+        0%, 100% { 
+            transform: translateY(0); 
+        }
+        50% { 
+            transform: translateY(-10px); 
         }
     }
 
     /* Fade-in animation */
     @@keyframes fadeIn {
         from {
-   opacity: 0;
-         transform: translateY(20px);
+            opacity: 0;
+            transform: translateY(20px);
         }
         to {
-     opacity: 1;
-      transform: translateY(0);
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
- }
 
     /* Button hover effect */
     .empty-state-button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3) !important;
+        box-shadow: 0 8px 16px rgba(26, 58, 46, 0.5) !important;
     }
 </style>

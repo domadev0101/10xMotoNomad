@@ -5,7 +5,13 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build Status](https://github.com/domadev0101/10xMotoNomad/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/domadev0101/10xMotoNomad/actions)
 
+<div align="center">
+  <img src="MotoNomad.App/wwwroot/images/logo_1.png" alt="MotoNomad Logo" width="200" />
+</div>
+
 A modern web application for planning individual and group trips (motorcycle, airplane, train). Centralize all your trip details—dates, routes, companions, and transportation—in one place.
+
+**✨ New:** Dark forest theme inspired by Bieszczady mountain trips! 🌲🏔️
 
 ## 📋 Table of Contents
 
@@ -37,9 +43,17 @@ Travelers planning trips must juggle multiple tools simultaneously: route detail
 
 MotoNomad provides a single source of truth for all trip details, reducing planning time from hours to minutes. Built with modern web technologies, it offers a responsive, user-friendly interface accessible from any device.
 
+**The application features a unique dark forest theme** inspired by motorcycle adventures through Polish Bieszczady mountains, creating an immersive atmosphere perfect for planning outdoor trips. 🌲🏍️
+
 ## ✨ Features
 
 ### Core Functionality (MVP)
+
+- **🎨 Immersive Forest Theme**
+  - Dark green color palette inspired by Bieszczady forests
+  - Eye-friendly dark mode perfect for trip planning
+  - Smooth transitions and atmospheric design
+  - Responsive on all devices
 
 - **🔐 User Authentication**
   - Secure registration and login via Supabase Auth
@@ -67,7 +81,7 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
 - **📱 Responsive Design**
   - Mobile-first approach using MudBlazor
   - Fully functional on phones, tablets, and desktops
-  - Material Design components
+  - Material Design components with forest theme
   - Clear success and error messages
 
 - **🏥 Health Check**
@@ -257,6 +271,10 @@ dotnet build /p:TreatWarningsAsErrors=true
 - **Data Privacy**: Users can only access their own trips and companions
 
 ## 📚 Documentation
+
+### User Interface
+
+- **[Forest Theme Guide](docs/forest-theme-guide.md)** - Dark forest theme color palette and design principles 🌲
 
 ### Project Documentation
 

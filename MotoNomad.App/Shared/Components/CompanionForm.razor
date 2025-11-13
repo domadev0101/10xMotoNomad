@@ -36,7 +36,7 @@ ValueChanged="@((string? value) => OnContactChanged(value))"
     <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 1rem;">
         <MudButton 
          Variant="Variant.Text"
-      Color="Color.Default"
+        Style="color: #a8b9af; font-weight: 600;"
   OnClick="@(() => OnCancel.InvokeAsync())"
        Disabled="@IsLoading">
         Cancel
@@ -45,6 +45,7 @@ ValueChanged="@((string? value) => OnContactChanged(value))"
         <MudButton 
             Variant="Variant.Filled" 
             Color="Color.Primary"
+            Style="color: #ffffff; font-weight: 600;"
     OnClick="HandleSubmit"
             Disabled="@(!formValid || IsLoading)">
      @if (IsLoading)

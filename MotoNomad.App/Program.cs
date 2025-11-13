@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Microsoft.Extensions.Configuration;
 using MudBlazor.Services;
+using MudBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -82,8 +83,11 @@ builder.Services.AddScoped<IOpenRouterService, OpenRouterService>();
 // Register AI Trip Planner service as Scoped
 builder.Services.AddScoped<IAiTripPlannerService, AiTripPlannerService>();
 
-// Register MudBlazor services
-builder.Services.AddMudServices();
+// Register MudBlazor services with custom theme
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+});
 
 // Build the application
 var app = builder.Build();

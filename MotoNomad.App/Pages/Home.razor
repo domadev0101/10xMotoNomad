@@ -19,24 +19,24 @@
 
    @* Quick Actions *@
   <section class="quick-actions-section">
-                <div class="quick-actions-grid">
-       <MudButton 
-        Variant="Variant.Filled" 
-                    Size="Size.Large"
-           StartIcon="@Icons.Material.Filled.Add"
-Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; border-radius: 12px; padding: 20px 32px; text-transform: none; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);"
-             Href="trip/create">
- Create New Trip
-                  </MudButton>
+    <div class="quick-actions-grid">
+        <MudButton 
+            Variant="Variant.Filled" 
+            Size="Size.Large"
+            StartIcon="@Icons.Material.Filled.Add"
+            Style="background: linear-gradient(135deg, #1a3a2e 0%, #2d5016 100%); color: white; font-weight: 600; border-radius: 12px; padding: 20px 32px; text-transform: none; box-shadow: 0 4px 12px rgba(26, 58, 46, 0.4);"
+            Href="trip/create">
+            Create New Trip
+        </MudButton>
         
-         <MudButton 
-  Variant="Variant.Filled" 
-         Size="Size.Large"
-  StartIcon="@Icons.Material.Filled.Map"
-         Style="background: white; color: #667eea; font-weight: 600; border-radius: 12px; padding: 20px 32px; text-transform: none; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);"
-    Href="trips">
-      View All Trips
-         </MudButton>
+        <MudButton 
+            Variant="Variant.Filled" 
+            Size="Size.Large"
+            StartIcon="@Icons.Material.Filled.Map"
+            Style="background: white; color: #2d5016; font-weight: 600; border-radius: 12px; padding: 20px 32px; text-transform: none; box-shadow: 0 4px 12px rgba(26, 58, 46, 0.3);"
+            Href="trips">
+            View All Trips
+        </MudButton>
     </div>
         </section>
 
@@ -114,28 +114,30 @@ Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: whi
          @* Hero Section *@
             <section class="hero-section">
     <div class="hero-content">
-          <div class="hero-icon">🏍️</div>
+          <div class="hero-icon">
+              <img src="images/logo_1.png" alt="MotoNomad Logo" style="width: 120px; height: 120px; object-fit: contain; border-radius: 20px; box-shadow: 0 8px 24px rgba(26, 58, 46, 0.5);" />
+          </div>
      <h1 class="hero-title">Plan Your Next Adventure</h1>
           <p class="hero-subtitle">
           Organize motorcycle trips, track companions, and create unforgettable memories with MotoNomad
         </p>
      
  <div class="hero-buttons">
-             <MudButton 
-           Variant="Variant.Filled" 
-       Size="Size.Large"
-     Style="background: white; color: #667eea; font-weight: 600; border-radius: 12px; padding: 16px 40px; text-transform: none;"
-         Href="register">
- Get Started - It's Free
- </MudButton>
-      
-   <MudButton 
-  Variant="Variant.Outlined" 
-     Size="Size.Large"
-           Style="border-color: white; color: white; font-weight: 600; border-radius: 12px; padding: 16px 40px; text-transform: none;"
-     Href="login">
-     Sign In
-  </MudButton>
+    <MudButton 
+        Variant="Variant.Filled" 
+        Size="Size.Large"
+        Style="background: white; color: #2d5016; font-weight: 600; border-radius: 12px; padding: 16px 40px; text-transform: none;"
+        Href="register">
+        Get Started - It's Free
+    </MudButton>
+    
+    <MudButton 
+        Variant="Variant.Outlined" 
+        Size="Size.Large"
+        Style="border-color: white; color: white; font-weight: 600; border-radius: 12px; padding: 16px 40px; text-transform: none;"
+        Href="login">
+        Sign In
+    </MudButton>
  </div>
         </div>
    
@@ -225,11 +227,11 @@ Add travel companions to your trips. Keep track of who's joining and their conta
             </p>
      <MudButton 
     Variant="Variant.Filled" 
-      Size="Size.Large"
-       Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; border-radius: 12px; padding: 16px 48px; text-transform: none; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);"
-     Href="register">
-  Create Free Account
-   </MudButton>
+    Size="Size.Large"
+    Style="background: linear-gradient(135deg, #1a3a2e 0%, #2d5016 100%); color: white; font-weight: 600; border-radius: 12px; padding: 16px 48px; text-transform: none; box-shadow: 0 8px 24px rgba(26, 58, 46, 0.5);"
+    Href="register">
+    Create Free Account
+</MudButton>
     </div>
      </section>
 
@@ -246,13 +248,13 @@ Add travel companions to your trips. Keep track of who's joining and their conta
 <style>
     /* Dashboard Styles (Logged-in Users) */
     .dashboard-container {
-      min-height: 100vh;
-  background: #F5F7FA;
-      padding: 0;
+        min-height: 100vh;
+    background: #1a2820;
+        padding: 0;
     }
 
     .welcome-banner {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1a3a2e 0%, #2d5016 100%);
         padding: 60px 20px;
         text-align: center;
         animation: fadeInDown 0.6s ease-out;
@@ -285,9 +287,9 @@ Add travel companions to your trips. Keep track of who's joining and their conta
 
     .quick-actions-grid {
     display: flex;
-   gap: 16px;
-        justify-content: center;
-        flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
     }
 
     .stats-section {
@@ -323,10 +325,10 @@ transform: translateY(-4px);
     }
 
     .stat-value {
-      font-size: 48px;
-        font-weight: 700;
-        color: #667eea;
- margin-bottom: 8px;
+    font-size: 48px;
+    font-weight: 700;
+    color: #2d5016;
+    margin-bottom: 8px;
     }
 
 .stat-label {
@@ -351,11 +353,11 @@ transform: translateY(-4px);
     /* Marketing Page Styles */
     .home-container {
     min-height: 100vh;
-    background: #F5F7FA;
+    background: #1a2820;
     }
 
   .hero-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1a3a2e 0%, #2d5016 100%);
    padding: 80px 20px 100px;
         text-align: center;
       position: relative;
@@ -451,7 +453,7 @@ transform: translateY(-4px);
 
     .feature-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+        box-shadow: 0 12px 24px rgba(45, 80, 22, 0.3);
     }
 
  .feature-icon { font-size: 64px; margin-bottom: 24px; }
@@ -481,18 +483,18 @@ transform: translateY(-4px);
     }
 
     .step-number {
-      width: 80px;
-   height: 80px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-size: 36px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-   margin: 0 auto 24px;
-        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a3a2e 0%, #2d5016 100%);
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 24px rgba(26, 58, 46, 0.4);
     }
 
     .step-title { font-size: 24px; font-weight: 600; color: #2D3748; margin-bottom: 12px; }
@@ -500,7 +502,7 @@ transform: translateY(-4px);
 
     .cta-bottom-section {
         padding: 80px 20px;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        background: linear-gradient(135deg, rgba(26, 58, 46, 0.15), rgba(45, 80, 22, 0.15));
         text-align: center;
     }
 

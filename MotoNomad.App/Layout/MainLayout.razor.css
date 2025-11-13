@@ -9,12 +9,12 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background: linear-gradient(180deg, #1a3a2e 0%, #0f1a14 70%);
 }
 
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
+    background-color: #0f1a14;
+    border-bottom: 1px solid #2d5016;
     justify-content: flex-end;
     height: 3.5rem;
     display: flex;
@@ -25,10 +25,12 @@ main {
         white-space: nowrap;
         margin-left: 1.5rem;
         text-decoration: none;
+        color: #e8f0ed;
     }
 
     .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
         text-decoration: underline;
+        color: #5a9367;
     }
 
     .top-row ::deep a:first-child {

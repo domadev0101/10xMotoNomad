@@ -1,7 +1,4 @@
-﻿@namespace MotoNomad.App.Shared.Components
-@using MotoNomad.App.Infrastructure.Database.Entities
-
-<MudForm @ref="form" @bind-IsValid="formValid">
+﻿<MudForm @ref="form" @bind-IsValid="formValid">
     <MudTextField 
       Value="model.Name"
         ValueChanged="@((string value) => OnNameChanged(value))"
@@ -75,7 +72,7 @@ Label="End date"
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 1rem;">
      <MudButton 
        Variant="Variant.Text"
-        Color="Color.Default"
+        Style="color: #a8b9af; font-weight: 600;"
          OnClick="@(() => OnCancel.InvokeAsync())"
       Disabled="@IsLoading">
        Cancel
@@ -84,6 +81,7 @@ Label="End date"
             <MudButton 
   Variant="Variant.Filled" 
        Color="Color.Primary"
+                Style="color: #ffffff; font-weight: 600;"
           OnClick="HandleSubmit"
          Disabled="@(!CanSubmit || IsLoading)"
                 data-testid="trip-submit">

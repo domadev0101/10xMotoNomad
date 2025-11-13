@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MotoNomad.Application.DTOs.Trips;
 using MotoNomad.Application.Commands.Trips;
 using MotoNomad.App.Infrastructure.Database.Entities;
+using MotoNomad.Application.DTOs;
 using MotoNomad.App.Application.DTOs;
 using MudBlazor;
 using System.ComponentModel;

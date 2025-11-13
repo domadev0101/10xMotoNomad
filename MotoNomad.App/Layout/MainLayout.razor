@@ -4,7 +4,7 @@
     <MudAppBar 
         Elevation="0" 
         Dense="false"
-        Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);">
+        Style="background: linear-gradient(135deg, #1a3a2e 0%, #2d5016 100%); box-shadow: 0 4px 12px rgba(26, 58, 46, 0.4);">
         <MudIconButton 
             Icon="@Icons.Material.Filled.Menu" 
             Color="Color.Inherit" 
@@ -13,9 +13,10 @@
             Class="drawer-toggle"
             Style="color: white;" />
         
-        <div @onclick="HandleLogoClick" style="cursor: pointer; display: flex; align-items: center; transition: opacity 0.3s ease;" class="appbar-logo">
-            <MudText Typo="Typo.h5" Class="ml-3" Style="color: white; font-weight: 600;">
-                🏍️ MotoNomad
+        <div @onclick="HandleLogoClick" style="cursor: pointer; display: flex; align-items: center; gap: 12px; transition: opacity 0.3s ease;" class="appbar-logo">
+            <img src="images/logo_1.png" alt="MotoNomad Logo" style="width: 40px; height: 40px; border-radius: 8px;" />
+            <MudText Typo="Typo.h5" Class="ml-1" Style="color: white; font-weight: 600;">
+                MotoNomad
             </MudText>
         </div>
         
