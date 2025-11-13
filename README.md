@@ -9,9 +9,7 @@
   <img src="MotoNomad.App/wwwroot/images/logo_1.png" alt="MotoNomad Logo" width="200" />
 </div>
 
-A modern web application for planning individual and group trips (motorcycle, airplane, train). Centralize all your trip details—dates, routes, companions, and transportation—in one place.
-
-**✨ New:** Dark forest theme inspired by Bieszczady mountain trips! 🌲🏔️
+A modern web application for planning individual and group trips (motorcycle, airplane, train). Centralize all your trip details—dates, routes, companions, and transportation - in one place.
 
 ## 📋 Table of Contents
 
@@ -271,10 +269,6 @@ dotnet build /p:TreatWarningsAsErrors=true
 - **Data Privacy**: Users can only access their own trips and companions
 
 ## 📚 Documentation
-
-### User Interface
-
-- **[Forest Theme Guide](docs/forest-theme-guide.md)** - Dark forest theme color palette and design principles 🌲
 
 ### Project Documentation
 
