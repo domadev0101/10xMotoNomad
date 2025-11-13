@@ -73,28 +73,29 @@ Trip="@trip"
       </MudCardContent>
 
         <MudCardActions>
+         <MudSpacer />
          <MudButton Variant="Variant.Text"
-     Color="Color.Default"
+             Color="Color.Default"
              OnClick="@(() => NavigationManager.NavigateTo("trips"))"
-   Disabled="@isUpdatingTrip">
-  Cancel
-      </MudButton>
-        <MudSpacer />
-     <MudButton Variant="Variant.Filled"
-         Color="Color.Primary"
-    OnClick="HandleUpdateTripClick"
-  Disabled="@(isUpdatingTrip || !canSubmitTrip)"
-      StartIcon="@Icons.Material.Filled.Save">
-       @if (isUpdatingTrip)
-         {
-  <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
- <text>Saving...</text>
-     }
-      else
-   {
-       <text>Save Changes</text>
-     }
-  </MudButton>
+             Disabled="@isUpdatingTrip"
+             Style="margin-right: 8px;">
+             Cancel
+         </MudButton>
+         <MudButton Variant="Variant.Filled"
+             Color="Color.Primary"
+             OnClick="HandleUpdateTripClick"
+             Disabled="@(isUpdatingTrip || !canSubmitTrip)"
+             StartIcon="@Icons.Material.Filled.Save">
+             @if (isUpdatingTrip)
+             {
+                 <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                 <text>Saving...</text>
+             }
+             else
+             {
+                 <text>Save Changes</text>
+             }
+         </MudButton>
      </MudCardActions>
          </MudCard>
             </MudTabPanel>
