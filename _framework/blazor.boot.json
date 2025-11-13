@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "MotoNomad.App",
   "resources": {
-    "hash": "sha256-/C7RgL084bnA4RScJivTxETKC9oVIRzoS6HWhF1gTn8=",
+    "hash": "sha256-jBG0Rs6a9hS/so23l3jlC182MsRUrZHaAtCq3A+yfpM=",
     "fingerprinting": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "Blazored.LocalStorage.wasm",
       "Supabase.Functions.w4gz1z4ill.wasm": "Supabase.Functions.wasm",
@@ -17,7 +17,7 @@
       "Microsoft.Extensions.Configuration.Abstractions.yq3hm4fijc.wasm": "Microsoft.Extensions.Configuration.Abstractions.wasm",
       "Microsoft.Extensions.Configuration.Binder.5aour1q1qn.wasm": "Microsoft.Extensions.Configuration.Binder.wasm",
       "Microsoft.Extensions.Configuration.Json.0cm6d8ej68.wasm": "Microsoft.Extensions.Configuration.Json.wasm",
-      "Microsoft.Extensions.DependencyInjection.t7f5r90yql.wasm": "Microsoft.Extensions.DependencyInjection.wasm",
+      "Microsoft.Extensions.DependencyInjection.vc4ehennq1.wasm": "Microsoft.Extensions.DependencyInjection.wasm",
       "Microsoft.Extensions.DependencyInjection.Abstractions.v5vb3z8oxx.wasm": "Microsoft.Extensions.DependencyInjection.Abstractions.wasm",
       "Microsoft.Extensions.Diagnostics.mpo8tqvqgr.wasm": "Microsoft.Extensions.Diagnostics.wasm",
       "Microsoft.Extensions.Diagnostics.Abstractions.xcv8tuuvav.wasm": "Microsoft.Extensions.Diagnostics.Abstractions.wasm",
@@ -108,7 +108,7 @@
       "System.t4d4s3f398.wasm": "System.wasm",
       "netstandard.ouni0eik3i.wasm": "netstandard.wasm",
       "System.Private.CoreLib.azwh64gink.wasm": "System.Private.CoreLib.wasm",
-      "MotoNomad.App.g8k4hznriv.wasm": "MotoNomad.App.wasm",
+      "MotoNomad.App.t374hmzm3a.wasm": "MotoNomad.App.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.noby4tlk4d.js": "dotnet.native.js",
       "dotnet.native.qe75a9vfqn.wasm": "dotnet.native.wasm",
@@ -150,7 +150,7 @@
       "Microsoft.Extensions.Configuration.Abstractions.yq3hm4fijc.wasm": "sha256-xvzv1gMvoJWRxP5G2xRtgYyxd1VuysUnYuR8PRPbsqM=",
       "Microsoft.Extensions.Configuration.Binder.5aour1q1qn.wasm": "sha256-k6p/HTzyJ/jyrhig+XcYNU+sd+LDWvUeFpIhffwp68g=",
       "Microsoft.Extensions.Configuration.Json.0cm6d8ej68.wasm": "sha256-kKMubKJ3c2lATxpoAuoDqMjzQ+a0M6Ym35pK74cMK2o=",
-      "Microsoft.Extensions.DependencyInjection.t7f5r90yql.wasm": "sha256-t+RV090mInmcuQIlc498uXnF8wtK1MRNcmC72iNVUZI=",
+      "Microsoft.Extensions.DependencyInjection.vc4ehennq1.wasm": "sha256-j+aC75NeT4MIGU1eXMSjSHl3INkY/YPk1vSHo6r2xg8=",
       "Microsoft.Extensions.DependencyInjection.Abstractions.v5vb3z8oxx.wasm": "sha256-fb5SFzqmviW2I4YnYKzzfW6WV9xc/z7Fk/lOXl8Yi3U=",
       "Microsoft.Extensions.Diagnostics.mpo8tqvqgr.wasm": "sha256-5nvsW9r44lL6TBH/vFYPkvjNerubokXJYFbKRF9OteY=",
       "Microsoft.Extensions.Diagnostics.Abstractions.xcv8tuuvav.wasm": "sha256-P5o/3q5/lQaiMwX+QD3D8FRfsFDdiC17HuvSyocT0eg=",
@@ -239,7 +239,7 @@
       "System.Xml.XDocument.rq3uoqeade.wasm": "sha256-jXHocYVCS/ThppEaX8pR/Ky4h/AvzicYqHMda1gq83I=",
       "System.t4d4s3f398.wasm": "sha256-fVP2BxRRKpBA0PmBbKxmO45bXDrAXVn1GthlDclLbeU=",
       "netstandard.ouni0eik3i.wasm": "sha256-wJ6GDmyN1xXXwThgqY5ilb2D7zwneRNDXs0pQ8MHKwY=",
-      "MotoNomad.App.g8k4hznriv.wasm": "sha256-kHMLtGDZzvjlbvDEFcKK/GfsLbqOUZHSSq4fc2hkX7M="
+      "MotoNomad.App.t374hmzm3a.wasm": "sha256-B4q7q4xZF1O7BFUgYeS0hDDNUEHeATrhO5Nt4bP0VI8="
     }
   },
   "cacheBootResources": true,

@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "P0rwBN/k",
+  "version": "A+NM8XOY",
   "assets": [
     {
       "hash": "sha256-98jNT1lMdfy9KjGh5PhMsBXRRUNQKAaIUmnrraTuzTs=",
@@ -70,8 +70,8 @@ self.assetsManifest = {
       "url": "_framework/Microsoft.Extensions.DependencyInjection.Abstractions.v5vb3z8oxx.wasm"
     },
     {
-      "hash": "sha256-t+RV090mInmcuQIlc498uXnF8wtK1MRNcmC72iNVUZI=",
-      "url": "_framework/Microsoft.Extensions.DependencyInjection.t7f5r90yql.wasm"
+      "hash": "sha256-j+aC75NeT4MIGU1eXMSjSHl3INkY/YPk1vSHo6r2xg8=",
+      "url": "_framework/Microsoft.Extensions.DependencyInjection.vc4ehennq1.wasm"
     },
     {
       "hash": "sha256-P5o/3q5/lQaiMwX+QD3D8FRfsFDdiC17HuvSyocT0eg=",
@@ -142,8 +142,8 @@ self.assetsManifest = {
       "url": "_framework/MimeMapping.uuj6opn66y.wasm"
     },
     {
-      "hash": "sha256-kHMLtGDZzvjlbvDEFcKK/GfsLbqOUZHSSq4fc2hkX7M=",
-      "url": "_framework/MotoNomad.App.g8k4hznriv.wasm"
+      "hash": "sha256-B4q7q4xZF1O7BFUgYeS0hDDNUEHeATrhO5Nt4bP0VI8=",
+      "url": "_framework/MotoNomad.App.t374hmzm3a.wasm"
     },
     {
       "hash": "sha256-FxQ/zV9Votoxd3+q6xpplAICSTSh7MuMeoWvwYx0Pqc=",
@@ -434,7 +434,7 @@ self.assetsManifest = {
       "url": "_framework/Websocket.Client.cjybiyd9xl.wasm"
     },
     {
-      "hash": "sha256-fz9H54NXJ5nKz4wp5y3X3gOsZ+Bk3R1sBKQHAVbNVF4=",
+      "hash": "sha256-jYOLzMSNbIRZjdSu920QdCbaXF8UL5Nl4EI6Z6Ol0Dc=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -478,7 +478,7 @@ self.assetsManifest = {
       "url": "appsettings.example.json"
     },
     {
-      "hash": "sha256-IOyJDmwA9ZyL5+nqmgzqnFLP1MN0+0tC+Q2BtdxGiP8=",
+      "hash": "sha256-tTCHt1Owjibfjg2C1WJ3cTqnpmWxqj0w6Tz2ttGIdsM=",
       "url": "appsettings.json"
     },
     {
