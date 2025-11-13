@@ -64,7 +64,7 @@ public partial class Register
 
     /// <summary>
     /// Handles registration form submission.
-    /// Validates input, calls AuthService, and automatically logs in on success.
+    /// Validates input, calls AuthService, and redirects to login page on success.
     /// </summary>
     private async Task HandleRegisterAsync()
     {
@@ -91,24 +91,18 @@ public partial class Register
             : _model.DisplayName.Trim()
             };
 
-            // Call AuthService - user is automatically logged in after registration
+            // Call AuthService - creates account but does NOT automatically log in
             var user = await AuthService.RegisterAsync(command);
 
-            // Notify authentication state changed
-            if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
-            {
-                customProvider.NotifyAuthenticationStateChanged();
-            }
-
-            // Success
+            // Success - show message and redirect to login
             var welcomeMessage = string.IsNullOrEmpty(user.DisplayName)
-        ? $"Welcome, {user.Email}!"
-    : $"Welcome, {user.DisplayName}!";
+                ? $"Welcome, {user.Email}!"
+                : $"Welcome, {user.DisplayName}!";
 
-            Snackbar.Add($"{welcomeMessage} Your account has been created.", Severity.Success);
+            Snackbar.Add($"{welcomeMessage} Your account has been created. Please log in.", Severity.Success);
 
-            // Navigate without forceLoad to avoid triggering OnInitializedAsync again
-            NavigationManager.NavigateTo("trips");
+            // Redirect to login page (user needs to manually log in)
+            NavigationManager.NavigateTo("login");
         }
         catch (AuthException ex)
         {

@@ -7,6 +7,8 @@ using MotoNomad.App.Infrastructure.Database.Entities;
 using Blazored.LocalStorage;
 using Supabase;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Components.Authorization;
+using MotoNomad.App.Infrastructure.Auth;
 
 namespace MotoNomad.Infrastructure.Services;
 
@@ -18,16 +20,19 @@ public class AuthService : IAuthService
     private readonly ISupabaseClientService _supabaseClient;
     private readonly ILocalStorageService _localStorage;
     private readonly ILogger<AuthService> _logger;
+    private readonly AuthenticationStateProvider _authStateProvider;
     private const string SessionKey = "supabase.auth.session";
 
     public AuthService(
         ISupabaseClientService supabaseClient,
         ILocalStorageService localStorage,
-        ILogger<AuthService> logger)
+        ILogger<AuthService> logger,
+        AuthenticationStateProvider authStateProvider)
     {
         _supabaseClient = supabaseClient ?? throw new ArgumentNullException(nameof(supabaseClient));
         _localStorage = localStorage ?? throw new ArgumentNullException(nameof(localStorage));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _authStateProvider = authStateProvider ?? throw new ArgumentNullException(nameof(authStateProvider));
     }
 
     public async Task<UserDto> RegisterAsync(RegisterCommand command)
@@ -39,8 +44,18 @@ public class AuthService : IAuthService
         {
             var client = _supabaseClient.GetClient();
 
-            // Register user with Supabase Auth
-            var signUpResponse = await client.Auth.SignUp(command.Email, command.Password);
+            // Prepare sign-up options with user metadata
+            var options = new Supabase.Gotrue.SignUpOptions();
+            if (!string.IsNullOrWhiteSpace(command.DisplayName))
+            {
+                options.Data = new Dictionary<string, object>
+                {
+                    { "display_name", command.DisplayName.Trim() }
+                };
+            }
+
+            // Register user with Supabase Auth (with display name in user metadata)
+            var signUpResponse = await client.Auth.SignUp(command.Email, command.Password, options);
 
             if (signUpResponse?.User == null)
             {
@@ -49,57 +64,14 @@ public class AuthService : IAuthService
 
             var user = signUpResponse.User;
 
-            // IMPORTANT: Set session BEFORE any profile operations
-            if (signUpResponse.AccessToken != null && signUpResponse.RefreshToken != null)
-            {
-                await client.Auth.SetSession(signUpResponse.AccessToken, signUpResponse.RefreshToken);
-                _logger.LogDebug("Session set for newly registered user {UserId}", user.Id);
-            }
+            _logger.LogInformation("User registered successfully (not logged in): {Email}", command.Email);
 
-            // Save session to localStorage
-            if (signUpResponse != null)
-            {
-                await SaveSessionAsync(signUpResponse);
-            }
-
-            // Profile is automatically created by database trigger (handle_new_user)
-            // If display name was provided, update it now
-            if (!string.IsNullOrWhiteSpace(command.DisplayName))
-            {
-                try
-                {
-                    // Small delay to ensure trigger completes
-                    await Task.Delay(500);
-
-                    var profile = await client
-                        .From<Profile>()
-                        .Select("*")
-                        .Filter("id", Postgrest.Constants.Operator.Equals, user.Id)
-                        .Single();
-
-                    if (profile != null)
-                    {
-                        profile.DisplayName = command.DisplayName.Trim();
-                        profile.UpdatedAt = DateTime.UtcNow;
-
-                        await client.From<Profile>().Update(profile);
-                        _logger.LogInformation("Updated display_name during registration for user {UserId}", user.Id);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Failed to update display_name during registration for user {UserId}", user.Id);
-                    // Don't fail registration if display_name update fails
-                }
-            }
-
-            _logger.LogInformation("User registered successfully: {Email}", command.Email);
-
+            // Display name is stored in user metadata and will be saved to profile on first login
             return new UserDto
             {
                 Id = Guid.Parse(user.Id),
                 Email = user.Email ?? command.Email,
-                DisplayName = command.DisplayName,
+                DisplayName = command.DisplayName, // From user metadata
                 AvatarUrl = null,
                 CreatedAt = user.CreatedAt
             };
@@ -162,11 +134,45 @@ public class AuthService : IAuthService
                     .Single();
 
                 profile = profileResponse;
+
+                // If profile exists but display_name is empty, try to get it from user metadata
+                if (profile != null && string.IsNullOrWhiteSpace(profile.DisplayName))
+                {
+                    // Check user metadata for display_name (set during registration)
+                    if (user.UserMetadata != null && user.UserMetadata.ContainsKey("display_name"))
+                    {
+                        var displayNameFromMetadata = user.UserMetadata["display_name"]?.ToString();
+                        if (!string.IsNullOrWhiteSpace(displayNameFromMetadata))
+                        {
+                            try
+                            {
+                                // Update profile with display name from metadata
+                                profile.DisplayName = displayNameFromMetadata.Trim();
+                                profile.UpdatedAt = DateTime.UtcNow;
+                                await client.From<Profile>().Update(profile);
+                                _logger.LogInformation("Saved display_name from user metadata to profile on first login for user {UserId}", user.Id);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogWarning(ex, "Failed to save display_name from metadata to profile for user {UserId}", user.Id);
+                                // Don't fail login if profile update fails
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Failed to fetch profile during login for user {UserId}", user.Id);
                 // Continue without profile data
+            }
+
+            // Notify authentication state changed AFTER profile is fully loaded and saved
+            // This ensures display_name is available in CustomAuthenticationStateProvider
+            if (_authStateProvider is CustomAuthenticationStateProvider customProvider)
+            {
+                customProvider.NotifyAuthenticationStateChanged();
+                _logger.LogDebug("Manually notified authentication state changed after login with profile data");
             }
 
             _logger.LogInformation("User logged in successfully: {Email}", command.Email);
@@ -205,6 +211,13 @@ public class AuthService : IAuthService
 
             // Remove session from localStorage
             await ClearSessionAsync();
+
+            // Notify authentication state changed after logout
+            if (_authStateProvider is CustomAuthenticationStateProvider customProvider)
+            {
+                customProvider.NotifyAuthenticationStateChanged();
+                _logger.LogDebug("Manually notified authentication state changed after logout");
+            }
 
             _logger.LogInformation("User logged out successfully");
         }

@@ -34,16 +34,16 @@ public class AuthenticationTests : IAsyncLifetime
     }
 
     /// <summary>
-    /// TC-AUTH-01: Successful User Registration & Auto-Login
+    /// TC-AUTH-01: Successful User Registration (Redirect to Login)
     /// Steps:
     /// 1. Navigate to /register
     /// 2. Fill in valid email, password, and optional display name
     /// 3. Submit the form
-    /// 4. Verify automatic login and redirect to /trips
-    /// Expected: User is successfully registered AND automatically logged in
+    /// 4. Verify redirect to /login page (no automatic login)
+    /// Expected: User is successfully registered and redirected to login page
     /// </summary>
     [Fact]
-    public async Task TC_AUTH_01_Successful_Registration_And_Login()
+    public async Task TC_AUTH_01_Successful_Registration_Redirect_To_Login()
     {
         // Arrange
         var testEmail = $"test-{Guid.NewGuid()}@motonomad.test";
@@ -64,13 +64,22 @@ public class AuthenticationTests : IAsyncLifetime
         // Click register button
         await _registerPage.ClickRegisterAsync();
 
-        // Wait for navigation to complete (should redirect to /trips)
+        // Wait for navigation to complete (should redirect to /login)
         await _fixture.Page!.WaitForLoadStateAsync(Microsoft.Playwright.LoadState.NetworkIdle);
-        await Task.Delay(3000); // Give Blazor time to process registration, create profile, and redirect
+        await Task.Delay(2000); // Give Blazor time to process registration and redirect
 
-        // Assert: Verify automatic login and redirect to /trips after registration
+        // Assert: Verify redirect to /login after registration (NO automatic login)
+        Assert.True(_loginPage.IsOnLoginPage(),
+            $"User should be redirected to /login after successful registration. Current URL: {_fixture.Page!.Url}");
+
+        // Optional: Now test that user can actually log in with the new account
+        await _loginPage.FillEmailAsync(testEmail);
+        await _loginPage.FillPasswordAsync(testPassword);
+        await _loginPage.ClickLoginAsync();
+        await _loginPage.WaitForSuccessfulLoginAsync();
+
         Assert.True(_tripsPage.IsOnTripsPage(),
-            $"User should be automatically logged in and redirected to /trips after successful registration. Current URL: {_fixture.Page!.Url}");
+            "User should be able to log in with newly created account");
     }
 
     /// <summary>

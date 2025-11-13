@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using MotoNomad.Application.Commands.Auth;
 using MotoNomad.Application.Exceptions;
 using MotoNomad.Application.Interfaces;
-using MotoNomad.App.Infrastructure.Auth;
 using MudBlazor;
 
 namespace MotoNomad.App.Pages;
@@ -18,7 +17,6 @@ public partial class Login
     [Inject] private IAuthService AuthService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
     [Inject] private ISnackbar Snackbar { get; set; } = default!;
-    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     #endregion
 
@@ -89,18 +87,13 @@ public partial class Login
             };
 
             // Call AuthService
+            // Authentication state change is handled manually by AuthService after login completes
             var user = await AuthService.LoginAsync(command);
-
-            // Notify authentication state changed
-            if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
-            {
-                customProvider.NotifyAuthenticationStateChanged();
-            }
 
             // Success
             Snackbar.Add("Login successful!", Severity.Success);
 
-            // Navigate without forceLoad to avoid triggering OnInitializedAsync again
+            // Navigate to trips page
             NavigationManager.NavigateTo("trips");
         }
         catch (AuthException ex)

@@ -2,7 +2,7 @@
 
 ## 1. Przegląd
 
-Widok Register umożliwia utworzenie nowego konta użytkownika w aplikacji MotoNomad. Jest to publiczna strona dostępna dla niezalogowanych użytkowników. Po poprawnej rejestracji użytkownik zostaje automatycznie zalogowany i przekierowany na stronę główną (`/trips`). Widok zawiera formularz rejestracyjny z polami email, hasło oraz opcjonalnie displayName, obsługę błędów walidacji i uwierzytelnienia oraz link do strony logowania.
+Widok Register umożliwia utworzenie nowego konta użytkownika w aplikacji MotoNomad. Jest to publiczna strona dostępna dla niezalogowanych użytkowników. Po poprawnej rejestracji użytkownik zostaje przekierowany na stronę logowania (`/login`), gdzie może się zalogować używając nowo utworzonych danych. Widok zawiera formularz rejestracyjny z polami email, hasło oraz opcjonalnie displayName, obsługę błędów walidacji i uwierzytelnienia oraz link do strony logowania.
 
 ## 2. Routing widoku
 
@@ -15,7 +15,7 @@ Widok Register umożliwia utworzenie nowego konta użytkownika w aplikacji MotoN
 <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
 ```
 
-**Przekierowanie po rejestracji:** `/trips` (automatyczne logowanie po sukcesie)
+**Przekierowanie po rejestracji:** `/login` (użytkownik musi się zalogować ręcznie)
 
 ## 3. Struktura komponentów
 
@@ -176,7 +176,7 @@ private string? errorMessage = null;
 2. Kliknięcie "Zarejestruj" → walidacja formularza (w tym zgodność haseł)
 3. Jeśli walidacja OK → `isLoading = true`, `errorMessage = null`
 4. Wywołanie `AuthService.RegisterAsync(command)`
-5. Sukces → automatyczne logowanie → przekierowanie na `/trips`
+5. Sukces → przekierowanie na `/login`
 6. Błąd → `errorMessage = ex.Message`, `isLoading = false`
 
 **Brak potrzeby custom hooka** - stan zarządzany lokalnie w komponencie.
@@ -202,9 +202,9 @@ new RegisterCommand
 **Obsługa sukcesu:**
 ```csharp
 var user = await AuthService.RegisterAsync(command);
-Snackbar.Add($"Witaj, {user.DisplayName ?? user.Email}! Konto zostało utworzone.", Severity.Success);
-// Użytkownik jest automatycznie zalogowany po rejestracji (Supabase Auth)
-NavigationManager.NavigateTo("/trips");
+Snackbar.Add($"Witaj, {user.DisplayName ?? user.Email}! Konto zostało utworzone. Zaloguj się.", Severity.Success);
+// Użytkownik musi się ręcznie zalogować (nie jest automatycznie logowany po rejestracji)
+NavigationManager.NavigateTo("/login");
 ```
 
 **Obsługa błędów:**
@@ -247,7 +247,7 @@ finally
 - `isLoading = true` (przycisk disabled, pokazuje spinner)
 - `errorMessage = null` (czyszczenie poprzednich błędów)
 - Wywołanie `HandleRegisterAsync()`
-- Po sukcesie: Snackbar z powitaniem + automatyczne logowanie + przekierowanie na `/trips`
+- Po sukcesie: Snackbar z komunikatem + przekierowanie na `/login` (użytkownik musi się zalogować ręcznie)
 - Po błędzie: wyświetlenie `MudAlert` z komunikatem błędu
 
 ### 8.3 Kliknięcie linku "Zaloguj się"
@@ -560,9 +560,9 @@ private async Task HandleRegisterAsync()
         // Wywołanie API
         var user = await AuthService.RegisterAsync(command);
 
-        // Sukces - użytkownik automatycznie zalogowany
-        Snackbar.Add($"Witaj, {user.DisplayName ?? user.Email}! Konto zostało utworzone.", Severity.Success);
-        NavigationManager.NavigateTo("/trips");
+        // Sukces - użytkownik przekierowany na stronę logowania (musi się zalogować ręcznie)
+        Snackbar.Add($"Witaj, {user.DisplayName ?? user.Email}! Konto zostało utworzone. Zaloguj się.", Severity.Success);
+        NavigationManager.NavigateTo("/login");
     }
     catch (AuthException ex)
     {
@@ -631,7 +631,8 @@ protected override async Task OnInitializedAsync()
   - Nazwa za długa
 - Przetestuj scenariusze błędów sieciowych
 - Przetestuj przekierowanie już zalogowanego użytkownika
-- Przetestuj automatyczne logowanie po rejestracji
+- Przetestuj przekierowanie na /login po pomyślnej rejestracji
+- Przetestuj ręczne logowanie po rejestracji
 - Przetestuj dostępność (keyboard navigation, screen reader)
 
 ### Krok 14: Dokumentacja

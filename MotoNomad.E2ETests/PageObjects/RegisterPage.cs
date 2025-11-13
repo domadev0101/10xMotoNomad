@@ -165,16 +165,16 @@ public class RegisterPage : BasePage
     }
 
     /// <summary>
-    /// Waits for successful registration (redirect to /trips or /login).
+    /// Waits for successful registration (redirect to /login).
     /// </summary>
     public async Task WaitForSuccessfulRegistrationAsync(int timeoutMs = 10000)
     {
-        // After registration, might redirect to /trips or /login
+        // After registration, should redirect to /login (not /trips)
         var deadline = DateTime.Now.AddMilliseconds(timeoutMs);
 
         while (DateTime.Now < deadline)
         {
-            if (IsOnPage("/trips") || IsOnPage("/login"))
+            if (IsOnPage("/login"))
             {
                 await WaitForPageLoadAsync();
                 return;
