@@ -53,9 +53,12 @@ if (mockAuthSettings.Enabled)
    mockAuthSettings.DisplayName);
     });
 
-    Console.WriteLine("?? MOCK AUTHENTICATION ENABLED ??");
-    Console.WriteLine($"Mock User: {mockAuthSettings.Email} (ID: {mockAuthSettings.UserId})");
-    Console.WriteLine("?? This should NEVER be enabled in production!");
+    // Log warning about mock auth being enabled
+    var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
+    var mockLogger = loggerFactory.CreateLogger("Program");
+    mockLogger.LogWarning("⚠️ MOCK AUTHENTICATION ENABLED ⚠️");
+    mockLogger.LogWarning("Mock User: {Email} (ID: {UserId})", mockAuthSettings.Email, mockAuthSettings.UserId);
+    mockLogger.LogWarning("⚠️ This should NEVER be enabled in production!");
 }
 else
 {
