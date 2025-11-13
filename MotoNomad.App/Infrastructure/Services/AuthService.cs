@@ -70,7 +70,7 @@ public class AuthService : IAuthService
                 {
                     // Small delay to ensure trigger completes
                     await Task.Delay(500);
-                    
+
                     var profile = await client
                         .From<Profile>()
                         .Select("*")
@@ -81,7 +81,7 @@ public class AuthService : IAuthService
                     {
                         profile.DisplayName = command.DisplayName.Trim();
                         profile.UpdatedAt = DateTime.UtcNow;
-                        
+
                         await client.From<Profile>().Update(profile);
                         _logger.LogInformation("Updated display_name during registration for user {UserId}", user.Id);
                     }

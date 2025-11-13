@@ -113,14 +113,14 @@ public partial class Profile : ComponentBase
         {
             Logger.LogInformation("Reloading profile after successful edit");
             await LoadProfileAsync();
-            
+
             // Notify authentication state changed to update LoginDisplay
             if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
             {
                 customProvider.NotifyAuthenticationStateChanged();
                 Logger.LogInformation("Notified authentication state changed after profile reload");
             }
-            
+
             StateHasChanged(); // Force UI update
         }
     }
