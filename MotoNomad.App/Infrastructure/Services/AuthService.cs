@@ -39,8 +39,18 @@ public class AuthService : IAuthService
         {
             var client = _supabaseClient.GetClient();
 
-            // Register user with Supabase Auth
-            var signUpResponse = await client.Auth.SignUp(command.Email, command.Password);
+            // Prepare sign-up options with user metadata
+            var options = new Supabase.Gotrue.SignUpOptions();
+            if (!string.IsNullOrWhiteSpace(command.DisplayName))
+            {
+                options.Data = new Dictionary<string, object>
+                {
+                    { "display_name", command.DisplayName.Trim() }
+                };
+            }
+
+            // Register user with Supabase Auth (with display name in user metadata)
+            var signUpResponse = await client.Auth.SignUp(command.Email, command.Password, options);
 
             if (signUpResponse?.User == null)
             {
@@ -49,57 +59,14 @@ public class AuthService : IAuthService
 
             var user = signUpResponse.User;
 
-            // IMPORTANT: Set session BEFORE any profile operations
-            if (signUpResponse.AccessToken != null && signUpResponse.RefreshToken != null)
-            {
-                await client.Auth.SetSession(signUpResponse.AccessToken, signUpResponse.RefreshToken);
-                _logger.LogDebug("Session set for newly registered user {UserId}", user.Id);
-            }
+            _logger.LogInformation("User registered successfully (not logged in): {Email}", command.Email);
 
-            // Save session to localStorage
-            if (signUpResponse != null)
-            {
-                await SaveSessionAsync(signUpResponse);
-            }
-
-            // Profile is automatically created by database trigger (handle_new_user)
-            // If display name was provided, update it now
-            if (!string.IsNullOrWhiteSpace(command.DisplayName))
-            {
-                try
-                {
-                    // Small delay to ensure trigger completes
-                    await Task.Delay(500);
-
-                    var profile = await client
-                        .From<Profile>()
-                        .Select("*")
-                        .Filter("id", Postgrest.Constants.Operator.Equals, user.Id)
-                        .Single();
-
-                    if (profile != null)
-                    {
-                        profile.DisplayName = command.DisplayName.Trim();
-                        profile.UpdatedAt = DateTime.UtcNow;
-
-                        await client.From<Profile>().Update(profile);
-                        _logger.LogInformation("Updated display_name during registration for user {UserId}", user.Id);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Failed to update display_name during registration for user {UserId}", user.Id);
-                    // Don't fail registration if display_name update fails
-                }
-            }
-
-            _logger.LogInformation("User registered successfully: {Email}", command.Email);
-
+            // Display name is stored in user metadata and will be saved to profile on first login
             return new UserDto
             {
                 Id = Guid.Parse(user.Id),
                 Email = user.Email ?? command.Email,
-                DisplayName = command.DisplayName,
+                DisplayName = command.DisplayName, // From user metadata
                 AvatarUrl = null,
                 CreatedAt = user.CreatedAt
             };
@@ -162,6 +129,32 @@ public class AuthService : IAuthService
                     .Single();
 
                 profile = profileResponse;
+
+                // If profile exists but display_name is empty, try to get it from user metadata
+                if (profile != null && string.IsNullOrWhiteSpace(profile.DisplayName))
+                {
+                    // Check user metadata for display_name (set during registration)
+                    if (user.UserMetadata != null && user.UserMetadata.ContainsKey("display_name"))
+                    {
+                        var displayNameFromMetadata = user.UserMetadata["display_name"]?.ToString();
+                        if (!string.IsNullOrWhiteSpace(displayNameFromMetadata))
+                        {
+                            try
+                            {
+                                // Update profile with display name from metadata
+                                profile.DisplayName = displayNameFromMetadata.Trim();
+                                profile.UpdatedAt = DateTime.UtcNow;
+                                await client.From<Profile>().Update(profile);
+                                _logger.LogInformation("Saved display_name from user metadata to profile on first login for user {UserId}", user.Id);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogWarning(ex, "Failed to save display_name from metadata to profile for user {UserId}", user.Id);
+                                // Don't fail login if profile update fails
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
