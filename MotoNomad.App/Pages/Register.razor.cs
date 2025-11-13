@@ -96,8 +96,8 @@ public partial class Register
 
             // Success - show message and redirect to login
             var welcomeMessage = string.IsNullOrEmpty(user.DisplayName)
-        ? $"Welcome, {user.Email}!"
-    : $"Welcome, {user.DisplayName}!";
+                ? $"Welcome, {user.Email}!"
+                : $"Welcome, {user.DisplayName}!";
 
             Snackbar.Add($"{welcomeMessage} Your account has been created. Please log in.", Severity.Success);
 
