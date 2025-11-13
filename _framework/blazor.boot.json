@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "MotoNomad.App",
   "resources": {
-    "hash": "sha256-RI9HrAQcZnj322YSVgN4/T2SwllJTLU6WT3rXPMoivQ=",
+    "hash": "sha256-mPvhwDkC2D290+b7cxeLIJpwuvAw0H5lpb0yBdUt9GU=",
     "fingerprinting": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "Blazored.LocalStorage.wasm",
       "Supabase.Functions.w4gz1z4ill.wasm": "Supabase.Functions.wasm",
@@ -36,7 +36,7 @@
       "Microsoft.JSInterop.g6svuh4n00.wasm": "Microsoft.JSInterop.wasm",
       "Microsoft.JSInterop.WebAssembly.imfqvv3x5h.wasm": "Microsoft.JSInterop.WebAssembly.wasm",
       "MimeMapping.uuj6opn66y.wasm": "MimeMapping.wasm",
-      "MudBlazor.ng813gtd12.wasm": "MudBlazor.wasm",
+      "MudBlazor.d7d16d3tp8.wasm": "MudBlazor.wasm",
       "Newtonsoft.Json.qkbufwhni2.wasm": "Newtonsoft.Json.wasm",
       "Supabase.Postgrest.0xjl75epv5.wasm": "Supabase.Postgrest.wasm",
       "Supabase.Realtime.z5bpmsf1js.wasm": "Supabase.Realtime.wasm",
@@ -58,7 +58,7 @@
       "System.ComponentModel.n2b8k31o2o.wasm": "System.ComponentModel.wasm",
       "System.Console.uvkb9jsl7b.wasm": "System.Console.wasm",
       "System.Data.Common.udjk1tc1eu.wasm": "System.Data.Common.wasm",
-      "System.Diagnostics.DiagnosticSource.n1fepcy03o.wasm": "System.Diagnostics.DiagnosticSource.wasm",
+      "System.Diagnostics.DiagnosticSource.v1uyab29ob.wasm": "System.Diagnostics.DiagnosticSource.wasm",
       "System.Diagnostics.StackTrace.xdh9igbilx.wasm": "System.Diagnostics.StackTrace.wasm",
       "System.Diagnostics.TraceSource.49qfz9hxbp.wasm": "System.Diagnostics.TraceSource.wasm",
       "System.Drawing.Primitives.um68xmouvq.wasm": "System.Drawing.Primitives.wasm",
@@ -71,7 +71,7 @@
       "System.Linq.sc4u4xbp4b.wasm": "System.Linq.wasm",
       "System.Memory.lxz5g0h6ei.wasm": "System.Memory.wasm",
       "System.Net.Http.Json.d1ev67ic1l.wasm": "System.Net.Http.Json.wasm",
-      "System.Net.Http.zh4s4kt5bi.wasm": "System.Net.Http.wasm",
+      "System.Net.Http.7ufet3wuln.wasm": "System.Net.Http.wasm",
       "System.Net.Mail.dwtt79h2cj.wasm": "System.Net.Mail.wasm",
       "System.Net.NetworkInformation.gqkc298rf3.wasm": "System.Net.NetworkInformation.wasm",
       "System.Net.Ping.oewtlayn5l.wasm": "System.Net.Ping.wasm",
@@ -107,8 +107,8 @@
       "System.Xml.XDocument.rq3uoqeade.wasm": "System.Xml.XDocument.wasm",
       "System.t4d4s3f398.wasm": "System.wasm",
       "netstandard.ouni0eik3i.wasm": "netstandard.wasm",
-      "System.Private.CoreLib.azwh64gink.wasm": "System.Private.CoreLib.wasm",
-      "MotoNomad.App.2gcdkag00w.wasm": "MotoNomad.App.wasm",
+      "System.Private.CoreLib.p788dbnuel.wasm": "System.Private.CoreLib.wasm",
+      "MotoNomad.App.mvkx63uqij.wasm": "MotoNomad.App.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.noby4tlk4d.js": "dotnet.native.js",
       "dotnet.native.qe75a9vfqn.wasm": "dotnet.native.wasm",
@@ -133,7 +133,7 @@
     },
     "coreAssembly": {
       "System.Runtime.InteropServices.JavaScript.7u81f8olp1.wasm": "sha256-/zEYK1VQFpcGHE49otyHuuLSnHHmI8k4PJBBu8zEx3g=",
-      "System.Private.CoreLib.azwh64gink.wasm": "sha256-ymiGY3a6ZFn/PCVY18zBat/e70yXrWX/7WJaF088lFU="
+      "System.Private.CoreLib.p788dbnuel.wasm": "sha256-lQTQbuHs8VZxLbhX5v/B6qRpE09qhPI+6faRd9yZiFY="
     },
     "assembly": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "sha256-OaMAAd5n7ORfyur5e3QIyEVKJ76MKIvwbg7/icnnYcU=",
@@ -169,7 +169,7 @@
       "Microsoft.JSInterop.g6svuh4n00.wasm": "sha256-aGKgw+oy/q1c/wB6pq6Jwqo6y8C6P1ht0dSWD2Litwc=",
       "Microsoft.JSInterop.WebAssembly.imfqvv3x5h.wasm": "sha256-mpyjzA6YBuV9Qx5BUC8YbXP9YjZlM+k7YTVawzXJFgk=",
       "MimeMapping.uuj6opn66y.wasm": "sha256-+kk84AGP4hqN1KjG/j3sWAZrbuS3oApS8lptkpjUK6g=",
-      "MudBlazor.ng813gtd12.wasm": "sha256-FxQ/zV9Votoxd3+q6xpplAICSTSh7MuMeoWvwYx0Pqc=",
+      "MudBlazor.d7d16d3tp8.wasm": "sha256-GYMY+6+UrLxm6eciKrQsZ3ThGbHPGYOe5uQgTz3x4Dw=",
       "Newtonsoft.Json.qkbufwhni2.wasm": "sha256-GlXMWKvDs45M2pACoR3Y4Qh8mcrOZGljqmvJY+6JZ5s=",
       "Supabase.Postgrest.0xjl75epv5.wasm": "sha256-FBNipXgfy2t9TkNCkdpmciw9Gf0gQhn3dBtdT+jcwcY=",
       "Supabase.Realtime.z5bpmsf1js.wasm": "sha256-x/ryPhmfvBR+idRmyzcty43CY91ggqdkMiwLH6dvz0w=",
@@ -191,7 +191,7 @@
       "System.ComponentModel.n2b8k31o2o.wasm": "sha256-D3qdQr+y+spdoDu0Q5Tr+qK6IHxI9v2AjMvstbB89Z0=",
       "System.Console.uvkb9jsl7b.wasm": "sha256-huzCgnacS87PXRXmUC/zQ74b2TnnNh3XRPX9+AhBXaQ=",
       "System.Data.Common.udjk1tc1eu.wasm": "sha256-3ivaG3NdaZGVfqF2Jj5Ea/+sbDQdDRKNOJeOOsgaSmg=",
-      "System.Diagnostics.DiagnosticSource.n1fepcy03o.wasm": "sha256-q8w9s/cWr/0uBaubY1Ff1NOfoZ1VatwPmoAfV4+o950=",
+      "System.Diagnostics.DiagnosticSource.v1uyab29ob.wasm": "sha256-XX2vA1oMXaTip6FXU8PFZQ9zIzuL9MZdVXIn+Z8HnEs=",
       "System.Diagnostics.StackTrace.xdh9igbilx.wasm": "sha256-RYIdmnR//noKgVN1jRBRPfmkl1aNx2OZjFTfbstLc1Y=",
       "System.Diagnostics.TraceSource.49qfz9hxbp.wasm": "sha256-qElh0LA3TdIX26s+kuuVuqDbD2rLPOoKahvMiZKf4gc=",
       "System.Drawing.Primitives.um68xmouvq.wasm": "sha256-lqyZ72qhFrUryPd96z26GGtM3p3uH89cwmGxHKrPKbE=",
@@ -204,7 +204,7 @@
       "System.Linq.sc4u4xbp4b.wasm": "sha256-dPZqatQpjUfOV2V1QnE7EXpJwqmELJiNHccGtHraI0g=",
       "System.Memory.lxz5g0h6ei.wasm": "sha256-KeW5LBjklIxcrtkCKvQzekU66RuItVdPnfnSGLAMq7U=",
       "System.Net.Http.Json.d1ev67ic1l.wasm": "sha256-L0Vm+kDcmrDHhaz1nO4YtCcheMa7FXTwO4eYYaaaJts=",
-      "System.Net.Http.zh4s4kt5bi.wasm": "sha256-x2nOfc3gpo8Gj08vVa1S3Hw2r0EE3XMp4v27TeagzRw=",
+      "System.Net.Http.7ufet3wuln.wasm": "sha256-UQ9QKGyfqWjtuKf+pv4H7ia5ohNY1ZtLDcjnGmGLS+Q=",
       "System.Net.Mail.dwtt79h2cj.wasm": "sha256-nfcse87FqSNHGIaNkAcunbm1u/5//Vr9lX3x9c9K1uo=",
       "System.Net.NetworkInformation.gqkc298rf3.wasm": "sha256-CMbvM2xT/Jeq64rsCRcV1vQEhK6xRC+1672W0+UcPFs=",
       "System.Net.Ping.oewtlayn5l.wasm": "sha256-UMba4K8/+i9fCA3mdrwXx7KrTCSZcTnolMOhtV6pumQ=",
@@ -239,7 +239,7 @@
       "System.Xml.XDocument.rq3uoqeade.wasm": "sha256-jXHocYVCS/ThppEaX8pR/Ky4h/AvzicYqHMda1gq83I=",
       "System.t4d4s3f398.wasm": "sha256-fVP2BxRRKpBA0PmBbKxmO45bXDrAXVn1GthlDclLbeU=",
       "netstandard.ouni0eik3i.wasm": "sha256-wJ6GDmyN1xXXwThgqY5ilb2D7zwneRNDXs0pQ8MHKwY=",
-      "MotoNomad.App.2gcdkag00w.wasm": "sha256-voO6c0B8ctXvn/L4I/uSnE2WXCIp4PWFJLXTiSM/30I="
+      "MotoNomad.App.mvkx63uqij.wasm": "sha256-8vkVuvOR3GJV9FDdlXH8Wt7kb0RQFvtBPRmAm7cU8sI="
     }
   },
   "cacheBootResources": true,
