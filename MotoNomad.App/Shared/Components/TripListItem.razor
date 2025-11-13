@@ -6,14 +6,14 @@
     @onclick="HandleClick" 
     data-testid="@("trip-item-" + Trip.Id)">
     
-    @* Gradient Header Strip *@
-    <div style="height: 8px; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>
+    @* Gradient Header Strip - Forest Theme *@
+    <div style="height: 8px; background: linear-gradient(90deg, #2d5016 0%, #3d6d3d 100%);"></div>
     
     <MudCardHeader>
         <CardHeaderContent>
             <div style="display: flex; align-items: center; gap: 12px;">
- @* Transport Icon in Colored Circle *@
-       <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.25)); display: flex; align-items: center; justify-content: center;">
+ @* Transport Icon in Colored Circle - Forest Theme *@
+       <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(45, 80, 22, 0.15), rgba(61, 109, 61, 0.25)); display: flex; align-items: center; justify-content: center;">
           <MudIcon Icon="@GetTransportIcon()" Size="Size.Large" Color="Color.Primary" data-testid="trip-transport-icon" />
                 </div>
         
@@ -34,12 +34,12 @@
     
     <MudCardContent>
         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
-            @* Date Chip *@
+            @* Date Chip - Forest Theme *@
 <MudChip 
                 T="string" 
       Size="Size.Small" 
     Variant="Variant.Filled"
-    Style="background: rgba(102, 126, 234, 0.15); color: #667eea; border-radius: 8px;"
+    Style="background: rgba(90, 147, 103, 0.15); color: #5a9367; border-radius: 8px;"
     data-testid="trip-start-date">
             📅 @Trip.StartDate.ToString("dd.MM.yyyy")
    </MudChip>

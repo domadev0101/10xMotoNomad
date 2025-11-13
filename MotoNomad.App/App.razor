@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@_customTheme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -53,3 +53,39 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@code {
+    private MudTheme _customTheme = new()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#2d5016",
+            Secondary = "#5a9367",
+            AppbarBackground = "#1a3a2e",
+            Background = "#1a2820",
+            Surface = "#0f1a14",
+            DrawerBackground = "#0f1a14",
+            DrawerText = "#e8f0ed",
+            TextPrimary = "#e8f0ed",
+            TextSecondary = "#a8b9af",
+            ActionDefault = "#e8f0ed",
+            ActionDisabled = "#4a5f54",
+            ActionDisabledBackground = "#1a2820"
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = "#2d5016",
+            Secondary = "#5a9367",
+            AppbarBackground = "#1a3a2e",
+            Background = "#1a2820",
+            Surface = "#0f1a14",
+            DrawerBackground = "#0f1a14",
+            DrawerText = "#e8f0ed",
+            TextPrimary = "#e8f0ed",
+            TextSecondary = "#a8b9af",
+            ActionDefault = "#e8f0ed",
+            ActionDisabled = "#4a5f54",
+            ActionDisabledBackground = "#1a2820"
+        }
+    };
+}
