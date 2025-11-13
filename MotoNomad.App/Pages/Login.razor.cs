@@ -87,7 +87,7 @@ public partial class Login
             };
 
             // Call AuthService
-            // Authentication state change is handled automatically by CustomAuthenticationStateProvider listener
+            // Authentication state change is handled manually by AuthService after login completes
             var user = await AuthService.LoginAsync(command);
 
             // Success
