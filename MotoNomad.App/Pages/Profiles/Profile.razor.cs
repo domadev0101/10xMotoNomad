@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using MotoNomad.Application.DTOs.Profiles;
 using MotoNomad.Application.Exceptions;
 using MotoNomad.Application.Interfaces;
+using MotoNomad.App.Infrastructure.Auth;
 using MudBlazor;
 
 namespace MotoNomad.App.Pages.Profiles;
@@ -90,7 +91,7 @@ public partial class Profile : ComponentBase
 
         var parameters = new DialogParameters<Shared.Dialogs.EditProfileDialog>
         {
-     { x => x.Profile, _profile }
+            { x => x.Profile, _profile }
         };
 
         var options = new DialogOptions
@@ -101,9 +102,9 @@ public partial class Profile : ComponentBase
         };
 
         var dialog = await DialogService.ShowAsync<Shared.Dialogs.EditProfileDialog>(
-       "Edit Profile",
-     parameters,
-    options);
+            "Edit Profile",
+            parameters,
+            options);
 
         var result = await dialog.Result;
 
@@ -112,6 +113,14 @@ public partial class Profile : ComponentBase
         {
             Logger.LogInformation("Reloading profile after successful edit");
             await LoadProfileAsync();
+
+            // Notify authentication state changed to update LoginDisplay
+            if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
+            {
+                customProvider.NotifyAuthenticationStateChanged();
+                Logger.LogInformation("Notified authentication state changed after profile reload");
+            }
+
             StateHasChanged(); // Force UI update
         }
     }

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using MotoNomad.App.Application.Interfaces;
+using MotoNomad.App.Infrastructure.Database.Entities;
 
 namespace MotoNomad.App.Infrastructure.Auth;
 
@@ -15,7 +16,7 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider, ID
     private bool _isInitialized;
 
     public CustomAuthenticationStateProvider(
-ISupabaseClientService supabaseClient,
+        ISupabaseClientService supabaseClient,
         ILogger<CustomAuthenticationStateProvider> logger)
     {
         _supabaseClient = supabaseClient;
@@ -63,6 +64,7 @@ ISupabaseClientService supabaseClient,
     /// <summary>
     /// Gets the current authentication state from Supabase.
     /// Returns authenticated user with claims if logged in, otherwise returns anonymous user.
+    /// Fetches display_name from profiles table for accurate user information.
     /// </summary>
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
@@ -81,19 +83,30 @@ ISupabaseClientService supabaseClient,
             }
 
             var claims = new List<Claim>
-    {
-    new Claim(ClaimTypes.NameIdentifier, user.Id),
-       new Claim("email", user.Email ?? string.Empty),
- };
-
-            // Add display_name from user metadata if available
-            if (user.UserMetadata?.ContainsKey("display_name") == true)
             {
-                var displayName = user.UserMetadata["display_name"]?.ToString();
-                if (!string.IsNullOrEmpty(displayName))
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim("email", user.Email ?? string.Empty),
+            };
+
+            // Fetch display_name from profiles table (more reliable than user metadata)
+            try
+            {
+                var profile = await client
+                    .From<Profile>()
+                    .Select("*")
+                    .Filter("id", Postgrest.Constants.Operator.Equals, user.Id)
+                    .Single();
+
+                if (profile != null && !string.IsNullOrWhiteSpace(profile.DisplayName))
                 {
-                    claims.Add(new Claim("display_name", displayName));
+                    claims.Add(new Claim("display_name", profile.DisplayName));
+                    _logger.LogDebug("Added display_name claim: {DisplayName}", profile.DisplayName);
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to fetch profile for user {UserId}, continuing without display_name", user.Id);
+                // Continue without display_name claim - not critical
             }
 
             var identity = new ClaimsIdentity(claims, "supabase");

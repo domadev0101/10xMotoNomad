@@ -49,32 +49,47 @@ public class AuthService : IAuthService
 
             var user = signUpResponse.User;
 
+            // IMPORTANT: Set session BEFORE any profile operations
+            if (signUpResponse.AccessToken != null && signUpResponse.RefreshToken != null)
+            {
+                await client.Auth.SetSession(signUpResponse.AccessToken, signUpResponse.RefreshToken);
+                _logger.LogDebug("Session set for newly registered user {UserId}", user.Id);
+            }
+
             // Save session to localStorage
             if (signUpResponse != null)
             {
                 await SaveSessionAsync(signUpResponse);
             }
 
-            // Create profile in profiles table if display name provided
+            // Profile is automatically created by database trigger (handle_new_user)
+            // If display name was provided, update it now
             if (!string.IsNullOrWhiteSpace(command.DisplayName))
             {
                 try
                 {
-                    var profile = new Profile
-                    {
-                        Id = Guid.Parse(user.Id),
-                        Email = user.Email,
-                        DisplayName = command.DisplayName.Trim(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow
-                    };
+                    // Small delay to ensure trigger completes
+                    await Task.Delay(500);
 
-                    await client.From<Profile>().Insert(profile);
+                    var profile = await client
+                        .From<Profile>()
+                        .Select("*")
+                        .Filter("id", Postgrest.Constants.Operator.Equals, user.Id)
+                        .Single();
+
+                    if (profile != null)
+                    {
+                        profile.DisplayName = command.DisplayName.Trim();
+                        profile.UpdatedAt = DateTime.UtcNow;
+
+                        await client.From<Profile>().Update(profile);
+                        _logger.LogInformation("Updated display_name during registration for user {UserId}", user.Id);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Failed to create profile during registration for user {UserId}", user.Id);
-                    // Don't fail registration if profile creation fails
+                    _logger.LogWarning(ex, "Failed to update display_name during registration for user {UserId}", user.Id);
+                    // Don't fail registration if display_name update fails
                 }
             }
 

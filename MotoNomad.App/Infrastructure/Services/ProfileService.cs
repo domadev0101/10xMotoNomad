@@ -39,11 +39,14 @@ public class ProfileService : IProfileService
         {
             var profile = await client
                 .From<Profile>()
-                .Where(p => p.Id == userId)
+                .Select("*")
+                .Filter("id", Postgrest.Constants.Operator.Equals, userId.ToString())
                 .Single();
 
             if (profile == null)
             {
+                // Profile should always exist (created by database trigger)
+                // If it doesn't, something went wrong during registration
                 throw new NotFoundException("Profile", userId);
             }
 
@@ -94,7 +97,8 @@ public class ProfileService : IProfileService
             // Fetch existing profile
             var profile = await client
                 .From<Profile>()
-                .Where(p => p.Id == userId)
+                .Select("*")
+                .Filter("id", Postgrest.Constants.Operator.Equals, userId.ToString())
                 .Single();
 
             if (profile == null)

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using MotoNomad.Application.Commands.Profiles;
 using MotoNomad.Application.DTOs.Profiles;
 using MotoNomad.Application.Exceptions;
 using MotoNomad.Application.Interfaces;
+using MotoNomad.App.Infrastructure.Auth;
 using MudBlazor;
 
 namespace MotoNomad.App.Shared.Dialogs;
@@ -26,6 +28,9 @@ public partial class EditProfileDialog : ComponentBase
 
     [Inject]
     private ILogger<EditProfileDialog> Logger { get; set; } = default!;
+
+    [Inject]
+    private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     private MudForm _form = default!;
     private string? _displayName;
@@ -174,6 +179,13 @@ public partial class EditProfileDialog : ComponentBase
             var updatedProfile = await ProfileService.UpdateProfileAsync(command);
 
             Logger.LogInformation("Profile updated successfully for user {UserId}", updatedProfile.Id);
+
+            // Notify authentication state changed to update LoginDisplay immediately
+            if (AuthStateProvider is CustomAuthenticationStateProvider customProvider)
+            {
+                customProvider.NotifyAuthenticationStateChanged();
+                Logger.LogInformation("Notified authentication state changed after profile update");
+            }
 
             Snackbar.Add("Profile updated successfully!", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
