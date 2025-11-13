@@ -16,6 +16,7 @@ public class MockAuthenticationStateProvider : AuthenticationStateProvider
     private readonly string _mockEmail;
     private readonly string _mockDisplayName;
     private readonly ISupabaseClientService _supabaseClient;
+    private readonly ILogger<MockAuthenticationStateProvider> _logger;
 
     /// <summary>
     /// Creates a mock authentication provider with specified user credentials.
@@ -24,8 +25,10 @@ public class MockAuthenticationStateProvider : AuthenticationStateProvider
     /// <param name="email">Mock user email</param>
     /// <param name="displayName">Mock user display name</param>
     /// <param name="supabaseClient">Supabase client service to set mock session</param>
+    /// <param name="logger">Logger for diagnostic messages</param>
     public MockAuthenticationStateProvider(
         ISupabaseClientService supabaseClient,
+        ILogger<MockAuthenticationStateProvider> logger,
         string userId = "00000000-0000-0000-0000-000000000000",
         string email = "test@example.com",
         string displayName = "Test User")
@@ -34,6 +37,7 @@ public class MockAuthenticationStateProvider : AuthenticationStateProvider
         _mockEmail = email;
         _mockDisplayName = displayName;
         _supabaseClient = supabaseClient;
+        _logger = logger;
 
         // Set mock session in Supabase client
         SetMockSupabaseSession();
@@ -99,9 +103,9 @@ public class MockAuthenticationStateProvider : AuthenticationStateProvider
             // Set current session and user in Supabase client
             client.Auth.SetSession(mockSession.AccessToken, mockSession.RefreshToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Silently fail - mock auth is for testing only
+            _logger.LogWarning(ex, "Failed to set mock Supabase session for user {Email}", _mockEmail);
         }
     }
 }
