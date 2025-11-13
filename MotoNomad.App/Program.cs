@@ -46,11 +46,13 @@ if (mockAuthSettings.Enabled)
     builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
     {
         var supabaseClient = sp.GetRequiredService<ISupabaseClientService>();
+        var logger = sp.GetRequiredService<ILogger<MockAuthenticationStateProvider>>();
         return new MockAuthenticationStateProvider(
-         supabaseClient,
+            supabaseClient,
+            logger,
             mockAuthSettings.UserId,
-          mockAuthSettings.Email,
-   mockAuthSettings.DisplayName);
+            mockAuthSettings.Email,
+            mockAuthSettings.DisplayName);
     });
 
     // Log warning about mock auth being enabled
