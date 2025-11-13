@@ -27,7 +27,7 @@ public partial class NavMenu
     /// <summary>
     /// Handles user logout action.
     /// Logs out the user, displays a success message, and redirects to login page.
-    /// Authentication state change is handled automatically by CustomAuthenticationStateProvider listener.
+    /// Authentication state change is handled manually by AuthService after logout completes.
     /// </summary>
     private async Task HandleLogout()
     {
