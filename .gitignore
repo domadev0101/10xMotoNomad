@@ -65,3 +65,4 @@ nunit-*.xml
 !**/appsettings*.template
 /docs
 /MotoNomad.App/wwwroot/appsettings.Test.json
+/struktura.txt
