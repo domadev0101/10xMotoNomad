@@ -7,6 +7,8 @@ using MotoNomad.App.Infrastructure.Database.Entities;
 using Blazored.LocalStorage;
 using Supabase;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Components.Authorization;
+using MotoNomad.App.Infrastructure.Auth;
 
 namespace MotoNomad.Infrastructure.Services;
 
@@ -18,16 +20,19 @@ public class AuthService : IAuthService
     private readonly ISupabaseClientService _supabaseClient;
     private readonly ILocalStorageService _localStorage;
     private readonly ILogger<AuthService> _logger;
+    private readonly AuthenticationStateProvider _authStateProvider;
     private const string SessionKey = "supabase.auth.session";
 
     public AuthService(
         ISupabaseClientService supabaseClient,
         ILocalStorageService localStorage,
-        ILogger<AuthService> logger)
+        ILogger<AuthService> logger,
+        AuthenticationStateProvider authStateProvider)
     {
         _supabaseClient = supabaseClient ?? throw new ArgumentNullException(nameof(supabaseClient));
         _localStorage = localStorage ?? throw new ArgumentNullException(nameof(localStorage));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _authStateProvider = authStateProvider ?? throw new ArgumentNullException(nameof(authStateProvider));
     }
 
     public async Task<UserDto> RegisterAsync(RegisterCommand command)
@@ -162,6 +167,14 @@ public class AuthService : IAuthService
                 // Continue without profile data
             }
 
+            // Notify authentication state changed AFTER profile is fully loaded and saved
+            // This ensures display_name is available in CustomAuthenticationStateProvider
+            if (_authStateProvider is CustomAuthenticationStateProvider customProvider)
+            {
+                customProvider.NotifyAuthenticationStateChanged();
+                _logger.LogDebug("Manually notified authentication state changed after login with profile data");
+            }
+
             _logger.LogInformation("User logged in successfully: {Email}", command.Email);
 
             return new UserDto
@@ -198,6 +211,13 @@ public class AuthService : IAuthService
 
             // Remove session from localStorage
             await ClearSessionAsync();
+
+            // Notify authentication state changed after logout
+            if (_authStateProvider is CustomAuthenticationStateProvider customProvider)
+            {
+                customProvider.NotifyAuthenticationStateChanged();
+                _logger.LogDebug("Manually notified authentication state changed after logout");
+            }
 
             _logger.LogInformation("User logged out successfully");
         }

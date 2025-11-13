@@ -8,12 +8,13 @@ namespace MotoNomad.App.Infrastructure.Auth;
 /// <summary>
 /// Custom authentication state provider for Supabase Auth integration.
 /// Manages user authentication state and provides claims-based identity.
+/// Authentication state changes are triggered manually by AuthService after login/logout
+/// to ensure profile data (display_name) is fully loaded before UI updates.
 /// </summary>
 public class CustomAuthenticationStateProvider : AuthenticationStateProvider, IDisposable
 {
     private readonly ISupabaseClientService _supabaseClient;
     private readonly ILogger<CustomAuthenticationStateProvider> _logger;
-    private bool _isInitialized;
 
     public CustomAuthenticationStateProvider(
         ISupabaseClientService supabaseClient,
@@ -21,44 +22,6 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider, ID
     {
         _supabaseClient = supabaseClient;
         _logger = logger;
-
-        // Subscribe to Supabase auth state changes
-        InitializeAuthStateListener();
-    }
-
-    /// <summary>
-    /// Initializes listener for Supabase auth state changes.
-    /// </summary>
-    private void InitializeAuthStateListener()
-    {
-        try
-        {
-            if (!_supabaseClient.IsInitialized)
-            {
-                _logger.LogWarning("Supabase client not initialized, cannot subscribe to auth state changes");
-                return;
-            }
-
-            var client = _supabaseClient.GetClient();
-
-            // Subscribe to auth state changes
-            client.Auth.AddStateChangedListener(OnAuthStateChanged);
-            _logger.LogInformation("Subscribed to Supabase auth state changes");
-            _isInitialized = true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to initialize auth state listener");
-        }
-    }
-
-    /// <summary>
-    /// Handler for Supabase auth state changes.
-    /// </summary>
-    private void OnAuthStateChanged(object? sender, Supabase.Gotrue.Constants.AuthState state)
-    {
-        _logger.LogInformation("Auth state changed: {State}", state);
-        NotifyAuthenticationStateChanged();
     }
 
     /// <summary>
@@ -124,7 +87,8 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider, ID
 
     /// <summary>
     /// Notifies the application that the authentication state has changed.
-    /// Should be called after login or logout operations.
+    /// Should be called by AuthService after login or logout operations to ensure
+    /// profile data is fully loaded before UI update.
     /// </summary>
     public void NotifyAuthenticationStateChanged()
     {
@@ -134,18 +98,6 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider, ID
 
     public void Dispose()
     {
-        try
-        {
-            if (_isInitialized && _supabaseClient.IsInitialized)
-            {
-                var client = _supabaseClient.GetClient();
-                client.Auth.RemoveStateChangedListener(OnAuthStateChanged);
-                _logger.LogInformation("Unsubscribed from Supabase auth state changes");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error disposing CustomAuthenticationStateProvider");
-        }
+        // No listener to unsubscribe - authentication state is managed manually by AuthService
     }
 }
