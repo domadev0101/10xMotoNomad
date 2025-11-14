@@ -16,6 +16,18 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+// Configure logging - disable completely on production
+if (builder.HostEnvironment.IsProduction())
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.SetMinimumLevel(LogLevel.None);
+}
+else
+{
+    // Development: allow configuration from appsettings.json
+    builder.Logging.SetMinimumLevel(LogLevel.Information);
+}
+
 // Configure HttpClient
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
@@ -54,12 +66,15 @@ if (mockAuthSettings.Enabled)
    mockAuthSettings.DisplayName);
     });
 
-    // Log warning about mock auth being enabled
-    var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
-    var mockLogger = loggerFactory.CreateLogger("Program");
-    mockLogger.LogWarning("⚠️ MOCK AUTHENTICATION ENABLED ⚠️");
-    mockLogger.LogWarning("Mock User: {Email} (ID: {UserId})", mockAuthSettings.Email, mockAuthSettings.UserId);
-    mockLogger.LogWarning("⚠️ This should NEVER be enabled in production!");
+    // Log warning about mock auth being enabled (only in non-production)
+    if (!builder.HostEnvironment.IsProduction())
+    {
+        var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
+        var mockLogger = loggerFactory.CreateLogger("Program");
+        mockLogger.LogWarning("⚠️ MOCK AUTHENTICATION ENABLED ⚠️");
+        mockLogger.LogWarning("Mock User: {Email} (ID: {UserId})", mockAuthSettings.Email, mockAuthSettings.UserId);
+        mockLogger.LogWarning("⚠️ This should NEVER be enabled in production!");
+    }
 }
 else
 {
@@ -96,14 +111,23 @@ var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 try
 {
-    logger.LogInformation("Initializing Supabase connection...");
+    if (!builder.HostEnvironment.IsProduction())
+    {
+        logger.LogInformation("Initializing Supabase connection...");
+    }
     var supabaseClient = app.Services.GetRequiredService<ISupabaseClientService>();
     await supabaseClient.InitializeAsync();
-    logger.LogInformation("Application startup completed successfully");
+    if (!builder.HostEnvironment.IsProduction())
+    {
+        logger.LogInformation("Application startup completed successfully");
+    }
 }
 catch (Exception ex)
 {
-    logger.LogError(ex, "Failed to initialize Supabase during startup");
+    if (!builder.HostEnvironment.IsProduction())
+    {
+        logger.LogError(ex, "Failed to initialize Supabase during startup");
+    }
     throw;
 }
 
