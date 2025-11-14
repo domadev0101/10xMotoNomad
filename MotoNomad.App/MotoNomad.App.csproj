@@ -22,4 +22,9 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Update="wwwroot\appsettings.Production.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
