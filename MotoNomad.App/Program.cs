@@ -16,10 +16,17 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Configure logging based on environment
-builder.Logging.SetMinimumLevel(
-    builder.HostEnvironment.IsProduction() ? LogLevel.None : LogLevel.Information
-);
+// Configure logging - disable completely on production
+if (builder.HostEnvironment.IsProduction())
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.SetMinimumLevel(LogLevel.None);
+}
+else
+{
+    // Development: allow configuration from appsettings.json
+    builder.Logging.SetMinimumLevel(LogLevel.Information);
+}
 
 // Configure HttpClient
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

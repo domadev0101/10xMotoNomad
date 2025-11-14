@@ -31,12 +31,6 @@ jobs:
     - name: Publish Blazor WASM
       run: dotnet publish MotoNomad.App/MotoNomad.App.csproj -c Release -o release --nologo
 
-    - name: Use Production appsettings
-      run: |
-        if [ -f release/wwwroot/appsettings.Production.json ]; then
-          cp release/wwwroot/appsettings.Production.json release/wwwroot/appsettings.json
-        fi
-
     - name: Change base-tag in index.html
       run: sed -i 's/<base href="\/" \/>/<base href="\/10xMotoNomad\/" \/>/g' release/wwwroot/index.html
 
