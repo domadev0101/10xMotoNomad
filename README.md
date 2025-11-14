@@ -47,12 +47,6 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
 
 ### Core Functionality (MVP)
 
-- **🎨 Immersive Forest Theme**
-  - Dark green color palette inspired by Bieszczady forests
-  - Eye-friendly dark mode perfect for trip planning
-  - Smooth transitions and atmospheric design
-  - Responsive on all devices
-
 - **🔐 User Authentication**
   - Secure registration and login via Supabase Auth
   - Session management with automatic logout
