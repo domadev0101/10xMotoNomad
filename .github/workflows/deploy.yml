@@ -34,6 +34,9 @@ jobs:
     - name: Change base-tag in index.html
       run: sed -i 's/<base href="\/" \/>/<base href="\/10xMotoNomad\/" \/>/g' release/wwwroot/index.html
 
+    - name: Change base path in service-worker.js
+      run: sed -i 's/const base = "\/";/const base = "\/10xMotoNomad\/";/g' release/wwwroot/service-worker.js
+
     - name: Create 404.html for SPA routing
       run: cp release/wwwroot/index.html release/wwwroot/404.html
 
