@@ -1,20 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-  </PropertyGroup>
+<PropertyGroup>
+  <TargetFramework>net10.0</TargetFramework>
+  <Nullable>enable</Nullable>
+  <ImplicitUsings>enable</ImplicitUsings>
+  <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.9" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.10" />
-    <PackageReference Include="MudBlazor" Version="8.13.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
+    <PackageReference Include="MudBlazor" Version="8.15.0" />
     <PackageReference Include="supabase-csharp" Version="0.16.2" />
   </ItemGroup>
 
