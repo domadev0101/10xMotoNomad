@@ -155,7 +155,7 @@ Ran the full unit test suite from the `MotoNomad.Tests` project:
 - **Failed:** ❌ 0
 - **Skipped:** ⏭️ 0
 - **Execution time:** 1.2s
-- **Framework:** xUnit.net v2.8.2 + .NET 10.0.2
+- **Test framework:** xUnit.net v2.9.2 (framework), xunit.runner.visualstudio v2.8.2 (runner) + .NET 10.0.2
 
 #### Test Coverage:
 1. **TripService - Validation (11 tests)**
