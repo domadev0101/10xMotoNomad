@@ -298,11 +298,11 @@ public class OpenRouterService : IOpenRouterService, IDisposable
         using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
         using var reader = new StreamReader(stream);
 
-        while (!reader.EndOfStream)
+        string? line;
+        while ((line = await reader.ReadLineAsync(cancellationToken)) != null)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var line = await reader.ReadLineAsync();
             var chunk = ParseStreamingChunk(line);
 
             if (chunk != null)

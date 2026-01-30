@@ -192,7 +192,7 @@ public partial class EditProfileDialog : ComponentBase
         }
         catch (ValidationException ex)
         {
-            _validationErrors = ex.ValidationErrors;
+            _validationErrors = ex.ValidationErrors ?? new Dictionary<string, string[]>();
             Snackbar.Add("Validation failed. Please check the form.", Severity.Warning);
             Logger.LogWarning(ex, "Validation error updating profile");
         }

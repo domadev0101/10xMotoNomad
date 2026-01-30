@@ -64,6 +64,11 @@ public class AuthService : IAuthService
 
             var user = signUpResponse.User;
 
+            if (string.IsNullOrEmpty(user.Id))
+            {
+                throw new AuthException("User ID is missing from registration response.");
+            }
+
             _logger.LogInformation("User registered successfully (not logged in): {Email}", command.Email);
 
             // Display name is stored in user metadata and will be saved to profile on first login
@@ -117,6 +122,11 @@ public class AuthService : IAuthService
 
             var user = signInResponse.User;
 
+            if (string.IsNullOrEmpty(user.Id))
+            {
+                throw new AuthException("User ID is missing from login response.");
+            }
+
             // Save session to localStorage
             if (signInResponse != null)
             {
@@ -129,7 +139,7 @@ public class AuthService : IAuthService
             {
                 var profileResponse = await client
                     .From<Profile>()
-                    .Select("*")
+                     .Select("*")
                     .Filter("id", Postgrest.Constants.Operator.Equals, user.Id)
                     .Single();
 
@@ -236,7 +246,7 @@ public class AuthService : IAuthService
 
             var user = client.Auth.CurrentUser;
 
-            if (user == null)
+            if (user == null || string.IsNullOrEmpty(user.Id))
             {
                 return null;
             }
