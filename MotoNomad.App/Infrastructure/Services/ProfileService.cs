@@ -28,7 +28,7 @@ public class ProfileService : IProfileService
         var client = _supabaseClient.GetClient();
         var currentUser = client.Auth.CurrentUser;
 
-        if (currentUser == null)
+        if (currentUser == null || string.IsNullOrEmpty(currentUser.Id))
         {
             throw new UnauthorizedException("You must be logged in to view your profile.");
         }
@@ -85,7 +85,7 @@ public class ProfileService : IProfileService
         var client = _supabaseClient.GetClient();
         var currentUser = client.Auth.CurrentUser;
 
-        if (currentUser == null)
+        if (currentUser == null || string.IsNullOrEmpty(currentUser.Id))
         {
             throw new UnauthorizedException("You must be logged in to update your profile.");
         }

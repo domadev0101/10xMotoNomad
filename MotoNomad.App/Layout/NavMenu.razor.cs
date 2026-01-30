@@ -40,7 +40,7 @@ public partial class NavMenu
             // Redirect to login page
             NavigationManager.NavigateTo("login");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             Snackbar.Add("An error occurred during logout.", Severity.Error);
             // TODO: Logging

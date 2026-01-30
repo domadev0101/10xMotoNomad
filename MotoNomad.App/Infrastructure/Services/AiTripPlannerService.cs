@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using MotoNomad.App.Application.DTOs;
 using MotoNomad.App.Application.DTOs.OpenRouter;
+using MotoNomad.App.Application.Exceptions;
 using MotoNomad.App.Application.Interfaces;
 
 namespace MotoNomad.App.Infrastructure.Services;
@@ -80,8 +81,13 @@ ATRAKCJE:
             // Call OpenRouter API
             var response = await _openRouterService.SendChatCompletionAsync(request, cancellationToken);
 
+            if (response == null || response.Choices == null || !response.Choices.Any())
+            {
+                throw new OpenRouterException("Received empty or invalid response from AI service");
+            }
+
             // Extract response text
-            var responseText = response.Choices.FirstOrDefault()?.Message.Content ?? string.Empty;
+            var responseText = response.Choices.FirstOrDefault()?.Message?.Content ?? string.Empty;
 
             // Parse response into TripSuggestionDto
             var suggestion = ParseResponse(responseText);

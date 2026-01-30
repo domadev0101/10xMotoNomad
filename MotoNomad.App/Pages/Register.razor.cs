@@ -114,7 +114,7 @@ public partial class Register
             _errorMessage = ex.Message;
             Snackbar.Add(ex.Message, Severity.Warning);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _errorMessage = "An unexpected error occurred. Please try again.";
             Snackbar.Add(_errorMessage, Severity.Error);

@@ -1,6 +1,6 @@
 # MotoNomad 🏍️
 
-[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![Blazor](https://img.shields.io/badge/Blazor-WebAssembly-512BD4?logo=blazor)](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build Status](https://github.com/domadev0101/10xMotoNomad/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/domadev0101/10xMotoNomad/actions)
@@ -85,10 +85,10 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **.NET 9.0** - Modern framework for building web applications
+- **.NET 10.0** - Modern framework for building web applications
 - **Blazor WebAssembly** - SPA framework running entirely in browser
-- **C# 13** - Single language for entire application
-- **MudBlazor** - Material Design component library
+- **C# 14** - Single language for entire application
+- **MudBlazor 8.15.0** - Material Design component library
 
 ### Backend & Database
 - **Supabase** - PostgreSQL database with built-in features
@@ -122,7 +122,7 @@ MotoNomad provides a single source of truth for all trip details, reducing plann
 
 ### Prerequisites
 
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) or later
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
 - [Git](https://git-scm.com/)
 - Code editor (Visual Studio 2022, VS Code, or Rider)
 - [Supabase account](https://supabase.com) (free tier)

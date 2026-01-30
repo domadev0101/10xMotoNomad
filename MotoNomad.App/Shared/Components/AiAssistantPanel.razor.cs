@@ -89,7 +89,7 @@ public partial class AiAssistantPanel
 
             Snackbar.Add("AI suggestions generated successfully!", Severity.Success);
         }
-        catch (OpenRouterAuthException ex)
+        catch (OpenRouterAuthException)
         {
             _errorMessage = "⚠️ OpenRouter API key is not configured. " +
          "Please add your API key to appsettings.json. " +

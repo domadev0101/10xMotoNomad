@@ -47,7 +47,7 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider, ID
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.NameIdentifier, user.Id ?? string.Empty),
                 new Claim("email", user.Email ?? string.Empty),
             };
 
