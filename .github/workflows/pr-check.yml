@@ -21,7 +21,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '10.0.x'
 
     - name: Restore
       run: dotnet restore
@@ -69,7 +69,7 @@ jobs:
     - name: Install Playwright Browsers
       run: |
         dotnet build MotoNomad.E2ETests/MotoNomad.E2ETests.csproj --no-restore
-        pwsh MotoNomad.E2ETests/bin/Release/net9.0/playwright.ps1 install --with-deps chromium
+        pwsh MotoNomad.E2ETests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
     # 🌐 E2E TESTS
     - name: E2E Tests
